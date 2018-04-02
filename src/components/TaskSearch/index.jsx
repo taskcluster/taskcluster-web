@@ -3,7 +3,6 @@ import { bool, func, string } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { fade } from 'material-ui/styles/colorManipulator';
 import FormControl from 'material-ui/Form/FormControl';
-// import Input, { InputAdornment } from 'material-ui/Input';
 import MagnifyIcon from 'mdi-react/MagnifyIcon';
 
 @withStyles(theme => ({

@@ -27,7 +27,7 @@ export default class DashboardView extends Component {
         <br />
         <br />
 
-        <Button component={Link} to="/groups">
+        <Button component={Link} to="/tasks/groups">
           <HexagonMultipleIcon className={classes.buttonIcon} />
           I want to look at a task or group of tasks.
         </Button>
