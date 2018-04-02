@@ -35,6 +35,9 @@ import routes from './routes';
     '.mdi-icon': {
       fill: 'white',
     },
+    a: {
+      color: theme.palette.primary.contrastText,
+    },
   },
 })
 export default class App extends Component {

@@ -1,5 +1,8 @@
 import { createMuiTheme } from 'material-ui/styles';
 import red from 'material-ui/colors/red';
+import amber from 'material-ui/colors/amber';
+import blue from 'material-ui/colors/blue';
+import green from 'material-ui/colors/green';
 
 const Roboto300 = { fontFamily: 'Roboto300, sans-serif' };
 const Roboto400 = { fontFamily: 'Roboto400, sans-serif' };
@@ -17,6 +20,15 @@ export default createMuiTheme({
     },
     error: {
       ...red,
+    },
+    success: {
+      ...green,
+    },
+    warning: {
+      ...amber,
+    },
+    info: {
+      ...blue,
     },
     text: {
       primary: 'rgba(255, 255, 255, 0.9)',

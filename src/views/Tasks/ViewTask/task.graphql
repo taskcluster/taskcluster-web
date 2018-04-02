@@ -4,6 +4,20 @@ query Task($taskId: ID!) {
       name
       description
       owner
+      source
     }
+    status {
+      state
+      retriesLeft
+    }
+    retries
+    created
+    deadline
+    expires
+    priority
+    provisionerId
+    workerType
+    schedulerId
+    dependencies
   }
 }
