@@ -79,6 +79,7 @@ export default class TaskDetailsCard extends Component {
 
   render() {
     const { classes, task } = this.props;
+    const isExternal = task.metadata.source.startsWith('https://');
 
     return (
       <Card raised>
@@ -89,22 +90,18 @@ export default class TaskDetailsCard extends Component {
             </Typography>
 
             <List>
-              <ListItem>
+              <ListItem
+                button
+                component={isExternal ? 'a' : Link}
+                to={isExternal ? null : task.metadata.source}
+                href={isExternal ? task.metadata.source : null}
+                target={isExternal ? '_blank' : null}
+                rel={isExternal ? 'noopener noreferrer' : null}>
                 <ListItemText
                   primary="Source"
-                  secondary={
-                    task.metadata.source.startsWith('https://') ? (
-                      <a
-                        href={task.metadata.source}
-                        target="_blank"
-                        rel="noopener noreferrer">
-                        {task.metadata.source}
-                      </a>
-                    ) : (
-                      task.metadata.source
-                    )
-                  }
+                  secondary={task.metadata.source}
                 />
+                <LinkIcon />
               </ListItem>
               <ListItem>
                 <ListItemText
