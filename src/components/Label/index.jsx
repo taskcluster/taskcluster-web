@@ -25,7 +25,6 @@ import Button from 'material-ui/Button';
   warning: {
     backgroundColor: `${theme.palette.warning[700]} !important`,
     color: theme.palette.common.black,
-    // color: theme.palette.primary.A400,
   },
   default: {
     backgroundColor: `${theme.palette.primary.light} !important`,

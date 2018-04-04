@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export const labels = {
   RUNNING: 'info',
   PENDING: 'default',
@@ -19,5 +20,3 @@ export const labels = {
   TASK_RETRY: 'info',
   RERUN: 'info',
 };
-
-export const wat = true;
