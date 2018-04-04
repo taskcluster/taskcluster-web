@@ -6,6 +6,7 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Dashboard from '../../../components/Dashboard';
 import TaskDetailsCard from '../../../components/TaskDetailsCard';
+import TaskRunsCard from '../../../components/TaskRunsCard';
 import TaskSearch from '../../../components/TaskSearch';
 import Query from '../../../components/Query';
 import Markdown from '../../../components/Markdown';
@@ -27,8 +28,18 @@ import taskQuery from './task.graphql';
   },
 }))
 export default class ViewTask extends Component {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.match.params.taskId !== prevState.taskSearch) {
+      return {
+        taskSearch: nextProps.match.params.taskId || '',
+      };
+    }
+
+    return null;
+  }
+
   state = {
-    taskSearch: this.props.match.params.taskId || '',
+    taskSearch: '',
   };
 
   handleTaskSearchChange = e => {
@@ -82,6 +93,14 @@ export default class ViewTask extends Component {
                 <Grid container spacing={24}>
                   <Grid item xs={12} md={6}>
                     <TaskDetailsCard task={task} />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <TaskRunsCard
+                      runs={task.status.runs}
+                      workerType={task.workerType}
+                      provisionerId={task.provisionerId}
+                    />
                   </Grid>
                 </Grid>
               </Fragment>

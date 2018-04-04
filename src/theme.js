@@ -1,4 +1,5 @@
 import { createMuiTheme } from 'material-ui/styles';
+import { fade } from 'material-ui/styles/colorManipulator';
 import red from 'material-ui/colors/red';
 import amber from 'material-ui/colors/amber';
 import blue from 'material-ui/colors/blue';
@@ -61,6 +62,16 @@ export default createMuiTheme({
     quad: 32,
   },
   drawerWidth: 240,
+  mixins: {
+    highlight: {
+      fontFamily: 'Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace',
+      backgroundColor: fade('#fff', 0.1),
+      border: `1px solid ${fade('#fff', 0.1)}`,
+      borderRadius: 2,
+      paddingLeft: 4,
+      paddingRight: 4,
+    },
+  },
   overrides: {
     MuiPaper: {
       root: {
@@ -70,6 +81,11 @@ export default createMuiTheme({
     MuiCircularProgress: {
       colorPrimary: {
         color: 'white',
+      },
+    },
+    MuiMobileStepper: {
+      dotActive: {
+        backgroundColor: 'white',
       },
     },
   },
