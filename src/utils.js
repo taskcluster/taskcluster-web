@@ -20,3 +20,5 @@ export const labels = {
   TASK_RETRY: 'info',
   RERUN: 'info',
 };
+
+export const ARTIFACTS_PAGE_SIZE = 10;
