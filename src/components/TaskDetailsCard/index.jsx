@@ -23,7 +23,7 @@ import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import DateDistance from '../DateDistance';
 import Label from '../Label';
 import Code from '../Code';
-import { labels } from '../../utils';
+import labels from '../../utils/labels';
 
 @withStyles(theme => ({
   headline: {

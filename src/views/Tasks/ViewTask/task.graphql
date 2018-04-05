@@ -1,3 +1,5 @@
+#import "../../../fragments/artifacts.graphql"
+
 query Task($taskId: ID!, $artifactsConnection: PageConnection) {
   task(taskId: $taskId) {
     taskId
@@ -40,22 +42,7 @@ query Task($taskId: ID!, $artifactsConnection: PageConnection) {
         takenUntil
 
         artifacts(connection: $artifactsConnection) {
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            cursor
-            previousCursor
-            nextCursor
-          }
-
-          edges {
-            node {
-              name
-              contentType
-              url
-              isPublicLog
-            }
-          }
+          ...Artifacts
         }
       }
     }

@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/prefer-default-export
-export const labels = {
+export default {
   RUNNING: 'info',
   PENDING: 'default',
   SCHEDULED: 'default',
@@ -20,5 +19,3 @@ export const labels = {
   TASK_RETRY: 'info',
   RERUN: 'info',
 };
-
-export const ARTIFACTS_PAGE_SIZE = 10;

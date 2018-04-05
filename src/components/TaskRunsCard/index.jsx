@@ -35,7 +35,8 @@ import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import DateDistance from '../DateDistance';
 import Label from '../Label';
 import Spinner from '../Spinner';
-import { labels, ARTIFACTS_PAGE_SIZE } from '../../utils';
+import labels from '../../utils/labels';
+import { ARTIFACTS_PAGE_SIZE } from '../../utils/constants';
 
 const DOTS_VARIANT_LIMIT = 5;
 

@@ -12,7 +12,7 @@ import TaskRunsCard from '../../../components/TaskRunsCard';
 import TaskSearch from '../../../components/TaskSearch';
 import Query from '../../../components/Query';
 import Markdown from '../../../components/Markdown';
-import { ARTIFACTS_PAGE_SIZE } from '../../../utils';
+import { ARTIFACTS_PAGE_SIZE } from '../../../utils/constants';
 import taskQuery from './task.graphql';
 import pageArtifactsQuery from './pageArtifacts.graphql';
 
