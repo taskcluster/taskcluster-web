@@ -23,7 +23,7 @@ const FOLLOW_STORAGE_KEY = 'follow-log';
       fontFamily: 'Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace',
       fontSize: 13,
       paddingTop: theme.spacing.triple,
-      paddingBottom: theme.spacing.unit,
+      paddingBottom: theme.spacing.triple * 10,
       color: 'rgba(255, 255, 255, 0.7)',
       '-webkit-font-smoothing': 'auto',
     },
