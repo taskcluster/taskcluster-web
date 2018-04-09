@@ -161,7 +161,7 @@ export default class ViewTask extends Component {
             <Divider className={classes.divider} />
             <Grid container spacing={24}>
               <Grid item xs={12} md={6}>
-                <TaskDetailsCard task={task} depedentTasks={dependentTasks} />
+                <TaskDetailsCard task={task} dependentTasks={dependentTasks} />
               </Grid>
 
               <Grid item xs={12} md={6}>
