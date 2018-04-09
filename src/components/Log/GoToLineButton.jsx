@@ -52,7 +52,7 @@ export default class GoToLineButton extends Component {
 
     return (
       <Fragment>
-        <Tooltip placement="left" title="Go to line">
+        <Tooltip placement="bottom" title="Go to line">
           <Button
             variant="fab"
             mini

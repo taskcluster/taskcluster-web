@@ -22,8 +22,8 @@ const FOLLOW_STORAGE_KEY = 'follow-log';
       backgroundColor: `${theme.palette.primary.dark}`,
       fontFamily: 'Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace',
       fontSize: 13,
-      paddingTop: theme.spacing.triple,
-      paddingBottom: theme.spacing.triple * 10,
+      paddingTop: 4,
+      paddingBottom: theme.spacing.unit,
       color: 'rgba(255, 255, 255, 0.7)',
       '-webkit-font-smoothing': 'auto',
     },
@@ -93,7 +93,7 @@ export default class Log extends Component {
       return pref;
     }
 
-    return this.props.stream;
+    return false;
   }
 
   handleFollowClick = () => {
@@ -124,6 +124,12 @@ export default class Log extends Component {
 
   handleLineNumberChange = lineNumber => {
     this.setState({ lineNumber });
+  };
+
+  handleScroll = ({ scrollTop, scrollHeight, clientHeight }) => {
+    if (this.state.follow && scrollHeight - scrollTop !== clientHeight) {
+      this.setState({ follow: false });
+    }
   };
 
   getHighlightFromHash() {
@@ -195,6 +201,7 @@ export default class Log extends Component {
           <Fragment>
             <LazyLog
               url={url}
+              onScroll={this.handleScroll}
               stream
               selectableLines
               follow={follow}

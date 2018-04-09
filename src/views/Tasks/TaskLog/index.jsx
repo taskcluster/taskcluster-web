@@ -12,13 +12,13 @@ import Log from '../../../components/Log';
 @withStyles(theme => ({
   fab: {
     position: 'absolute',
-    bottom: theme.spacing.double,
-    right: theme.spacing.triple,
+    right: theme.spacing.double,
+    top: theme.spacing.double,
   },
   miniFab: {
     position: 'absolute',
-    bottom: theme.spacing.unit * 11,
-    right: theme.spacing.quad,
+    right: theme.spacing.unit * 10,
+    top: theme.spacing.triple,
   },
 }))
 export default class TaskLog extends Component {
@@ -37,7 +37,7 @@ export default class TaskLog extends Component {
           stream={false}
           GoToLineButtonProps={{ className: classes.miniFab }}
           actions={
-            <Tooltip placement="left" title="View task">
+            <Tooltip placement="bottom" title="View task">
               <Button
                 component={Link}
                 to={`/tasks/${match.params.taskId}/runs/${match.params.runId}`}
