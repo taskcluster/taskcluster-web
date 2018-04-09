@@ -1,12 +1,21 @@
 import { Component, Fragment } from 'react';
-import { arrayOf, bool, node, number, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, node, object, oneOfType, string } from 'prop-types';
+import classNames from 'classnames';
+import { withRouter } from 'react-router-dom';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
 import storage from 'localforage';
 import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button';
+import Tooltip from 'material-ui/Tooltip';
+import ArrowDownBoldCircleOutlineIcon from 'mdi-react/ArrowDownBoldCircleOutlineIcon';
 import Spinner from '../Spinner';
+import GoToLineButton from './GoToLineButton';
 
 const Loading = () => <Spinner loading />;
+const LINE_NUMBER_MATCH = /L(\d+)-?(\d+)?/;
+const FOLLOW_STORAGE_KEY = 'follow-log';
 
+@withRouter
 @withStyles(theme => ({
   '@global': {
     'div.react-lazylog': {
@@ -37,15 +46,11 @@ const Loading = () => <Spinner loading />;
       backgroundColor: `${theme.palette.action.hover} !important`,
     },
   },
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing.double,
-    right: theme.spacing.triple,
-  },
-  miniFab: {
-    position: 'absolute',
-    bottom: theme.spacing.unit * 11,
-    right: theme.spacing.quad,
+  followButtonFollowing: {
+    backgroundColor: theme.palette.success.main,
+    '&:hover': {
+      backgroundColor: theme.palette.success.dark,
+    },
   },
 }))
 export default class Log extends Component {
@@ -53,14 +58,20 @@ export default class Log extends Component {
     url: string.isRequired,
     stream: bool,
     actions: oneOfType([node, arrayOf(node)]),
-    lineNumber: number,
+    GoToLineButtonProps: object,
+    FollowLogButtonProps: object,
   };
 
   static defaultProps = {
-    onHighlight: null,
     stream: false,
     actions: null,
+    GoToLineButtonProps: null,
+    FollowLogButton: null,
+  };
+
+  state = {
     lineNumber: null,
+    follow: null,
   };
 
   shouldStartFollowing() {
@@ -68,7 +79,15 @@ export default class Log extends Component {
       return false;
     }
 
-    const pref = storage.getItem('follow-log');
+    if (typeof this.state.follow === 'boolean') {
+      return this.state.follow;
+    }
+
+    if (this.getScrollToLine()) {
+      return false;
+    }
+
+    const pref = storage.getItem(FOLLOW_STORAGE_KEY);
 
     if (typeof pref === 'boolean') {
       return pref;
@@ -77,30 +96,92 @@ export default class Log extends Component {
     return this.props.stream;
   }
 
-  // scrollToLine(following) {
-  //   if (following) {
-  //     return null;
-  //   }
-  //
-  //   if (this.state.jump) {
-  //
-  //   }
-  // }
+  handleFollowClick = () => {
+    const follow = !this.state.follow;
+
+    storage.setItem(FOLLOW_STORAGE_KEY, follow);
+    this.setState({ follow });
+  };
+
+  handleHighlight = range => {
+    if (this.highlightRange && this.highlightRange.equals(range)) {
+      return;
+    }
+
+    const first = range.first();
+    const last = range.last();
+
+    if (!first) {
+      this.props.history.replace({ hash: '' });
+    } else if (first === last) {
+      this.props.history.replace({ hash: `#L${first}` });
+    } else {
+      this.props.history.replace({ hash: `#L${first}-${last}` });
+    }
+
+    this.highlightRange = range;
+  };
+
+  handleLineNumberChange = lineNumber => {
+    this.setState({ lineNumber });
+  };
+
+  getHighlightFromHash() {
+    const hasHighlight = LINE_NUMBER_MATCH.exec(this.props.location.hash);
+    const start = hasHighlight && +hasHighlight[1];
+    const end = hasHighlight && +hasHighlight[2];
+
+    return end ? [start, end] : start;
+  }
+
+  getScrollToLine() {
+    if (typeof this.state.follow === 'boolean') {
+      return null;
+    }
+
+    if (this.state.lineNumber) {
+      return this.state.lineNumber;
+    }
+
+    const highlight = this.getHighlightFromHash();
+
+    if (highlight) {
+      return Array.isArray(highlight) ? highlight[0] : highlight;
+    }
+  }
 
   render() {
-    const { url, stream, classes, actions, lineNumber, ...props } = this.props;
+    const {
+      url,
+      stream,
+      classes,
+      actions,
+      GoToLineButtonProps,
+      FollowLogButtonProps,
+      ...props
+    } = this.props;
+    const highlight = this.getHighlightFromHash();
+    const scrollToLine = this.getScrollToLine();
 
     if (!stream) {
       return (
         <Fragment>
           <LazyLog
             url={url}
-            scrollToLine={lineNumber}
             selectableLines
+            highlight={highlight}
+            onHighlight={this.handleHighlight}
+            scrollToLine={scrollToLine}
+            scrollToAlignment="start"
             lineClassName={classes.line}
             highlightLineClassName={classes.highlight}
             loadingComponent={Loading}
             {...props}
+          />
+          <GoToLineButton
+            className={classes.lineNumberButton}
+            onLineNumberChange={this.handleLineNumberChange}
+            {...GoToLineButtonProps}
           />
           {actions}
         </Fragment>
@@ -111,286 +192,48 @@ export default class Log extends Component {
       <ScrollFollow
         startFollowing={this.shouldStartFollowing()}
         render={({ follow }) => (
-          <LazyLog
-            url={url}
-            follow={follow}
-            selectableLines
-            // scrollToLine={
-            //   !follow &&
-            //   ((this.state.jump ? lineNumber : null) ||
-            //     (highlight ? scrollToLine : null))
-            // }
-            // scrollToAlignment="start"
-            // highlight={highlight}
-            // onHighlight={onHighlight}
-            // onScroll={this.handleScroll}
-          />
+          <Fragment>
+            <LazyLog
+              url={url}
+              stream
+              selectableLines
+              follow={follow}
+              highlight={highlight}
+              onHighlight={this.handleHighlight}
+              scrollToLine={scrollToLine}
+              scrollToAlignment="start"
+              lineClassName={classes.line}
+              highlightLineClassName={classes.highlight}
+              loadingComponent={Loading}
+              {...props}
+            />
+            <GoToLineButton
+              className={classes.lineNumberButton}
+              onLineNumberChange={this.handleLineNumberChange}
+              {...GoToLineButtonProps}
+            />
+            <Tooltip
+              placement="left"
+              title={follow ? 'Unfollow log' : 'Follow log'}>
+              <Button
+                variant="fab"
+                mini
+                color={follow ? 'inherit' : 'secondary'}
+                onClick={this.handleFollowClick}
+                {...FollowLogButtonProps}
+                className={classNames(
+                  {
+                    [classes.followButtonFollowing]: follow,
+                  },
+                  FollowLogButtonProps && FollowLogButtonProps.className
+                )}>
+                <ArrowDownBoldCircleOutlineIcon />
+              </Button>
+            </Tooltip>
+            {actions}
+          </Fragment>
         )}
       />
     );
   }
 }
-
-/*
-<SpeedDial
-            icon={
-              <SpeedDialIcon
-                icon={<DotsVerticalIcon />}
-                openIcon={<ArrowRightIcon />}
-              />
-            }>
-            <SpeedDialAction
-              ButtonProps={{ color: 'secondary' }}
-              icon={<NumericIcon />}
-              tooltipTitle="Go to line..."
-              onClick={this.handleClick}
-            />
-          </SpeedDial>
- */
-
-// export default class LogView extends PureComponent {
-//   static propTypes = {
-//     queue: object,
-//     taskId: string,
-//     runId: number,
-//     status: object,
-//     log: object,
-//     highlight: oneOfType([arrayOf(number), number]),
-//     onHighlight: func
-//   };
-//
-//   constructor(props) {
-//     super(props);
-//
-//     const streaming = this.isStreaming(props.status);
-//
-//     this.state = {
-//       streaming,
-//       follow: streaming || this.prefersFollow(),
-//       isFullscreen: false,
-//       fullscreenEnabled: fscreen.fullscreenEnabled,
-//       lazyViewerHeight: VIEWER_HEIGHT_MIN,
-//       jump: false,
-//       lineNumber: ''
-//     };
-//   }
-//
-//   componentWillMount() {
-//     fscreen.addEventListener(
-//       'fullscreenchange',
-//       this.handleFullscreenChange,
-//       false
-//     );
-//     window.addEventListener('resize', this.handleLazyViewerHeight);
-//   }
-//
-//   componentDidMount() {
-//     this.handleLazyViewerHeight();
-//   }
-//
-//   componentWillUnmount() {
-//     fscreen.removeEventListener(
-//       'fullscreenchange',
-//       this.handleFullscreenChange
-//     );
-//     window.removeEventListener('resize', this.handleLazyViewerHeight);
-//   }
-//
-//   componentWillReceiveProps(nextProps) {
-//     if (
-//       nextProps.taskId !== this.props.taskId ||
-//       nextProps.runId !== this.props.runId ||
-//       nextProps.status !== this.props.status ||
-//       (nextProps.log &&
-//         this.props.log &&
-//         nextProps.log.name !== this.props.log.name)
-//     ) {
-//       const streaming = this.isStreaming(nextProps.status);
-//
-//       this.setState({
-//         streaming,
-//         follow: streaming || this.prefersFollow(),
-//         isFullscreen: false
-//       });
-//     }
-//   }
-//
-//   componentDidUpdate() {
-//     this.handleLazyViewerHeight();
-//
-//     if (this.state.jump) {
-//       // eslint-disable-next-line react/no-did-update-set-state
-//       this.setState({ jump: false });
-//     }
-//   }
-//
-//   prefersFollow() {
-//     return localStorage.getItem('follow-log') === 'true';
-//   }
-//
-//   handleJump = () => {
-//     this.setState({
-//       lineNumber: this.state.lineNumber,
-//       jump: true,
-//       follow: false
-//     });
-//   };
-//
-//   isStreaming(status) {
-//     return status
-//       ? status.state === 'pending' || status.state === 'running'
-//       : false;
-//   }
-//
-//   handleFollowClick = () => {
-//     localStorage.setItem('follow-log', !this.state.follow);
-//     this.setState({ follow: !this.state.follow });
-//   };
-//
-//   handleScroll = ({ scrollTop, scrollHeight, clientHeight }) => {
-//     if (this.state.follow && scrollHeight - scrollTop !== clientHeight) {
-//       this.setState({ follow: false });
-//     }
-//   };
-//
-//   handleFullscreen = () =>
-//     this.lazylog && fscreen.requestFullscreen(this.lazylog);
-//
-//   handleFullscreenChange = () => {
-//     this.setState({
-//       isFullscreen: fscreen.fullscreenElement !== null
-//     });
-//   };
-//
-//   handleLazyViewerHeight = () => {
-//     if (this.lazylog) {
-//       const lazyViewerHeight =
-//         window.innerHeight -
-//         Math.round(this.lazylog.getBoundingClientRect().top);
-//
-//       if (lazyViewerHeight > VIEWER_HEIGHT_MIN) {
-//         this.setState({ lazyViewerHeight });
-//       }
-//     }
-//   };
-//
-//   registerChild = ref => {
-//     if (!ref) {
-//       return;
-//     }
-//
-//     const node = findDOMNode(ref);
-// eslint-disable-line react/no-find-dom-node
-//
-//     if (!node) {
-//       return;
-//     }
-//
-//     [this.lazylog] = node.children;
-//   };
-//
-//   handleLineNumberChange = ({ target }) =>
-//     this.setState({ lineNumber: target.value });
-//
-//   render() {
-//     const {
-//       queue,
-//       taskId,
-//       runId,
-//       status,
-//       log,
-//       highlight,
-//       onHighlight
-//     } = this.props;
-//     const {
-//       streaming,
-//       follow,
-//       fullscreenEnabled,
-//       isFullscreen,
-//       lazyViewerHeight,
-//       lineNumber
-//     } = this.state;
-//
-//     if (!queue || !taskId || isNil(runId) || !status || !log) {
-//       return null;
-//     }
-//
-//     const scrollToLine = Array.isArray(highlight) ? highlight[0] : highlight;
-//     const url = queue.buildUrl(queue.getArtifact, taskId, runId, log.name);
-//     const LazyViewer = streaming ? LazyStream : LazyLog;
-//
-//     return (
-//       <div>
-//         <div>
-//           <Button
-//             onClick={this.handleFollowClick}
-//             bsSize="sm"
-//             style={buttonStyle}>
-//             <Icon name={follow ? 'check-square-o' : 'square-o'} />
-//             &nbsp;&nbsp;Follow log
-//           </Button>
-//
-//           <ModalItem
-//             bsSize="sm"
-//             bsStyle="default"
-//             button
-//             style={{ margin: '10px 0px 10px 10px' }}
-//             onComplete={this.handleJump}
-//             body={
-//               <FormControl
-//                 type="number"
-//                 placeholder="0"
-//                 autoComplete="off"
-//                 onChange={this.handleLineNumberChange}
-//                 value={this.state.lineNumber}
-//               />
-//             }>
-//             <Icon name="sort-numeric-asc" /> Go to line
-//           </ModalItem>
-//
-//           <Button
-//             href={url}
-//             target="_blank"
-//             rel="noopener noreferrer"
-//             bsSize="sm"
-//             style={buttonStyle}>
-//             <Icon name="external-link-square" />&nbsp;&nbsp;View raw log
-//           </Button>
-//
-//           {fullscreenEnabled && (
-//             <Button
-//               onClick={this.handleFullscreen}
-//               bsSize="sm"
-//               style={buttonStyle}>
-//               <Icon name="arrows-alt" />&nbsp;&nbsp;View fullscreen
-//             </Button>
-//           )}
-//         </div>
-//
-//         <ScrollFollow startFollowing={follow}>
-//           {({ follow }) => (
-//             <LazyViewer
-//               ref={this.registerChild}
-//               url={url}
-//               height={
-//                 isFullscreen
-//                   ? document.documentElement.clientHeight
-//                   : lazyViewerHeight
-//               }
-//               follow={follow}
-//               scrollToLine={
-//                 !follow &&
-//                 ((this.state.jump ? lineNumber : null) ||
-//                   (highlight ? scrollToLine : null))
-//               }
-//               scrollToAlignment="start"
-//               highlight={highlight}
-//               onHighlight={onHighlight}
-//               onScroll={this.handleScroll}
-//             />
-//           )}
-//         </ScrollFollow>
-//       </div>
-//     );
-//   }
-// }

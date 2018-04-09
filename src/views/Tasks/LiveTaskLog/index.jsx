@@ -15,13 +15,18 @@ import Log from '../../../components/Log';
     bottom: theme.spacing.double,
     right: theme.spacing.triple,
   },
-  miniFab: {
+  goToLineButton: {
     position: 'absolute',
     bottom: theme.spacing.unit * 11,
     right: theme.spacing.quad,
   },
+  followButton: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 18,
+    right: theme.spacing.quad,
+  },
 }))
-export default class TaskLog extends Component {
+export default class LiveTaskLog extends Component {
   render() {
     const { classes, user, onSignIn, onSignOut, match } = this.props;
     const url = decodeURIComponent(match.params.logUrl);
@@ -34,8 +39,9 @@ export default class TaskLog extends Component {
         disablePadding>
         <Log
           url={url}
-          stream={false}
-          GoToLineButtonProps={{ className: classes.miniFab }}
+          stream
+          GoToLineButtonProps={{ className: classes.goToLineButton }}
+          FollowLogButtonProps={{ className: classes.followButton }}
           actions={
             <Tooltip placement="left" title="View task">
               <Button

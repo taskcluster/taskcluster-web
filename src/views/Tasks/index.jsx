@@ -13,9 +13,9 @@ const ViewTask = loadable(() =>
 const TaskLog = loadable(() =>
   import(/* webpackChunkName: 'Tasks.TaskLog' */ './TaskLog')
 );
-// const LiveTaskLog = loadable(() =>
-//   import(/* webpackChunkName: 'Tasks.LiveTaskLog' */ './LiveTaskLog')
-// );
+const LiveTaskLog = loadable(() =>
+  import(/* webpackChunkName: 'Tasks.LiveTaskLog' */ './LiveTaskLog')
+);
 const CreateTask = loadable(() =>
   import(/* webpackChunkName: 'Tasks.CreateTask' */ './CreateTask')
 );
@@ -51,7 +51,7 @@ export default class Task extends Component {
         <RouteWithProps
           path={`${path}/:taskId/runs/:runId/logs/live/:logUrl`}
           {...props}
-          component={TaskLog}
+          component={LiveTaskLog}
         />
         <RouteWithProps
           path={`${path}/:taskId/runs/:runId/logs/:logUrl`}

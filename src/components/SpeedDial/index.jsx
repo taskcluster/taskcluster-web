@@ -14,12 +14,6 @@ const IS_TOUCH = 'ontouchstart' in document.documentElement;
     bottom: theme.spacing.double,
     right: theme.spacing.triple,
   },
-  // fab: {
-  //   backgroundColor: theme.palette.primary.light,
-  //   '&:hover': {
-  //     backgroundColor: lighten(theme.palette.primary.light, 0.2),
-  //   },
-  // },
 }))
 export default class SpeedDial extends Component {
   static propTypes = {

@@ -18,7 +18,6 @@ export default createMuiTheme({
       main: '#1b2a39',
     },
     secondary: {
-      // main: '#0e1923',
       main: '#4177a5',
     },
     error: {
@@ -26,6 +25,8 @@ export default createMuiTheme({
     },
     success: {
       ...green,
+      main: green[500],
+      dark: green[800],
     },
     warning: {
       ...amber,
