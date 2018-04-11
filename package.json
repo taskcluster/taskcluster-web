@@ -11,7 +11,8 @@
     "build": "neutrino build --require dotenv/config",
     "start": "neutrino start --require dotenv/config",
     "lint": "neutrino lint",
-    "precommit": "neutrino stage"
+    "precommit": "neutrino stage",
+    "styleguide": "neutrino styleguide:start --require dotenv/config"
   },
   "dependencies": {
     "@material-ui/lab": "^1.0.0-alpha.0",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@neutrinojs/env": "^8.1.2",
+    "babel-register": "^6.26.0",
     "dotenv": "^5.0.1",
     "graphql-tag": "^2.8.0",
     "neutrino": "^8.1.2",
