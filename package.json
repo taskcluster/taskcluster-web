@@ -15,6 +15,7 @@
     "styleguide": "neutrino styleguide:start --require dotenv/config"
   },
   "dependencies": {
+    "@material-ui/icons": "^1.0.0-beta.42",
     "@material-ui/lab": "^1.0.0-alpha.0",
     "apollo-cache-inmemory": "^1.1.11",
     "apollo-cache-persist": "^0.1.1",
@@ -35,8 +36,7 @@
     "markdown-it": "^8.4.1",
     "markdown-it-highlightjs": "^3.0.0",
     "markdown-it-link-attributes": "^2.1.0",
-    "material-ui": "1.0.0-beta.40",
-    "material-ui-icons": "^1.0.0-beta.36",
+    "material-ui": "1.0.0-beta.41",
     "mdi-react": "^3.0.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.0",
