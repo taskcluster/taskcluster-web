@@ -135,6 +135,7 @@ export default {
       border: theme.palette.divider,
       baseBackground: BACKGROUND,
       sidebarBackground: theme.palette.primary.main,
+      codeBackground: theme.palette.primary.main,
     },
     sidebarWidth: theme.drawerWidth,
     maxWidth: '100vw',

@@ -20,6 +20,9 @@ module.exports = {
       styles: {
         StyleGuide: theme.styleguide.StyleGuide,
       },
+      editorConfig: {
+        theme: 'material',
+      },
       showUsage: true,
       skipComponentsWithoutExample: false,
       styleguideComponents: {
