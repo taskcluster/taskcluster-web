@@ -25,6 +25,7 @@
     "apollo-link-error": "^1.0.7",
     "apollo-link-http": "^1.5.3",
     "auth0-js": "^9.3.3",
+    "change-case": "^3.0.2",
     "classnames": "^2.2.5",
     "date-fns": "^1.29.0",
     "dot-prop-immutable": "^1.4.0",
