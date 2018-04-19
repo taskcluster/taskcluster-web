@@ -105,6 +105,7 @@ const theme = createMuiTheme({
     MuiTableCell: {
       root: {
         borderBottom: `1px solid ${TEN_PERCENT_WHITE}`,
+        whiteSpace: 'nowrap',
       },
     },
   },
