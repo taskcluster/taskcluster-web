@@ -50,9 +50,14 @@ export default class ViewWorkers extends PureComponent {
   };
 
   handlePageChange = ({ cursor, previousCursor }) => {
-    const { data, provisionerId, workerType } = this.props;
+    const {
+      match: {
+        params: { provisionerId, workerType },
+      },
+      data: { fetchMore },
+    } = this.props;
 
-    return data.fetchMore({
+    return fetchMore({
       query: workersQuery,
       variables: {
         provisionerId,
