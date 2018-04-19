@@ -40,6 +40,10 @@ import { sort } from '../../utils/helpers';
     verticalAlign: 'middle',
     display: 'inline-block',
   },
+  infoButton: {
+    marginLeft: -theme.spacing.double,
+    marginRight: theme.spacing.unit,
+  },
 }))
 /**
  * Display relevant information about a worker in a table.
@@ -109,15 +113,9 @@ export default class WorkerTable extends PureComponent {
               <StatusLabel state={task.state} />
             </TableCell>
             <TableCell>
-              <TableCellListItem
-                button
-                component={Link}
-                to={`/tasks/${task.taskId}/runs/${task.runId}`}>
-                <div className={classes.taskName}>{task.name}</div>
-                <LinkIcon />
-              </TableCellListItem>
               <ButtonDrawer
                 size="small"
+                className={classes.infoButton}
                 content={
                   <TaskMetadataCard
                     metadata={{
@@ -130,6 +128,13 @@ export default class WorkerTable extends PureComponent {
                 }>
                 <InformationVariantIcon />
               </ButtonDrawer>
+              <TableCellListItem
+                button
+                component={Link}
+                to={`/tasks/${task.taskId}/runs/${task.runId}`}>
+                <div className={classes.taskName}>{task.name}</div>
+                <LinkIcon />
+              </TableCellListItem>
             </TableCell>
             <TableCell>{task.taskId}</TableCell>
             <TableCell>
