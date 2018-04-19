@@ -118,6 +118,32 @@ const theme = createMuiTheme({
         whiteSpace: 'nowrap',
       },
     },
+    MuiPickersYear: {
+      root: {
+        '&:focus': {
+          color: 'white',
+        },
+      },
+      selected: {
+        color: 'white',
+      },
+    },
+    MuiPickersDay: {
+      selected: {
+        backgroundColor: SECONDARY,
+      },
+      current: {
+        color: 'white',
+      },
+    },
+    MuiPickersModal: {
+      dialogAction: {
+        color: 'white',
+        '&:hover': {
+          backgroundColor: TEN_PERCENT_WHITE,
+        },
+      },
+    },
   },
 });
 
