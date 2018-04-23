@@ -1,24 +1,25 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { array, func, shape, string } from 'prop-types';
 import { distanceInWordsStrict } from 'date-fns';
+import { memoizeWith, toString } from 'ramda';
 import { ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
+import { TableCell, TableRow } from 'material-ui/Table';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
-import { TableCell, TableRow } from 'material-ui/Table';
 import StatusLabel from '../StatusLabel';
 import DateDistance from '../DateDistance';
 import TableCellListItem from '../TableCellListItem';
 import ConnectionDataTable from '../ConnectionDataTable';
 import { VIEW_WORKERS_PAGE_SIZE } from '../../utils/constants';
 import { pageInfo } from '../../utils/prop-types';
-import { sort } from '../../utils/helpers';
+import sort from '../../utils/sort';
 
 /**
  * Display relevant information about workers in a table.
  */
-export default class WorkersTable extends PureComponent {
+export default class WorkersTable extends Component {
   static propTypes = {
     /** Workers GraphQL PageConnection instance. */
     workersConnection: shape({
@@ -38,36 +39,42 @@ export default class WorkersTable extends PureComponent {
     sortDirection: null,
   };
 
-  createSortedWorkersConnection() {
-    const { sortDirection, sortBy } = this.state;
-    const { workersConnection } = this.props;
-    const filteredEdges = workersConnection.edges.filter(
-      worker => worker.node.latestTask
-    );
+  createSortedWorkersConnection = memoizeWith(
+    () =>
+      `${toString(this.props.workersConnection.edges)}-${this.state.sortBy}-${
+        this.state.sortDirection
+      }`,
+    () => {
+      const { workersConnection } = this.props;
+      const { sortBy, sortDirection } = this.state;
+      const filteredEdges = workersConnection.edges.filter(
+        worker => worker.node.latestTask
+      );
 
-    if (!sortBy) {
+      if (!sortBy) {
+        return {
+          ...workersConnection,
+          edges: filteredEdges,
+        };
+      }
+
       return {
         ...workersConnection,
-        edges: filteredEdges,
+        edges: filteredEdges.sort((a, b) => {
+          const firstElement =
+            sortDirection === 'desc'
+              ? this.valueFromNode(b.node)
+              : this.valueFromNode(a.node);
+          const secondElement =
+            sortDirection === 'desc'
+              ? this.valueFromNode(a.node)
+              : this.valueFromNode(b.node);
+
+          return sort(firstElement, secondElement);
+        }),
       };
     }
-
-    return {
-      ...workersConnection,
-      edges: filteredEdges.sort((a, b) => {
-        const firstElement =
-          sortDirection === 'desc'
-            ? this.valueFromNode(b.node)
-            : this.valueFromNode(a.node);
-        const secondElement =
-          sortDirection === 'desc'
-            ? this.valueFromNode(a.node)
-            : this.valueFromNode(b.node);
-
-        return sort(firstElement, secondElement);
-      }),
-    };
-  }
+  );
 
   valueFromNode(node) {
     const mapping = {
@@ -94,16 +101,26 @@ export default class WorkersTable extends PureComponent {
 
   render() {
     const { sortBy, sortDirection } = this.state;
-    const { provisionerId, workerType, onPageChange, ...props } = this.props;
+    const {
+      provisionerId,
+      workerType,
+      onPageChange,
+      workersConnection,
+      ...props
+    } = this.props;
+    const connection = this.createSortedWorkersConnection(
+      workersConnection,
+      sortBy,
+      sortDirection
+    );
 
     return (
       <ConnectionDataTable
-        connection={this.createSortedWorkersConnection()}
+        connection={connection}
         pageSize={VIEW_WORKERS_PAGE_SIZE}
         sortByHeader={sortBy}
         sortDirection={sortDirection}
         onHeaderClick={this.handleHeaderClick}
-        columnsSize={8}
         onPageChange={onPageChange}
         renderRow={({ node: { latestTask, firstClaim, quarantineUntil } }) => (
           <TableRow
@@ -192,7 +209,7 @@ export default class WorkersTable extends PureComponent {
             <TableCell>
               {quarantineUntil
                 ? distanceInWordsStrict(quarantineUntil, Date(), { unit: 'd' })
-                : '-'}
+                : 'n/a'}
             </TableCell>
           </TableRow>
         )}

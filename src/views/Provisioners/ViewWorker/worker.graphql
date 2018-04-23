@@ -33,6 +33,7 @@ query ViewWorker($provisionerId: ID!, $workerType: String!, $workerGroup: String
       description
     }
   }
+
   workerTypes(provisionerId: $provisionerId, connection: $workerTypesConnection) {
     edges {
       node {
@@ -40,6 +41,7 @@ query ViewWorker($provisionerId: ID!, $workerType: String!, $workerGroup: String
       }
     }
   }
+
   provisioners {
     edges {
       node {

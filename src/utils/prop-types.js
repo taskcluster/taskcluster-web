@@ -66,18 +66,16 @@ export const status = shape({
   runs,
 });
 
-export const provisionerActions = arrayOf(
-  shape({
-    name: string,
-    title: string,
-    context: oneOf(['PROVISIONER', 'WORKER_TYPE', 'WORKER']),
-    url: string,
-    method: oneOf(['POST', 'PUT', 'DELETE', 'PATCH']),
-    description: string,
-  })
-);
+export const provisionerAction = shape({
+  name: string,
+  title: string,
+  context: oneOf(['PROVISIONER', 'WORKER_TYPE', 'WORKER']),
+  url: string,
+  method: oneOf(['POST', 'PUT', 'DELETE', 'PATCH']),
+  description: string,
+});
 
-export const stability = oneOf[('EXPERIMENTAL', 'STABLE', 'DEPRECATED')];
+export const stability = oneOf(['EXPERIMENTAL', 'STABLE', 'DEPRECATED']);
 
 export const taskMetadata = shape({
   name: string,
@@ -119,8 +117,8 @@ export const worker = shape({
   ),
   expires: date,
   quarantineUntil: date,
-  latestTasks: arrayOf(shape(task)),
-  actions: provisionerActions,
+  latestTasks: arrayOf(task),
+  actions: arrayOf(provisionerAction),
 });
 
 export const workerType = shape({
@@ -130,7 +128,7 @@ export const workerType = shape({
   description: string,
   expires: date,
   lastDateActive: date,
-  actions: provisionerActions,
+  actions: arrayOf(provisionerAction),
 });
 
 export const awsProvisionerWorkerTypeSummary = shape({
@@ -148,5 +146,5 @@ export const provisioner = shape({
   description: string,
   expires: date,
   lastDateActive: date,
-  actions: provisionerActions,
+  actions: arrayOf(provisionerAction),
 });

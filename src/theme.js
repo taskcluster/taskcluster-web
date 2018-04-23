@@ -1,5 +1,6 @@
 import { createMuiTheme } from 'material-ui/styles';
-import { fade } from 'material-ui/styles/colorManipulator';
+import { fade, lighten } from 'material-ui/styles/colorManipulator';
+import transitions from 'material-ui/styles/transitions';
 import red from 'material-ui/colors/red';
 import amber from 'material-ui/colors/amber';
 import blue from 'material-ui/colors/blue';
@@ -79,6 +80,15 @@ const theme = createMuiTheme({
       borderRadius: 2,
       paddingLeft: 4,
       paddingRight: 4,
+    },
+    listItemButton: {
+      '& svg': {
+        transition: transitions.create('fill'),
+        fill: lighten(PRIMARY, 0.2),
+      },
+      '&:hover svg': {
+        fill: 'white',
+      },
     },
   },
   overrides: {

@@ -1,7 +1,8 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { TableCell, TableRow } from 'material-ui/Table';
 import { camelCase } from 'change-case';
+import { memoizeWith } from 'ramda';
 import LinkIcon from 'mdi-react/LinkIcon';
 import { withStyles } from 'material-ui/styles';
 import { ListItemText } from 'material-ui/List';
@@ -15,7 +16,7 @@ import DataTable from '../DataTable';
 import TaskMetadataCard from '../TaskMetadataCard';
 import StatusLabel from '../StatusLabel';
 import { worker } from '../../utils/prop-types';
-import { sort } from '../../utils/helpers';
+import sort from '../../utils/sort';
 
 @withStyles(theme => ({
   dateListItem: {
@@ -23,13 +24,7 @@ import { sort } from '../../utils/helpers';
     padding: theme.spacing.unit,
   },
   listItemButton: {
-    '& svg': {
-      transition: theme.transitions.create('fill'),
-      fill: theme.palette.primary.light,
-    },
-    '&:hover svg': {
-      fill: theme.palette.common.white,
-    },
+    ...theme.mixins.listItemButton,
   },
   taskName: {
     marginRight: theme.spacing.unit,
@@ -48,7 +43,7 @@ import { sort } from '../../utils/helpers';
 /**
  * Display relevant information about a worker in a table.
  */
-export default class WorkerTable extends PureComponent {
+export default class WorkerTable extends Component {
   static propTypes = {
     /** A GraphQL worker response. */
     worker,
@@ -59,37 +54,40 @@ export default class WorkerTable extends PureComponent {
     sortDirection: null,
   };
 
-  getTableData() {
-    const { sortDirection, sortBy } = this.state;
-    const sortByProperty = camelCase(sortBy);
-    const { worker } = this.props;
+  getTableData = memoizeWith(
+    () => `${this.state.sortBy}-${this.state.sortDirection}`,
+    () => {
+      const { worker } = this.props;
+      const { sortBy, sortDirection } = this.state;
+      const sortByProperty = camelCase(sortBy);
 
-    if (!worker) {
-      return null;
+      if (!worker) {
+        return null;
+      }
+
+      const tasks = worker.recentTasks.reduce(
+        (tasks, recentTask, index) =>
+          tasks.concat({
+            ...recentTask.run,
+            ...worker.latestTasks[index].metadata,
+          }),
+        []
+      );
+
+      if (!sortBy) {
+        return tasks;
+      }
+
+      return tasks.sort((a, b) => {
+        const firstElement =
+          sortDirection === 'desc' ? b[sortByProperty] : a[sortByProperty];
+        const secondElement =
+          sortDirection === 'desc' ? a[sortByProperty] : b[sortByProperty];
+
+        return sort(firstElement, secondElement);
+      });
     }
-
-    const tasks = worker.recentTasks.reduce(
-      (tasks, recentTask, index) =>
-        tasks.concat({
-          ...recentTask.run,
-          ...worker.latestTasks[index].metadata,
-        }),
-      []
-    );
-
-    if (!sortBy) {
-      return tasks;
-    }
-
-    return tasks.sort((a, b) => {
-      const firstElement =
-        sortDirection === 'desc' ? b[sortByProperty] : a[sortByProperty];
-      const secondElement =
-        sortDirection === 'desc' ? a[sortByProperty] : b[sortByProperty];
-
-      return sort(firstElement, secondElement);
-    });
-  }
+  );
 
   handleHeaderClick = sortByHeader => {
     const sortBy = sortByHeader;
@@ -166,7 +164,6 @@ export default class WorkerTable extends PureComponent {
           </TableRow>
         )}
         headers={['State', 'Name', 'Task ID', 'Started', 'Resolved']}
-        columnsSize={5}
         sortByHeader={sortBy}
         sortDirection={sortDirection}
         onHeaderClick={this.handleHeaderClick}

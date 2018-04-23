@@ -1,17 +1,8 @@
 import { PureComponent, Fragment } from 'react';
 import { node, object } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Drawer from 'material-ui/Drawer';
 
-@withStyles(theme => ({
-  drawerPaper: {
-    marginLeft: theme.drawerWidth,
-    [theme.breakpoints.down('sm')]: {
-      marginLeft: 0,
-    },
-  },
-}))
 /**
  * A  button that displays a drawer when clicked.
  * The drawer opens above all other content until a selection is selected.
@@ -48,10 +39,7 @@ export default class ButtonDrawer extends PureComponent {
           {children}
         </Button>
         <Drawer
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          anchor="bottom"
+          anchor="right"
           open={open}
           onClose={this.handleToggle}
           {...drawerProps}>

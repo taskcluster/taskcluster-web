@@ -39,8 +39,9 @@ export default class ConnectionDataTable extends Component {
     pageSize: number.isRequired,
     /**
      * The number of columns the table contains.
+     * This property is not required when the `headers` prop is provided.
      */
-    columnsSize: number.isRequired,
+    columnsSize: number,
     /**
      * A function to execute for each row to render in the table.
      * Will be passed a single edge from the connection. The function
@@ -147,6 +148,7 @@ export default class ConnectionDataTable extends Component {
     } = this.props;
     const { loading } = this.state;
     const { count, page } = this.getPaginationMetadata();
+    const colSpan = columnsSize || (headers && headers.length) || 1;
 
     return (
       <div>
@@ -171,7 +173,7 @@ export default class ConnectionDataTable extends Component {
             <TableBody>
               {connection.edges.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={columnsSize}>
+                  <TableCell colSpan={colSpan}>
                     <em>No items for this page.</em>
                   </TableCell>
                 </TableRow>
@@ -185,7 +187,7 @@ export default class ConnectionDataTable extends Component {
           <Table>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={columnsSize} className={classes.loading}>
+                <TableCell colSpan={colSpan} className={classes.loading}>
                   <Spinner size={24} />
                 </TableCell>
               </TableRow>
@@ -194,7 +196,7 @@ export default class ConnectionDataTable extends Component {
         ) : (
           <TablePagination
             component="div"
-            colSpan={columnsSize}
+            colSpan={colSpan}
             count={count}
             labelDisplayedRows={Function.prototype}
             rowsPerPage={pageSize}

@@ -18,7 +18,7 @@ const ViewWorkers = loadable(() =>
 );
 
 @hot(module)
-export default class Task extends Component {
+export default class Provisioners extends Component {
   render() {
     const {
       match: { path },

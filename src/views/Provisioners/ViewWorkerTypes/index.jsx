@@ -1,9 +1,8 @@
-import { PureComponent, Fragment } from 'react';
 import { hot } from 'react-hot-loader';
-import { graphql } from 'react-apollo/index';
+import { Component, Fragment } from 'react';
+import { graphql } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import { withStyles } from 'material-ui/styles';
-import Card, { CardContent } from 'material-ui/Card';
 import { MenuItem } from 'material-ui/Menu';
 import Dropdown from '../../../components/Dropdown';
 import Spinner from '../../../components/Spinner';
@@ -14,17 +13,14 @@ import { VIEW_WORKER_TYPES_PAGE_SIZE } from '../../../utils/constants';
 import workerTypesQuery from './workerTypes.graphql';
 
 @hot(module)
-@withStyles(theme => ({
-  description: {
-    padding: theme.spacing.triple,
+@withStyles({
+  actionBar: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
   },
-}))
+})
 @graphql(workerTypesQuery, {
-  skip: ({
-    match: {
-      params: { provisionerId },
-    },
-  }) => !provisionerId,
+  skip: props => !props.match.params.provisionerId,
   options: ({
     match: {
       params: { provisionerId },
@@ -39,9 +35,9 @@ import workerTypesQuery from './workerTypes.graphql';
     },
   }),
 })
-export default class ViewWorkerTypes extends PureComponent {
+export default class ViewWorkerTypes extends Component {
   handleProvisionerChange = ({ target }) => {
-    this.props.history.replace(`/provisioners/${target.value}/worker-types`);
+    this.props.history.push(`/provisioners/${target.value}/worker-types`);
   };
 
   handlePageChange = ({ cursor, previousCursor }) => {
@@ -88,6 +84,7 @@ export default class ViewWorkerTypes extends PureComponent {
 
   render() {
     const {
+      classes,
       match: {
         params: { provisionerId },
       },
@@ -105,7 +102,7 @@ export default class ViewWorkerTypes extends PureComponent {
 
     return (
       <Dashboard
-        title="View Worker Types"
+        title="Worker Types"
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}>
@@ -115,26 +112,24 @@ export default class ViewWorkerTypes extends PureComponent {
           {provisioners &&
             workerTypes && (
               <Fragment>
-                <Card>
-                  <CardContent>
-                    <Dropdown
-                      disabled={loading}
-                      onChange={this.handleProvisionerChange}
-                      value={provisionerId}
-                      inputLabel="Provisioner ID">
-                      <MenuItem value="">
-                        <em>None</em>
+                <div className={classes.actionBar}>
+                  <Dropdown
+                    disabled={loading}
+                    onChange={this.handleProvisionerChange}
+                    value={provisionerId}
+                    inputLabel="Provisioner ID">
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {provisioners.edges.map(({ node }) => (
+                      <MenuItem
+                        key={node.provisionerId}
+                        value={node.provisionerId}>
+                        {node.provisionerId}
                       </MenuItem>
-                      {provisioners.edges.map(({ node }) => (
-                        <MenuItem
-                          key={node.provisionerId}
-                          value={node.provisionerId}>
-                          {node.provisionerId}
-                        </MenuItem>
-                      ))}
-                    </Dropdown>
-                  </CardContent>
-                </Card>
+                    ))}
+                  </Dropdown>
+                </div>
                 <WorkerTypesTable
                   workerTypesConnection={workerTypes}
                   provisionerId={provisionerId}

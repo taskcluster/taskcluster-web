@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Card, { CardContent } from 'material-ui/Card';
@@ -26,21 +26,20 @@ import { taskMetadata } from '../../utils/prop-types';
   sourceHeadline: {
     textOverflow: 'ellipsis',
     overflowX: 'hidden',
+    maxWidth: 300,
+    whiteSpace: 'nowrap',
+  },
+  card: {
+    width: 400,
   },
   listItemButton: {
-    '& svg': {
-      transition: theme.transitions.create('fill'),
-      fill: theme.palette.primary.light,
-    },
-    '&:hover svg': {
-      fill: theme.palette.common.white,
-    },
+    ...theme.mixins.listItemButton,
   },
 }))
 /**
  * Render metadata information in a card layout about a task.
  */
-export default class TaskMetadataCard extends PureComponent {
+export default class TaskMetadataCard extends Component {
   static propTypes = {
     /** Task metadata */
     metadata: taskMetadata.isRequired,
@@ -51,10 +50,10 @@ export default class TaskMetadataCard extends PureComponent {
     const isExternal = metadata.source.startsWith('https://');
 
     return (
-      <Card raised>
+      <Card elevation={0} className={classes.card}>
         <CardContent classes={{ root: classes.cardContent }}>
           <Typography variant="headline" className={classes.headline}>
-            Task Metadata
+            {metadata.name}
           </Typography>
           <List>
             <ListItem>

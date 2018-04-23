@@ -6668,8 +6668,8 @@ mdast-util-compact@^1.0.0:
     unist-util-visit "^1.1.0"
 
 mdi-react@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/mdi-react/-/mdi-react-3.0.0.tgz#9e16c7f13fc39eb4510153f4762f9613201f2db6"
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/mdi-react/-/mdi-react-3.3.0.tgz#65bcf00fb05e7b2792f39981689e460e3db8a493"
 
 mdn-data@^1.0.0:
   version "1.1.1"

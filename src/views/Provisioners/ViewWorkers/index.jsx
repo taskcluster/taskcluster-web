@@ -1,13 +1,12 @@
 import { hot } from 'react-hot-loader';
-import { PureComponent, Fragment } from 'react';
-import { graphql } from 'react-apollo/index';
+import { Component, Fragment } from 'react';
+import { graphql } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import { withStyles } from 'material-ui/styles';
-import Card, { CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import Tooltip from 'material-ui/Tooltip';
-import List, { ListItem, ListItemText } from 'material-ui/List';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import HammerIcon from 'mdi-react/HammerIcon';
 import { MenuItem } from 'material-ui/Menu';
+import SpeedDial from '../../../components/SpeedDial';
 import Dropdown from '../../../components/Dropdown';
 import Spinner from '../../../components/Spinner';
 import ErrorPanel from '../../../components/ErrorPanel';
@@ -18,7 +17,7 @@ import workersQuery from './workers.graphql';
 
 @hot(module)
 @graphql(workersQuery, {
-  skip: ({ match: { params } }) => !params.provisionerId,
+  skip: props => !props.match.params.provisionerId,
   options: ({ match: { params } }) => ({
     variables: {
       provisionerId: params.provisionerId,
@@ -34,17 +33,19 @@ import workersQuery from './workers.graphql';
     marginRight: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
   },
-  cardContent: {
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingTop: theme.spacing.double,
-    paddingBottom: theme.spacing.double,
-    '&:last-child': {
-      paddingBottom: theme.spacing.triple,
-    },
+  actionBar: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    paddingRight: 9 * theme.spacing.unit,
+  },
+  speedDial: {
+    top: 12 * theme.spacing.unit,
+    right: theme.spacing.double,
+    position: 'fixed',
+    flexDirection: 'column',
   },
 }))
-export default class ViewWorkers extends PureComponent {
+export default class ViewWorkers extends Component {
   state = {
     filterBy: null,
   };
@@ -111,33 +112,6 @@ export default class ViewWorkers extends PureComponent {
   // TODO: Handle action request
   handleActionClick() {}
 
-  renderActions = () => {
-    const {
-      classes,
-      data: {
-        workerType: { actions },
-      },
-    } = this.props;
-
-    return actions.length
-      ? actions.map(action => (
-          <Tooltip
-            enterDelay={300}
-            key={action.title}
-            id={`${action.title}-tooltip`}
-            title={action.description}>
-            <Button
-              onClick={() => this.handleActionClick(action)}
-              className={classes.actionButton}
-              size="small"
-              variant="raised">
-              {action.title}
-            </Button>
-          </Tooltip>
-        ))
-      : 'n/a';
-  };
-
   render() {
     const { filterBy } = this.state;
     const {
@@ -145,60 +119,63 @@ export default class ViewWorkers extends PureComponent {
       user,
       onSignIn,
       onSignOut,
-      match: {
-        params: { provisionerId, workerType },
-      },
-      data: { loading, error, workers },
+      match: { params },
+      data: { loading, error, workers, workerType },
     } = this.props;
 
     return (
       <Dashboard
-        title="View Workers"
+        title="Workers"
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}>
         <Fragment>
-          {!workers && loading && <Spinner loading />}
+          {(!workers || !workerType) && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
-          {workers && (
-            <Fragment>
-              <Card>
-                <CardContent className={classes.cardContent}>
-                  <List>
-                    <ListItem>
-                      <Dropdown
-                        disabled={loading}
-                        onChange={this.handleFilterChange}
-                        value={filterBy || ''}
-                        inputLabel="Filter By">
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                        <MenuItem value="Quarantined">Quarantined</MenuItem>
-                      </Dropdown>
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primary="Actions"
-                        secondary={this.renderActions()}
-                      />
-                    </ListItem>
-                  </List>
-                </CardContent>
-              </Card>
-              <br />
-              {loading ? (
-                <Spinner loading />
-              ) : (
+          {workers &&
+            workerType && (
+              <Fragment>
+                <div className={classes.actionBar}>
+                  <Dropdown
+                    disabled={loading}
+                    onChange={this.handleFilterChange}
+                    value={filterBy || ''}
+                    inputLabel="Filter By">
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value="Quarantined">Quarantined</MenuItem>
+                  </Dropdown>
+                </div>
+                <br />
                 <WorkersTable
                   workersConnection={workers}
                   onPageChange={this.handlePageChange}
-                  workerType={workerType}
-                  provisionerId={provisionerId}
+                  workerType={params.workerType}
+                  provisionerId={params.provisionerId}
                 />
-              )}
-            </Fragment>
-          )}
+                <SpeedDial
+                  title={
+                    workerType.actions.length ? null : 'No actions available'
+                  }
+                  className={classes.speedDial}>
+                  {workerType.actions.map(action => (
+                    <SpeedDialAction
+                      key={action.title}
+                      ButtonProps={{ color: 'secondary' }}
+                      icon={<HammerIcon />}
+                      tooltipTitle={
+                        <div>
+                          <div>{action.title}</div>
+                          <div>{action.description}</div>
+                        </div>
+                      }
+                      onClick={() => this.handleActionClick(action)}
+                    />
+                  ))}
+                </SpeedDial>
+              </Fragment>
+            )}
         </Fragment>
       </Dashboard>
     );

@@ -4,6 +4,7 @@ query ViewWorkerTypes($provisionerId: ID!, $workerTypesConnection: PageConnectio
     runningCapacity
     pendingCapacity
   }
+
   workerTypes(provisionerId: $provisionerId, connection: $workerTypesConnection) {
     pageInfo {
       hasNextPage
@@ -24,6 +25,7 @@ query ViewWorkerTypes($provisionerId: ID!, $workerTypesConnection: PageConnectio
       }
     }
   }
+
   provisioners {
     edges {
       node {

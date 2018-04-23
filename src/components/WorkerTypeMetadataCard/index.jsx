@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { shape, string } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Card, { CardContent } from 'material-ui/Card';
@@ -28,10 +28,11 @@ import Markdown from '../Markdown';
 /**
  * Render metadata information in a card layout about a worker type.
  */
-export default class WorkerTypeMetadataCard extends PureComponent {
+export default class WorkerTypeMetadataCard extends Component {
   static propTypes = {
     /** Worker Type metadata */
     metadata: shape({
+      name: string.isRequired,
       description: string,
     }).isRequired,
   };
@@ -40,16 +41,22 @@ export default class WorkerTypeMetadataCard extends PureComponent {
     const { classes, metadata } = this.props;
 
     return (
-      <Card raised>
+      <Card elevation={0}>
         <CardContent classes={{ root: classes.cardContent }}>
           <Typography variant="headline" className={classes.headline}>
-            Worker Type Metadata
+            {metadata.name}
           </Typography>
           <List>
             <ListItem>
               <ListItemText
                 primary="Description"
-                secondary={<Markdown>{metadata.description || '`-`'}</Markdown>}
+                secondary={
+                  metadata.description ? (
+                    <Markdown>{metadata.description}</Markdown>
+                  ) : (
+                    'n/a'
+                  )
+                }
               />
             </ListItem>
           </List>

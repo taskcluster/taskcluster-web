@@ -1,4 +1,4 @@
-import { Fragment, PureComponent } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { TableCell, TableRow } from 'material-ui/Table';
@@ -7,7 +7,7 @@ import Typography from 'material-ui/Typography';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
 import { string, func, array, shape, arrayOf } from 'prop-types';
-import { find, propEq } from 'ramda';
+import { find, propEq, memoizeWith, toString } from 'ramda';
 import { camelCase } from 'change-case';
 import LinkIcon from 'mdi-react/LinkIcon';
 import ButtonDrawer from '../ButtonDrawer';
@@ -17,7 +17,7 @@ import TableCellListItem from '../TableCellListItem';
 import WorkerTypeMetadataCard from '../WorkerTypeMetadataCard';
 import ConnectionDataTable from '../ConnectionDataTable';
 import { VIEW_WORKER_TYPES_PAGE_SIZE } from '../../utils/constants';
-import { sort } from '../../utils/helpers';
+import sort from '../../utils/sort';
 import {
   pageInfo,
   awsProvisionerWorkerTypeSummary,
@@ -32,7 +32,7 @@ import {
 /**
  * Display relevant information about worker types in a table.
  */
-export default class WorkerTypesTable extends PureComponent {
+export default class WorkerTypesTable extends Component {
   static propTypes = {
     /** Provisioner identifier */
     provisionerId: string.isRequired,
@@ -66,58 +66,64 @@ export default class WorkerTypesTable extends PureComponent {
     this.setState({ sortBy, sortDirection });
   };
 
-  createSortedWorkerTypesConnection = () => {
-    const {
-      workerTypesConnection,
-      awsProvisionerWorkerTypeSummaries,
-    } = this.props;
-    const { sortBy, sortDirection } = this.state;
-    const sortByProperty = camelCase(sortBy);
-    // Normalize worker types for aws-provisioner-v1
-    const workerTypes = awsProvisionerWorkerTypeSummaries
-      ? {
-          ...workerTypesConnection,
-          edges: workerTypesConnection.edges.map(edge => ({
-            ...edge,
-            ...(awsProvisionerWorkerTypeSummaries
-              ? {
-                  node: {
-                    ...edge.node,
-                    ...find(propEq('workerType', edge.node.workerType))(
-                      awsProvisionerWorkerTypeSummaries
-                    ),
-                  },
-                }
-              : null),
-          })),
-        }
-      : workerTypesConnection;
+  createSortedWorkerTypesConnection = memoizeWith(
+    () =>
+      `${toString(this.props.workerTypesConnection.edges)}-${
+        this.state.sortBy
+      }-${this.state.sortDirection}`,
+    () => {
+      const { sortBy, sortDirection } = this.state;
+      const {
+        workerTypesConnection,
+        awsProvisionerWorkerTypeSummaries,
+      } = this.props;
+      const sortByProperty = camelCase(sortBy);
+      // Normalize worker types for aws-provisioner-v1
+      const workerTypes = awsProvisionerWorkerTypeSummaries
+        ? {
+            ...workerTypesConnection,
+            edges: workerTypesConnection.edges.map(edge => ({
+              ...edge,
+              ...(awsProvisionerWorkerTypeSummaries
+                ? {
+                    node: {
+                      ...edge.node,
+                      ...find(propEq('workerType', edge.node.workerType))(
+                        awsProvisionerWorkerTypeSummaries
+                      ),
+                    },
+                  }
+                : null),
+            })),
+          }
+        : workerTypesConnection;
 
-    if (!sortBy) {
-      return workerTypes;
+      if (!sortBy) {
+        return workerTypes;
+      }
+
+      return {
+        ...workerTypes,
+        edges: [...workerTypes.edges].sort((a, b) => {
+          const firstElement =
+            sortDirection === 'desc'
+              ? b.node[sortByProperty]
+              : a.node[sortByProperty];
+          const secondElement =
+            sortDirection === 'desc'
+              ? a.node[sortByProperty]
+              : b.node[sortByProperty];
+
+          return sort(firstElement, secondElement);
+        }),
+      };
     }
-
-    return {
-      ...workerTypes,
-      edges: [...workerTypes.edges].sort((a, b) => {
-        const firstElement =
-          sortDirection === 'desc'
-            ? b.node[sortByProperty]
-            : a.node[sortByProperty];
-        const secondElement =
-          sortDirection === 'desc'
-            ? a.node[sortByProperty]
-            : b.node[sortByProperty];
-
-        return sort(firstElement, secondElement);
-      }),
-    };
-  };
+  );
 
   render() {
-    const { provisionerId, onPageChange, classes } = this.props;
+    const { onPageChange, classes } = this.props;
     const { sortBy, sortDirection } = this.state;
-    const isAwsProvisioner = provisionerId === 'aws-provisioner-v1';
+    const connection = this.createSortedWorkerTypesConnection();
     const headers = [
       'Worker Type',
       'Stability',
@@ -125,19 +131,25 @@ export default class WorkerTypesTable extends PureComponent {
       'Pending Tasks',
     ];
 
-    if (isAwsProvisioner) {
-      headers.push('Running Capacity', 'Pending Capacity');
+    if (connection.edges.length) {
+      if ('runningCapacity' in connection.edges[0].node) {
+        headers.push('Running Capacity');
+      }
+
+      if ('pendingCapacity' in connection.edges[0].node) {
+        headers.push('Pending Capacity');
+      }
     }
 
     return (
       <ConnectionDataTable
-        connection={this.createSortedWorkerTypesConnection()}
+        connection={connection}
         pageSize={VIEW_WORKER_TYPES_PAGE_SIZE}
-        columnsSize={isAwsProvisioner ? 6 : 4}
         sortByHeader={sortBy}
         sortDirection={sortDirection}
         onHeaderClick={this.handleHeaderClick}
         onPageChange={onPageChange}
+        headers={headers}
         renderRow={({ node: workerType }) => (
           <TableRow key={workerType.workerType}>
             <TableCell>
@@ -147,7 +159,7 @@ export default class WorkerTypesTable extends PureComponent {
                 content={
                   <WorkerTypeMetadataCard
                     metadata={{
-                      owner: workerType.owner,
+                      name: workerType.workerType,
                       description: workerType.description,
                     }}
                   />
@@ -188,15 +200,14 @@ export default class WorkerTypesTable extends PureComponent {
               </TableCellListItem>
             </TableCell>
             <TableCell>{workerType.pendingTasks}</TableCell>
-            {isAwsProvisioner && (
-              <Fragment>
-                <TableCell>{workerType.runningCapacity}</TableCell>
-                <TableCell>{workerType.pendingCapacity}</TableCell>
-              </Fragment>
+            {'runningCapacity' in workerType && (
+              <TableCell>{workerType.runningCapacity}</TableCell>
+            )}
+            {'pendingCapacity' in workerType && (
+              <TableCell>{workerType.pendingCapacity}</TableCell>
             )}
           </TableRow>
         )}
-        headers={headers}
       />
     );
   }

@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { node } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem } from 'material-ui/List';
@@ -13,19 +13,13 @@ import List, { ListItem } from 'material-ui/List';
     padding: theme.spacing.unit,
   },
   listItemButton: {
-    '& svg': {
-      transition: theme.transitions.create('fill'),
-      fill: theme.palette.primary.light,
-    },
-    '&:hover svg': {
-      fill: theme.palette.common.white,
-    },
+    ...theme.mixins.listItemButton,
   },
 }))
 /**
  * A styled ListItem to be used when placed immediately after a TableCell.
  */
-export default class TableCellListItem extends PureComponent {
+export default class TableCellListItem extends Component {
   static propTypes = {
     /** The table cell contents. */
     children: node.isRequired,

@@ -1,5 +1,6 @@
-import { Component } from 'react';
-import { bool, object } from 'prop-types';
+import { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
+import { bool } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Card, { CardContent } from 'material-ui/Card';
 import Collapse from 'material-ui/transitions/Collapse';
@@ -15,6 +16,7 @@ import DateDistance from '../DateDistance';
 import StatusLabel from '../StatusLabel';
 import { provisioner } from '../../utils/prop-types';
 
+@withRouter
 @withStyles(theme => ({
   actionButton: {
     marginRight: theme.spacing.unit,
@@ -24,8 +26,12 @@ import { provisioner } from '../../utils/prop-types';
   headline: {
     paddingLeft: theme.spacing.triple,
     paddingRight: theme.spacing.triple,
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
   },
   cardContent: {
+    minHeight: 415,
     paddingLeft: 0,
     paddingRight: 0,
     paddingTop: theme.spacing.double,
@@ -39,13 +45,7 @@ import { provisioner } from '../../utils/prop-types';
     overflowX: 'hidden',
   },
   listItemButton: {
-    '& svg': {
-      transition: theme.transitions.create('fill'),
-      fill: theme.palette.primary.light,
-    },
-    '&:hover svg': {
-      fill: theme.palette.common.white,
-    },
+    ...theme.mixins.listItemButton,
   },
   pre: {
     margin: 0,
@@ -57,10 +57,8 @@ import { provisioner } from '../../utils/prop-types';
  */
 export default class ProvisionerDetailsCard extends Component {
   static propTypes = {
-    /** A `react-router-dom` history object */
-    history: object,
     /** A GraphQL provisioner response. */
-    provisioner,
+    provisioner: provisioner.isRequired,
     /** If true, the card component will be compact */
     dense: bool,
   };
@@ -111,9 +109,42 @@ export default class ProvisionerDetailsCard extends Component {
       : 'n/a';
   };
 
+  renderDescription = () => {
+    const { provisioner, classes } = this.props;
+    const { showDescription } = this.state;
+
+    if (!provisioner.description) {
+      return (
+        <ListItem>
+          <ListItemText primary="Description" secondary="n/a" />
+        </ListItem>
+      );
+    }
+
+    return (
+      <Fragment>
+        <ListItem
+          button
+          className={classes.listItemButton}
+          onClick={this.handleToggleDescription}>
+          <ListItemText primary="Description" />
+          {showDescription ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        </ListItem>
+        <Collapse in={showDescription} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem>
+              <ListItemText
+                secondary={<Markdown>{provisioner.description}</Markdown>}
+              />
+            </ListItem>
+          </List>
+        </Collapse>
+      </Fragment>
+    );
+  };
+
   render() {
     const { classes, provisioner, dense } = this.props;
-    const { showDescription } = this.state;
 
     return (
       <Card raised>
@@ -146,28 +177,14 @@ export default class ProvisionerDetailsCard extends Component {
                 secondary={this.renderActions()}
               />
             </ListItem>
-            <ListItem button onClick={this.handleProvisionerChange}>
+            <ListItem
+              className={classes.listItemButton}
+              button
+              onClick={this.handleProvisionerChange}>
               <ListItemText primary="Explore worker type" />
               <LinkIcon />
             </ListItem>
-            <ListItem
-              button
-              className={classes.listItemButton}
-              onClick={this.handleToggleDescription}>
-              <ListItemText primary="Description" />
-              {showDescription ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            </ListItem>
-            <Collapse in={showDescription} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem>
-                  <ListItemText
-                    secondary={
-                      <Markdown>{provisioner.description || '`-`'}</Markdown>
-                    }
-                  />
-                </ListItem>
-              </List>
-            </Collapse>
+            {this.renderDescription()}
           </List>
         </CardContent>
       </Card>

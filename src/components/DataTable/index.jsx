@@ -75,6 +75,7 @@ export default class DataTable extends Component {
       sortDirection,
       classes,
     } = this.props;
+    const colSpan = columnsSize || (headers && headers.length) || 0;
 
     return (
       <div className={classes.tableWrapper}>
@@ -98,7 +99,7 @@ export default class DataTable extends Component {
           <TableBody>
             {tableData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columnsSize}>
+                <TableCell colSpan={colSpan}>
                   <em>No items for this page.</em>
                 </TableCell>
               </TableRow>

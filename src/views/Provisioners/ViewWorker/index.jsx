@@ -1,6 +1,6 @@
-import { PureComponent, Fragment } from 'react';
 import { hot } from 'react-hot-loader';
-import { graphql } from 'react-apollo/index';
+import { Component, Fragment } from 'react';
+import { graphql } from 'react-apollo';
 import { withStyles } from 'material-ui/styles';
 import Dashboard from '../../../components/Dashboard';
 import Spinner from '../../../components/Spinner';
@@ -11,14 +11,9 @@ import workerQuery from './worker.graphql';
 
 @hot(module)
 @graphql(workerQuery, {
-  skip: ({ match: { params } }) => !params.provisionerId,
+  skip: props => !props.match.params.provisionerId,
   options: ({ match: { params } }) => ({
-    variables: {
-      provisionerId: params.provisionerId,
-      workerType: params.workerType,
-      workerGroup: params.workerGroup,
-      workerId: params.workerId,
-    },
+    variables: params,
   }),
 })
 @withStyles(theme => ({
@@ -27,7 +22,7 @@ import workerQuery from './worker.graphql';
     marginBottom: theme.spacing.unit,
   },
 }))
-export default class ViewWorker extends PureComponent {
+export default class ViewWorker extends Component {
   render() {
     const {
       user,
@@ -38,7 +33,7 @@ export default class ViewWorker extends PureComponent {
 
     return (
       <Dashboard
-        title="View Worker"
+        title="Worker"
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}>
