@@ -53,9 +53,7 @@ export default class WorkerTable extends Component {
 
   getTableData = memoizeWith(
     ({ sortBy, sortDirection }) => `${sortBy}-${sortDirection}`,
-    () => {
-      const { worker } = this.props;
-      const { sortBy, sortDirection } = this.state;
+    ({ sortBy, sortDirection, worker }) => {
       const sortByProperty = camelCase(sortBy);
 
       if (!worker) {
@@ -86,8 +84,7 @@ export default class WorkerTable extends Component {
     }
   );
 
-  handleHeaderClick = sortByHeader => {
-    const sortBy = sortByHeader;
+  handleHeaderClick = sortBy => {
     const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
     const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
 
@@ -95,10 +92,10 @@ export default class WorkerTable extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, worker } = this.props;
     const { sortBy, sortDirection } = this.state;
     const iconSize = 16;
-    const items = this.getTableData({ sortBy, sortDirection });
+    const items = this.getTableData({ sortBy, sortDirection, worker });
 
     return (
       <DataTable
@@ -132,17 +129,21 @@ export default class WorkerTable extends Component {
               </TableCellListItem>
             </TableCell>
             <TableCell>
-              <TableCellListItem button>
-                <ListItemText
-                  disableTypography
-                  primary={
-                    <Typography variant="body1">
-                      <DateDistance from={task.resolved} />
-                    </Typography>
-                  }
-                />
-                <ContentCopyIcon size={iconSize} />
-              </TableCellListItem>
+              {task.resolved ? (
+                <TableCellListItem button>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography variant="body1">
+                        <DateDistance from={task.resolved} />
+                      </Typography>
+                    }
+                  />
+                  <ContentCopyIcon size={iconSize} />
+                </TableCellListItem>
+              ) : (
+                <Typography variant="body1">n/a</Typography>
+              )}
             </TableCell>
           </TableRow>
         )}

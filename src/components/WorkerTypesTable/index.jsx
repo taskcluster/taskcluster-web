@@ -25,6 +25,14 @@ import {
   awsProvisionerWorkerTypeSummary,
 } from '../../utils/prop-types';
 
+const sorted = pipe(
+  rSort((a, b) => sort(a.node.workerType, b.node.workerType)),
+  map(
+    ({ node: { provisionerId, workerType } }) =>
+      `${provisionerId}.${workerType}`
+  )
+);
+
 @withStyles(theme => ({
   infoButton: {
     marginLeft: -theme.spacing.double,
@@ -100,24 +108,21 @@ export default class WorkerTypesTable extends Component {
       sortBy,
       sortDirection
     ) => {
-      const sorted = pipe(
-        rSort((a, b) => sort(a.node.workerType, b.node.workerType)),
-        map(
-          ({ node: { provisionerId, workerType } }) =>
-            `${provisionerId}.${workerType}`
-        )
-      );
       const ids = sorted(workerTypesConnection.edges);
 
       return `${ids.join('-')}-${sortBy}-${sortDirection}`;
     },
-    () => {
-      const { sortBy, sortDirection } = this.state;
+    (
+      workerTypesConnection,
+      awsProvisionerWorkerTypeSummaries,
+      sortBy,
+      sortDirection
+    ) => {
       const sortByProperty = camelCase(sortBy);
       // Normalize worker types for aws-provisioner-v1
       const workerTypes = normalizeWorkerTypes(
-        this.props.workerTypesConnection,
-        this.props.awsProvisionerWorkerTypeSummaries
+        workerTypesConnection,
+        awsProvisionerWorkerTypeSummaries
       );
 
       if (!sortBy) {

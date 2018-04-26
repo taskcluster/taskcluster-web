@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { node, string, func, bool } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
@@ -28,7 +28,7 @@ import ErrorPanel from '../ErrorPanel';
 /**
  * A button that displays a dialog when clicked.
  */
-export default class DialogAction extends PureComponent {
+export default class DialogAction extends Component {
   static propTypes = {
     /** If true, the Dialog is open. */
     open: bool.isRequired,

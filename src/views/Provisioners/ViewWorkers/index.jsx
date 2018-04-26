@@ -3,11 +3,11 @@ import { Component, Fragment } from 'react';
 import { graphql } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import { withStyles } from 'material-ui/styles';
+import { MenuItem } from 'material-ui/Menu';
+import TextField from 'material-ui/TextField';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import HammerIcon from 'mdi-react/HammerIcon';
-import { MenuItem } from 'material-ui/Menu';
 import SpeedDial from '../../../components/SpeedDial';
-import Dropdown from '../../../components/Dropdown';
 import Spinner from '../../../components/Spinner';
 import ErrorPanel from '../../../components/ErrorPanel';
 import WorkersTable from '../../../components/WorkersTable';
@@ -28,12 +28,16 @@ import workersQuery from './workers.graphql';
     },
   }),
 })
-@withStyles({
+@withStyles(theme => ({
   actionBar: {
     display: 'flex',
     flexDirection: 'row-reverse',
   },
-})
+  dropdown: {
+    minWidth: 200,
+    marginBottom: theme.spacing.double,
+  },
+}))
 export default class ViewWorkers extends Component {
   state = {
     filterBy: null,
@@ -125,16 +129,18 @@ export default class ViewWorkers extends Component {
             workerType && (
               <Fragment>
                 <div className={classes.actionBar}>
-                  <Dropdown
+                  <TextField
                     disabled={loading}
-                    onChange={this.handleFilterChange}
+                    className={classes.dropdown}
+                    select
+                    label="Filter By"
                     value={filterBy || ''}
-                    label="Filter By">
+                    onChange={this.handleFilterChange}>
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
                     <MenuItem value="Quarantined">Quarantined</MenuItem>
-                  </Dropdown>
+                  </TextField>
                 </div>
                 <br />
                 <WorkersTable
@@ -143,25 +149,24 @@ export default class ViewWorkers extends Component {
                   workerType={params.workerType}
                   provisionerId={params.provisionerId}
                 />
-                <SpeedDial
-                  title={
-                    workerType.actions.length ? null : 'No actions available'
-                  }>
-                  {workerType.actions.map(action => (
-                    <SpeedDialAction
-                      key={action.title}
-                      ButtonProps={{ color: 'secondary' }}
-                      icon={<HammerIcon />}
-                      tooltipTitle={
-                        <div>
-                          <div>{action.title}</div>
-                          <div>{action.description}</div>
-                        </div>
-                      }
-                      onClick={() => this.handleActionClick(action)}
-                    />
-                  ))}
-                </SpeedDial>
+                {workerType.actions.length ? (
+                  <SpeedDial>
+                    {workerType.actions.map(action => (
+                      <SpeedDialAction
+                        key={action.title}
+                        ButtonProps={{ color: 'secondary' }}
+                        icon={<HammerIcon />}
+                        tooltipTitle={
+                          <div>
+                            <div>{action.title}</div>
+                            <div>{action.description}</div>
+                          </div>
+                        }
+                        onClick={() => this.handleActionClick(action)}
+                      />
+                    ))}
+                  </SpeedDial>
+                ) : null}
               </Fragment>
             )}
         </Fragment>

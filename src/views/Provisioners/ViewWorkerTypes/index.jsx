@@ -4,7 +4,7 @@ import { graphql } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import { withStyles } from 'material-ui/styles';
 import { MenuItem } from 'material-ui/Menu';
-import Dropdown from '../../../components/Dropdown';
+import TextField from 'material-ui/TextField';
 import Spinner from '../../../components/Spinner';
 import WorkerTypesTable from '../../../components/WorkerTypesTable';
 import ErrorPanel from '../../../components/ErrorPanel';
@@ -13,12 +13,16 @@ import { VIEW_WORKER_TYPES_PAGE_SIZE } from '../../../utils/constants';
 import workerTypesQuery from './workerTypes.graphql';
 
 @hot(module)
-@withStyles({
+@withStyles(theme => ({
   actionBar: {
     display: 'flex',
     flexDirection: 'row-reverse',
   },
-})
+  dropdown: {
+    minWidth: 200,
+    marginBottom: theme.spacing.double,
+  },
+}))
 @graphql(workerTypesQuery, {
   skip: props => !props.match.params.provisionerId,
   options: ({
@@ -113,11 +117,13 @@ export default class ViewWorkerTypes extends Component {
             workerTypes && (
               <Fragment>
                 <div className={classes.actionBar}>
-                  <Dropdown
+                  <TextField
                     disabled={loading}
-                    onChange={this.handleProvisionerChange}
+                    className={classes.dropdown}
+                    select
+                    label="Provisioner ID"
                     value={provisionerId}
-                    label="Provisioner ID">
+                    onChange={this.handleProvisionerChange}>
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
@@ -128,7 +134,7 @@ export default class ViewWorkerTypes extends Component {
                         {node.provisionerId}
                       </MenuItem>
                     ))}
-                  </Dropdown>
+                  </TextField>
                 </div>
                 <WorkerTypesTable
                   workerTypesConnection={workerTypes}

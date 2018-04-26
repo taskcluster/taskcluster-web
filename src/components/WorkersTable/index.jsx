@@ -16,6 +16,19 @@ import { VIEW_WORKERS_PAGE_SIZE } from '../../utils/constants';
 import { workers } from '../../utils/prop-types';
 import sort from '../../utils/sort';
 
+const sorted = pipe(
+  filter(worker => worker.node.latestTask),
+  rSort((a, b) =>
+    sort(a.node.latestTask.run.workerId, b.node.latestTask.run.workerId)
+  ),
+  map(
+    ({ node: { latestTask } }) =>
+      `${latestTask.run.workerId}.${latestTask.run.taskId}.${
+        latestTask.run.runId
+      }`
+  )
+);
+
 /**
  * Display relevant information about workers in a table.
  */
@@ -38,25 +51,11 @@ export default class WorkersTable extends Component {
 
   createSortedWorkersConnection = memoizeWith(
     (workersConnections, sortBy, sortDirection) => {
-      const sorted = pipe(
-        filter(worker => worker.node.latestTask),
-        rSort((a, b) =>
-          sort(a.node.latestTask.run.workerId, b.node.latestTask.run.workerId)
-        ),
-        map(
-          ({ node: { latestTask } }) =>
-            `${latestTask.run.workerId}.${latestTask.run.taskId}.${
-              latestTask.run.runId
-            }`
-        )
-      );
       const ids = sorted(workersConnections.edges);
 
       return `${ids.join('-')}-${sortBy}-${sortDirection}`;
     },
-    () => {
-      const { workersConnection } = this.props;
-      const { sortBy, sortDirection } = this.state;
+    (workersConnection, sortBy, sortDirection) => {
       const filteredEdges = workersConnection.edges.filter(
         worker => worker.node.latestTask
       );
@@ -192,17 +191,21 @@ export default class WorkersTable extends Component {
               </TableCellListItem>
             </TableCell>
             <TableCell>
-              <TableCellListItem button>
-                <ListItemText
-                  disableTypography
-                  primary={
-                    <Typography variant="body1">
-                      <DateDistance from={latestTask.run.resolved} />
-                    </Typography>
-                  }
-                />
-                <ContentCopyIcon size={iconSize} />
-              </TableCellListItem>
+              {latestTask.run.resolved ? (
+                <TableCellListItem button>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography variant="body1">
+                        <DateDistance from={latestTask.run.resolved} />
+                      </Typography>
+                    }
+                  />
+                  <ContentCopyIcon size={iconSize} />
+                </TableCellListItem>
+              ) : (
+                <Typography variant="body1">n/a</Typography>
+              )}
             </TableCell>
             <TableCell>
               <TableCellListItem button>

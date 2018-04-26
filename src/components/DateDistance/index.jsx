@@ -26,7 +26,7 @@ export default class DateDistance extends Component {
 
   render() {
     const { from, offset } = this.props;
-    const fromNow = formatDistanceStrict(from, new Date(), { addSuffix: true });
+    const fromNow = formatDistanceStrict(from, Date(), { addSuffix: true });
     const offsetNow = offset && formatDistance(from, offset);
 
     return offsetNow ? `${fromNow} (${offsetNow} later)` : fromNow;
