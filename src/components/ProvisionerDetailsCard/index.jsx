@@ -109,42 +109,9 @@ export default class ProvisionerDetailsCard extends Component {
       : 'n/a';
   };
 
-  renderDescription = () => {
-    const { provisioner, classes } = this.props;
-    const { showDescription } = this.state;
-
-    if (!provisioner.description) {
-      return (
-        <ListItem>
-          <ListItemText primary="Description" secondary="n/a" />
-        </ListItem>
-      );
-    }
-
-    return (
-      <Fragment>
-        <ListItem
-          button
-          className={classes.listItemButton}
-          onClick={this.handleToggleDescription}>
-          <ListItemText primary="Description" />
-          {showDescription ? <ChevronUpIcon /> : <ChevronDownIcon />}
-        </ListItem>
-        <Collapse in={showDescription} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem>
-              <ListItemText
-                secondary={<Markdown>{provisioner.description}</Markdown>}
-              />
-            </ListItem>
-          </List>
-        </Collapse>
-      </Fragment>
-    );
-  };
-
   render() {
     const { classes, provisioner, dense } = this.props;
+    const { showDescription } = this.state;
 
     return (
       <Card raised>
@@ -184,7 +151,32 @@ export default class ProvisionerDetailsCard extends Component {
               <ListItemText primary="Explore worker type" />
               <LinkIcon />
             </ListItem>
-            {this.renderDescription()}
+            {provisioner.description ? (
+              <Fragment>
+                <ListItem
+                  button
+                  className={classes.listItemButton}
+                  onClick={this.handleToggleDescription}>
+                  <ListItemText primary="Description" />
+                  {showDescription ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                </ListItem>
+                <Collapse in={showDescription} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem>
+                      <ListItemText
+                        secondary={
+                          <Markdown>{provisioner.description}</Markdown>
+                        }
+                      />
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </Fragment>
+            ) : (
+              <ListItem>
+                <ListItemText primary="Description" secondary="n/a" />
+              </ListItem>
+            )}
           </List>
         </CardContent>
       </Card>

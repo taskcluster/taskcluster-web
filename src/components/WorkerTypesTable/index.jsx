@@ -1,23 +1,25 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { TableCell, TableRow } from 'material-ui/Table';
-import { ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
+import Drawer from 'material-ui/Drawer';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
 import { string, func, array, shape, arrayOf } from 'prop-types';
-import { find, propEq, memoizeWith, toString } from 'ramda';
+import { memoizeWith, pipe, map, sort as rSort } from 'ramda';
 import { camelCase } from 'change-case';
 import LinkIcon from 'mdi-react/LinkIcon';
-import ButtonDrawer from '../ButtonDrawer';
 import StatusLabel from '../StatusLabel';
 import DateDistance from '../DateDistance';
+import Markdown from '../Markdown';
 import TableCellListItem from '../TableCellListItem';
-import WorkerTypeMetadataCard from '../WorkerTypeMetadataCard';
 import ConnectionDataTable from '../ConnectionDataTable';
 import { VIEW_WORKER_TYPES_PAGE_SIZE } from '../../utils/constants';
 import sort from '../../utils/sort';
+import normalizeWorkerTypes from '../../utils/normalizeWorkerTypes';
 import {
   pageInfo,
   awsProvisionerWorkerTypeSummary,
@@ -27,6 +29,15 @@ import {
   infoButton: {
     marginLeft: -theme.spacing.double,
     marginRight: theme.spacing.unit,
+  },
+  headline: {
+    paddingLeft: theme.spacing.triple,
+    paddingRight: theme.spacing.triple,
+  },
+  metadataContainer: {
+    paddingTop: theme.spacing.double,
+    paddingBottom: theme.spacing.double,
+    width: 400,
   },
 }))
 /**
@@ -57,6 +68,22 @@ export default class WorkerTypesTable extends Component {
   state = {
     sortBy: null,
     sortDirection: null,
+    drawerOpen: false,
+    drawerWorkerType: null,
+  };
+
+  handleDrawerClose = () => {
+    this.setState({
+      drawerOpen: false,
+      drawerWorkerType: null,
+    });
+  };
+
+  handleDrawerOpen = drawerWorkerType => {
+    this.setState({
+      drawerOpen: true,
+      drawerWorkerType,
+    });
   };
 
   handleHeaderClick = sortBy => {
@@ -67,36 +94,31 @@ export default class WorkerTypesTable extends Component {
   };
 
   createSortedWorkerTypesConnection = memoizeWith(
-    () =>
-      `${toString(this.props.workerTypesConnection.edges)}-${
-        this.state.sortBy
-      }-${this.state.sortDirection}`,
+    (
+      workerTypesConnection,
+      awsProvisionerWorkerTypeSummaries,
+      sortBy,
+      sortDirection
+    ) => {
+      const sorted = pipe(
+        rSort((a, b) => sort(a.node.workerType, b.node.workerType)),
+        map(
+          ({ node: { provisionerId, workerType } }) =>
+            `${provisionerId}.${workerType}`
+        )
+      );
+      const ids = sorted(workerTypesConnection.edges);
+
+      return `${ids.join('-')}-${sortBy}-${sortDirection}`;
+    },
     () => {
       const { sortBy, sortDirection } = this.state;
-      const {
-        workerTypesConnection,
-        awsProvisionerWorkerTypeSummaries,
-      } = this.props;
       const sortByProperty = camelCase(sortBy);
       // Normalize worker types for aws-provisioner-v1
-      const workerTypes = awsProvisionerWorkerTypeSummaries
-        ? {
-            ...workerTypesConnection,
-            edges: workerTypesConnection.edges.map(edge => ({
-              ...edge,
-              ...(awsProvisionerWorkerTypeSummaries
-                ? {
-                    node: {
-                      ...edge.node,
-                      ...find(propEq('workerType', edge.node.workerType))(
-                        awsProvisionerWorkerTypeSummaries
-                      ),
-                    },
-                  }
-                : null),
-            })),
-          }
-        : workerTypesConnection;
+      const workerTypes = normalizeWorkerTypes(
+        this.props.workerTypesConnection,
+        this.props.awsProvisionerWorkerTypeSummaries
+      );
 
       if (!sortBy) {
         return workerTypes;
@@ -121,15 +143,26 @@ export default class WorkerTypesTable extends Component {
   );
 
   render() {
-    const { onPageChange, classes } = this.props;
-    const { sortBy, sortDirection } = this.state;
-    const connection = this.createSortedWorkerTypesConnection();
+    const {
+      onPageChange,
+      classes,
+      workerTypesConnection,
+      awsProvisionerWorkerTypeSummaries,
+    } = this.props;
+    const { sortBy, sortDirection, drawerOpen, drawerWorkerType } = this.state;
+    const connection = this.createSortedWorkerTypesConnection(
+      workerTypesConnection,
+      awsProvisionerWorkerTypeSummaries,
+      sortBy,
+      sortDirection
+    );
     const headers = [
       'Worker Type',
       'Stability',
       'Last Date Active',
       'Pending Tasks',
     ];
+    const iconSize = 16;
 
     if (connection.edges.length) {
       if ('runningCapacity' in connection.edges[0].node) {
@@ -142,73 +175,92 @@ export default class WorkerTypesTable extends Component {
     }
 
     return (
-      <ConnectionDataTable
-        connection={connection}
-        pageSize={VIEW_WORKER_TYPES_PAGE_SIZE}
-        sortByHeader={sortBy}
-        sortDirection={sortDirection}
-        onHeaderClick={this.handleHeaderClick}
-        onPageChange={onPageChange}
-        headers={headers}
-        renderRow={({ node: workerType }) => (
-          <TableRow key={workerType.workerType}>
-            <TableCell>
-              <ButtonDrawer
-                className={classes.infoButton}
-                size="small"
-                content={
-                  <WorkerTypeMetadataCard
-                    metadata={{
-                      name: workerType.workerType,
-                      description: workerType.description,
-                    }}
+      <Fragment>
+        <ConnectionDataTable
+          connection={connection}
+          pageSize={VIEW_WORKER_TYPES_PAGE_SIZE}
+          sortByHeader={sortBy}
+          sortDirection={sortDirection}
+          onHeaderClick={this.handleHeaderClick}
+          onPageChange={onPageChange}
+          headers={headers}
+          renderRow={({ node: workerType }) => (
+            <TableRow key={workerType.workerType}>
+              <TableCell>
+                <Button
+                  className={classes.infoButton}
+                  size="small"
+                  onClick={() => this.handleDrawerOpen(workerType)}>
+                  <InformationVariantIcon size={iconSize} />
+                </Button>
+                <TableCellListItem
+                  button
+                  component={Link}
+                  to={`/provisioners/${workerType.provisionerId}/worker-types/${
+                    workerType.workerType
+                  }`}>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography variant="body1">
+                        {workerType.workerType}
+                      </Typography>
+                    }
                   />
-                }>
-                <InformationVariantIcon />
-              </ButtonDrawer>
-              <TableCellListItem
-                button
-                component={Link}
-                to={`/provisioners/${workerType.provisionerId}/worker-types/${
-                  workerType.workerType
-                }`}>
+                  <LinkIcon size={iconSize} />
+                </TableCellListItem>
+              </TableCell>
+              <TableCell>
+                <StatusLabel state={workerType.stability} />
+              </TableCell>
+              <TableCell>
+                <TableCellListItem button>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography variant="body1">
+                        <DateDistance from={workerType.lastDateActive} />
+                      </Typography>
+                    }
+                  />
+                  <ContentCopyIcon size={iconSize} />
+                </TableCellListItem>
+              </TableCell>
+              <TableCell>{workerType.pendingTasks}</TableCell>
+              {'runningCapacity' in workerType && (
+                <TableCell>{workerType.runningCapacity}</TableCell>
+              )}
+              {'pendingCapacity' in workerType && (
+                <TableCell>{workerType.pendingCapacity}</TableCell>
+              )}
+            </TableRow>
+          )}
+        />
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={this.handleDrawerClose}>
+          <div className={classes.metadataContainer}>
+            <Typography variant="headline" className={classes.headline}>
+              {drawerWorkerType && drawerWorkerType.workerType}
+            </Typography>
+            <List>
+              <ListItem>
                 <ListItemText
-                  disableTypography
-                  primary={
-                    <Typography variant="body1">
-                      {workerType.workerType}
-                    </Typography>
+                  primary="Description"
+                  secondary={
+                    drawerWorkerType && drawerWorkerType.description ? (
+                      <Markdown>{drawerWorkerType.description}</Markdown>
+                    ) : (
+                      'n/a'
+                    )
                   }
                 />
-                <LinkIcon />
-              </TableCellListItem>
-            </TableCell>
-            <TableCell>
-              <StatusLabel state={workerType.stability} />
-            </TableCell>
-            <TableCell>
-              <TableCellListItem button>
-                <ListItemText
-                  disableTypography
-                  primary={
-                    <Typography variant="body1">
-                      <DateDistance from={workerType.lastDateActive} />
-                    </Typography>
-                  }
-                />
-                <ContentCopyIcon />
-              </TableCellListItem>
-            </TableCell>
-            <TableCell>{workerType.pendingTasks}</TableCell>
-            {'runningCapacity' in workerType && (
-              <TableCell>{workerType.runningCapacity}</TableCell>
-            )}
-            {'pendingCapacity' in workerType && (
-              <TableCell>{workerType.pendingCapacity}</TableCell>
-            )}
-          </TableRow>
-        )}
-      />
+              </ListItem>
+            </List>
+          </div>
+        </Drawer>
+      </Fragment>
     );
   }
 }

@@ -121,6 +121,11 @@ export const worker = shape({
   actions: arrayOf(provisionerAction),
 });
 
+export const workers = shape({
+  pageInfo,
+  edges: arrayOf(worker),
+});
+
 export const workerType = shape({
   provisionerId: string,
   workerType: string,

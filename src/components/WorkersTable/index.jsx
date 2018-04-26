@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { array, func, shape, string } from 'prop-types';
-import { distanceInWordsStrict } from 'date-fns';
-import { memoizeWith, toString } from 'ramda';
+import { func, string } from 'prop-types';
+import { formatDistanceStrict } from 'date-fns';
+import { memoizeWith, pipe, filter, map, sort as rSort } from 'ramda';
 import { ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import { TableCell, TableRow } from 'material-ui/Table';
@@ -13,7 +13,7 @@ import DateDistance from '../DateDistance';
 import TableCellListItem from '../TableCellListItem';
 import ConnectionDataTable from '../ConnectionDataTable';
 import { VIEW_WORKERS_PAGE_SIZE } from '../../utils/constants';
-import { pageInfo } from '../../utils/prop-types';
+import { workers } from '../../utils/prop-types';
 import sort from '../../utils/sort';
 
 /**
@@ -22,10 +22,7 @@ import sort from '../../utils/sort';
 export default class WorkersTable extends Component {
   static propTypes = {
     /** Workers GraphQL PageConnection instance. */
-    workersConnection: shape({
-      edges: array,
-      pageInfo,
-    }).isRequired,
+    workersConnection: workers.isRequired,
     /** Callback function fired when a page is changed. */
     onPageChange: func.isRequired,
     /** Worker type name */
@@ -40,10 +37,23 @@ export default class WorkersTable extends Component {
   };
 
   createSortedWorkersConnection = memoizeWith(
-    () =>
-      `${toString(this.props.workersConnection.edges)}-${this.state.sortBy}-${
-        this.state.sortDirection
-      }`,
+    (workersConnections, sortBy, sortDirection) => {
+      const sorted = pipe(
+        filter(worker => worker.node.latestTask),
+        rSort((a, b) =>
+          sort(a.node.latestTask.run.workerId, b.node.latestTask.run.workerId)
+        ),
+        map(
+          ({ node: { latestTask } }) =>
+            `${latestTask.run.workerId}.${latestTask.run.taskId}.${
+              latestTask.run.runId
+            }`
+        )
+      );
+      const ids = sorted(workersConnections.edges);
+
+      return `${ids.join('-')}-${sortBy}-${sortDirection}`;
+    },
     () => {
       const { workersConnection } = this.props;
       const { sortBy, sortDirection } = this.state;
@@ -108,6 +118,7 @@ export default class WorkersTable extends Component {
       workersConnection,
       ...props
     } = this.props;
+    const iconSize = 16;
     const connection = this.createSortedWorkersConnection(
       workersConnection,
       sortBy,
@@ -143,7 +154,7 @@ export default class WorkersTable extends Component {
                     </Typography>
                   }
                 />
-                <LinkIcon />
+                <LinkIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
             <TableCell>
@@ -161,7 +172,7 @@ export default class WorkersTable extends Component {
                     </Typography>
                   }
                 />
-                <LinkIcon />
+                <LinkIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
             <TableCell>
@@ -177,7 +188,7 @@ export default class WorkersTable extends Component {
                     </Typography>
                   }
                 />
-                <ContentCopyIcon />
+                <ContentCopyIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
             <TableCell>
@@ -190,7 +201,7 @@ export default class WorkersTable extends Component {
                     </Typography>
                   }
                 />
-                <ContentCopyIcon />
+                <ContentCopyIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
             <TableCell>
@@ -203,12 +214,12 @@ export default class WorkersTable extends Component {
                     </Typography>
                   }
                 />
-                <ContentCopyIcon />
+                <ContentCopyIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
             <TableCell>
               {quarantineUntil
-                ? distanceInWordsStrict(quarantineUntil, Date(), { unit: 'd' })
+                ? formatDistanceStrict(Date(), quarantineUntil, { unit: 'd' })
                 : 'n/a'}
             </TableCell>
           </TableRow>

@@ -1,10 +1,9 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import { array, arrayOf, func, number, shape, string, oneOf } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Table, {
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableSortLabel,
   TablePagination,
@@ -16,6 +15,14 @@ import { pageInfo } from '../../utils/prop-types';
 @withStyles({
   loading: {
     textAlign: 'right',
+  },
+  spinner: {
+    height: 56,
+    minHeight: 56,
+    paddingRight: 2,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row-reverse',
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -129,9 +136,9 @@ export default class ConnectionDataTable extends Component {
     };
   }
 
-  handleHeaderClick = sortByHeader => {
+  handleHeaderClick = ({ target }) => {
     if (this.props.onHeaderClick) {
-      this.props.onHeaderClick(sortByHeader);
+      this.props.onHeaderClick(target.id);
     }
   };
 
@@ -151,7 +158,7 @@ export default class ConnectionDataTable extends Component {
     const colSpan = columnsSize || (headers && headers.length) || 1;
 
     return (
-      <div>
+      <Fragment>
         <div className={classes.tableWrapper}>
           <Table>
             {headers && (
@@ -160,9 +167,10 @@ export default class ConnectionDataTable extends Component {
                   {headers.map(header => (
                     <TableCell key={`table-header-${header}`}>
                       <TableSortLabel
+                        id={header}
                         active={header === sortByHeader}
                         direction={sortDirection || 'desc'}
-                        onClick={() => this.handleHeaderClick(header)}>
+                        onClick={this.handleHeaderClick}>
                         {header}
                       </TableSortLabel>
                     </TableCell>
@@ -184,15 +192,9 @@ export default class ConnectionDataTable extends Component {
           </Table>
         </div>
         {loading ? (
-          <Table>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={colSpan} className={classes.loading}>
-                  <Spinner size={24} />
-                </TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
+          <div className={classes.spinner}>
+            <Spinner size={24} />
+          </div>
         ) : (
           <TablePagination
             component="div"
@@ -205,7 +207,7 @@ export default class ConnectionDataTable extends Component {
             onChangePage={this.handlePageChange}
           />
         )}
-      </div>
+      </Fragment>
     );
   }
 }

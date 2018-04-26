@@ -117,7 +117,7 @@ export default class ViewWorkerTypes extends Component {
                     disabled={loading}
                     onChange={this.handleProvisionerChange}
                     value={provisionerId}
-                    inputLabel="Provisioner ID">
+                    label="Provisioner ID">
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>

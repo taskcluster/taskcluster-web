@@ -1,8 +1,6 @@
 import { Component } from 'react';
 import { func, node, string } from 'prop-types';
-import { FormControl } from 'material-ui/Form';
-import { InputLabel } from 'material-ui/Input';
-import Select from 'material-ui/Select';
+import TextField from 'material-ui/TextField';
 import { withStyles } from 'material-ui/styles';
 
 @withStyles(theme => ({
@@ -22,32 +20,23 @@ export default class Dropdown extends Component {
     value: string.isRequired,
     /** The option elements to populate the select with. */
     children: node.isRequired,
-    /** The contents of the InputLabel */
-    inputLabel: string.isRequired,
+    /** The label content */
+    label: string.isRequired,
   };
 
   render() {
-    const {
-      children,
-      classes,
-      inputLabel,
-      value,
-      onChange,
-      ...props
-    } = this.props;
+    const { children, classes, label, value, onChange, ...props } = this.props;
 
     return (
-      <FormControl className={classes.root} {...props}>
-        <InputLabel htmlFor={`select-${inputLabel}`}>{inputLabel}</InputLabel>
-        <Select
-          onChange={onChange}
-          value={value}
-          inputProps={{
-            id: `select-${inputLabel}`,
-          }}>
-          {children}
-        </Select>
-      </FormControl>
+      <TextField
+        className={classes.root}
+        select
+        label={label}
+        value={value}
+        onChange={onChange}
+        {...props}>
+        {children}
+      </TextField>
     );
   }
 }

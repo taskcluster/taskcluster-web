@@ -1,5 +1,5 @@
-import { PureComponent, Fragment } from 'react';
-import { node, string, func, shape, number } from 'prop-types';
+import { PureComponent } from 'react';
+import { node, string, func, bool } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Dialog, {
@@ -7,11 +7,12 @@ import Dialog, {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  withMobileDialog,
 } from 'material-ui/Dialog';
-import Tooltip from 'material-ui/Tooltip';
 import { CircularProgress } from 'material-ui/Progress';
 import ErrorPanel from '../ErrorPanel';
 
+@withMobileDialog()
 @withStyles({
   executingActionWrapper: {
     position: 'relative',
@@ -29,51 +30,36 @@ import ErrorPanel from '../ErrorPanel';
  */
 export default class DialogAction extends PureComponent {
   static propTypes = {
-    /** The content of the button. */
-    children: node.isRequired,
+    /** If true, the Dialog is open. */
+    open: bool.isRequired,
     /** The title of the Dialog. */
-    title: node.isRequired,
+    title: node,
     /** The body of the Dialog. */
-    body: node.isRequired,
+    body: node,
     /** The text content of the executing action button */
-    confirmText: string.isRequired,
-    /** The callback to trigger when the executing action button is clicked */
-    onActionClick: func.isRequired,
-    /** Properties applied to the Tooltip component. */
-    tooltipProps: shape({
-      title: node.isRequired,
-      id: string.isRequired,
-      placement: string,
-      enterDelay: number,
-    }),
+    confirmText: string,
+    /** Callback fired when the executing action button is clicked */
+    onSubmit: func.isRequired,
+    /** Callback fired when the component requests to be closed. */
+    onClose: func.isRequired,
   };
 
   static defaultProps = {
-    tooltipProps: {
-      enterDelay: 300,
-      placement: 'bottom',
-    },
+    title: '',
+    body: '',
+    confirmText: '',
   };
 
   state = {
-    open: false,
     executing: false,
     error: null,
   };
 
-  handleOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
-  handleActionClick = async () => {
+  handleSubmit = async () => {
     this.setState({ executing: true, error: null });
 
     try {
-      await this.props.onActionClick();
+      await this.props.onSubmit();
 
       this.setState({ executing: false });
     } catch (error) {
@@ -83,65 +69,52 @@ export default class DialogAction extends PureComponent {
       });
     }
 
-    this.handleClose();
+    this.props.onClose();
   };
 
   render() {
-    const { open, executing, error } = this.state;
+    const { executing, error } = this.state;
     const {
-      children,
+      fullScreen,
       title,
       body,
       confirmText,
       classes,
-      className,
-      tooltipProps,
-      onActionClick: _,
+      onSubmit: _,
+      onClose,
+      open,
       ...props
     } = this.props;
 
     return (
-      <Fragment>
-        <Tooltip {...tooltipProps}>
-          <Button className={className} onClick={this.handleOpen} {...props}>
-            {children}
+      <Dialog open={open} onClose={onClose} fullScreen={fullScreen} {...props}>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          {error && (
+            <DialogContentText>
+              <ErrorPanel error={error} />
+            </DialogContentText>
+          )}
+          <DialogContentText component="div">{body}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button disabled={executing} onClick={onClose} color="secondary">
+            Cancel
           </Button>
-        </Tooltip>
-        <Dialog open={open} onClose={this.handleClose}>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogContent>
-            {error && (
-              <DialogContentText>
-                <ErrorPanel error={error} />
-              </DialogContentText>
-            )}
-            <DialogContentText>{body}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
+          <div className={classes.executingActionWrapper}>
             <Button
               disabled={executing}
-              onClick={this.handleClose}
-              color="secondary">
-              Cancel
+              onClick={this.handleSubmit}
+              color="secondary"
+              autoFocus>
+              {confirmText}
             </Button>
-            <div className={classes.executingActionWrapper}>
-              <Button
-                disabled={executing}
-                onClick={this.handleActionClick}
-                color="secondary"
-                autoFocus>
-                {confirmText}
-              </Button>
-              {executing && (
-                <CircularProgress
-                  size={24}
-                  className={classes.buttonProgress}
-                />
-              )}
-            </div>
-          </DialogActions>
-        </Dialog>
-      </Fragment>
+            {executing && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+          </div>
+        </DialogActions>
+      </Dialog>
     );
   }
 }

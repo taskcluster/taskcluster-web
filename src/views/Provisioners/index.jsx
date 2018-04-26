@@ -28,7 +28,7 @@ export default class Provisioners extends Component {
     return (
       <Switch>
         <RouteWithProps
-          path={`${path}/:provisionerId/worker-types/:workerType/workers/:workerGroup?/:workerId?`}
+          path={`${path}/:provisionerId/worker-types/:workerType/workers/:workerGroup/:workerId`}
           {...props}
           component={ViewWorker}
         />

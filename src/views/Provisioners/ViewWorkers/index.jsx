@@ -28,23 +28,12 @@ import workersQuery from './workers.graphql';
     },
   }),
 })
-@withStyles(theme => ({
-  actionButton: {
-    marginRight: theme.spacing.unit,
-    marginBottom: theme.spacing.unit,
-  },
+@withStyles({
   actionBar: {
     display: 'flex',
     flexDirection: 'row-reverse',
-    paddingRight: 9 * theme.spacing.unit,
   },
-  speedDial: {
-    top: 12 * theme.spacing.unit,
-    right: theme.spacing.double,
-    position: 'fixed',
-    flexDirection: 'column',
-  },
-}))
+})
 export default class ViewWorkers extends Component {
   state = {
     filterBy: null,
@@ -140,7 +129,7 @@ export default class ViewWorkers extends Component {
                     disabled={loading}
                     onChange={this.handleFilterChange}
                     value={filterBy || ''}
-                    inputLabel="Filter By">
+                    label="Filter By">
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
@@ -157,8 +146,7 @@ export default class ViewWorkers extends Component {
                 <SpeedDial
                   title={
                     workerType.actions.length ? null : 'No actions available'
-                  }
-                  className={classes.speedDial}>
+                  }>
                   {workerType.actions.map(action => (
                     <SpeedDialAction
                       key={action.title}

@@ -27,7 +27,7 @@
     "auth0-js": "^9.3.3",
     "change-case": "^3.0.2",
     "classnames": "^2.2.5",
-    "date-fns": "^1.29.0",
+    "date-fns": "2.0.0-alpha.7",
     "dot-prop-immutable": "^1.4.0",
     "error-stack-parser": "^2.0.1",
     "graphql": "^0.13.2",

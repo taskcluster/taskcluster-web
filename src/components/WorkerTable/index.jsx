@@ -8,12 +8,9 @@ import { withStyles } from 'material-ui/styles';
 import { ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
-import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
-import ButtonDrawer from '../ButtonDrawer';
 import TableCellListItem from '../TableCellListItem';
 import DateDistance from '../DateDistance';
 import DataTable from '../DataTable';
-import TaskMetadataCard from '../TaskMetadataCard';
 import StatusLabel from '../StatusLabel';
 import { worker } from '../../utils/prop-types';
 import sort from '../../utils/sort';
@@ -55,7 +52,7 @@ export default class WorkerTable extends Component {
   };
 
   getTableData = memoizeWith(
-    () => `${this.state.sortBy}-${this.state.sortDirection}`,
+    ({ sortBy, sortDirection }) => `${sortBy}-${sortDirection}`,
     () => {
       const { worker } = this.props;
       const { sortBy, sortDirection } = this.state;
@@ -100,38 +97,24 @@ export default class WorkerTable extends Component {
   render() {
     const { classes } = this.props;
     const { sortBy, sortDirection } = this.state;
-    const tableData = this.getTableData();
+    const iconSize = 16;
+    const items = this.getTableData({ sortBy, sortDirection });
 
     return (
       <DataTable
-        tableData={tableData}
+        items={items}
         renderRow={task => (
           <TableRow key={`recent-task-${task.taskId}`}>
             <TableCell>
               <StatusLabel state={task.state} />
             </TableCell>
             <TableCell>
-              <ButtonDrawer
-                size="small"
-                className={classes.infoButton}
-                content={
-                  <TaskMetadataCard
-                    metadata={{
-                      name: task.name,
-                      description: task.description,
-                      source: task.source,
-                      owner: task.owner,
-                    }}
-                  />
-                }>
-                <InformationVariantIcon />
-              </ButtonDrawer>
               <TableCellListItem
                 button
                 component={Link}
                 to={`/tasks/${task.taskId}/runs/${task.runId}`}>
                 <div className={classes.taskName}>{task.name}</div>
-                <LinkIcon />
+                <LinkIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
             <TableCell>{task.taskId}</TableCell>
@@ -145,7 +128,7 @@ export default class WorkerTable extends Component {
                     </Typography>
                   }
                 />
-                <ContentCopyIcon />
+                <ContentCopyIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
             <TableCell>
@@ -158,7 +141,7 @@ export default class WorkerTable extends Component {
                     </Typography>
                   }
                 />
-                <ContentCopyIcon />
+                <ContentCopyIcon size={iconSize} />
               </TableCellListItem>
             </TableCell>
           </TableRow>

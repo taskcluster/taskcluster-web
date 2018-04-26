@@ -6,6 +6,7 @@ query ViewWorker($provisionerId: ID!, $workerType: String!, $workerGroup: String
     workerId
     quarantineUntil
     expires
+    firstClaim
     recentTasks {
       taskId
       run {

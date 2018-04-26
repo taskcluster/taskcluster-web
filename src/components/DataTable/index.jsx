@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { arrayOf, func, number, string, oneOf, object } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
 import Table, {
   TableBody,
   TableCell,
@@ -9,11 +8,6 @@ import Table, {
   TableRow,
 } from 'material-ui/Table';
 
-@withStyles({
-  tableWrapper: {
-    overflowX: 'auto',
-  },
-})
 /**
  * A table to display a set of data elements.
  */
@@ -51,7 +45,7 @@ export default class DataTable extends Component {
      * A list of objects to display. Each element in the list is represented
      * by a row and each element's key-value pair represents a column.
      */
-    tableData: arrayOf(object).isRequired,
+    items: arrayOf(object).isRequired,
   };
 
   static defaultProps = {
@@ -59,56 +53,54 @@ export default class DataTable extends Component {
     sortDirection: 'desc',
   };
 
-  handleHeaderClick = sortByHeader => {
+  handleHeaderClick = ({ target }) => {
     if (this.props.onHeaderClick) {
-      this.props.onHeaderClick(sortByHeader);
+      this.props.onHeaderClick(target.id);
     }
   };
 
   render() {
     const {
-      tableData,
+      items,
       columnsSize,
       renderRow,
       headers,
       sortByHeader,
       sortDirection,
-      classes,
     } = this.props;
     const colSpan = columnsSize || (headers && headers.length) || 0;
 
     return (
-      <div className={classes.tableWrapper}>
-        <Table>
-          {headers && (
-            <TableHead>
-              <TableRow>
-                {headers.map(header => (
-                  <TableCell key={`table-header-${header}`}>
-                    <TableSortLabel
-                      active={header === sortByHeader}
-                      direction={sortDirection || 'desc'}
-                      onClick={() => this.handleHeaderClick(header)}>
-                      {header}
-                    </TableSortLabel>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-          )}
-          <TableBody>
-            {tableData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={colSpan}>
-                  <em>No items for this page.</em>
+      <Table>
+        {headers && (
+          <TableHead>
+            <TableRow>
+              {headers.map(header => (
+                <TableCell key={`table-header-${header}`}>
+                  <TableSortLabel
+                    id={header}
+                    active={header === sortByHeader}
+                    direction={sortDirection || 'desc'}
+                    onClick={this.handleHeaderClick}>
+                    {header}
+                  </TableSortLabel>
                 </TableCell>
-              </TableRow>
-            ) : (
-              tableData.map(renderRow)
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ))}
+            </TableRow>
+          </TableHead>
+        )}
+        <TableBody>
+          {items.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={colSpan}>
+                <em>No items for this page.</em>
+              </TableCell>
+            </TableRow>
+          ) : (
+            items.map(renderRow)
+          )}
+        </TableBody>
+      </Table>
     );
   }
 }
