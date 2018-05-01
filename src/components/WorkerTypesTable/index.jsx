@@ -52,6 +52,8 @@ const sorted = pipe(
  * Display relevant information about worker types in a table.
  */
 export default class WorkerTypesTable extends Component {
+  workerTypes = null;
+
   static propTypes = {
     /** Provisioner identifier */
     provisionerId: string.isRequired,
@@ -87,12 +89,17 @@ export default class WorkerTypesTable extends Component {
     });
   };
 
-  handleDrawerOpen = drawerWorkerType => {
-    this.setState({
-      drawerOpen: true,
-      drawerWorkerType,
-    });
-  };
+  handleDrawerOpen = ({ target: { name } }) =>
+    memoizeWith(
+      name => name,
+      name =>
+        this.setState({
+          drawerOpen: true,
+          drawerWorkerType: this.workerTypes.edges.find(
+            ({ node }) => node.workerType === name
+          ).node,
+        })
+    )(name);
 
   handleHeaderClick = sortBy => {
     const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
@@ -155,7 +162,8 @@ export default class WorkerTypesTable extends Component {
       awsProvisionerWorkerTypeSummaries,
     } = this.props;
     const { sortBy, sortDirection, drawerOpen, drawerWorkerType } = this.state;
-    const connection = this.createSortedWorkerTypesConnection(
+
+    this.workerTypes = this.createSortedWorkerTypesConnection(
       workerTypesConnection,
       awsProvisionerWorkerTypeSummaries,
       sortBy,
@@ -169,12 +177,12 @@ export default class WorkerTypesTable extends Component {
     ];
     const iconSize = 16;
 
-    if (connection.edges.length) {
-      if ('runningCapacity' in connection.edges[0].node) {
+    if (this.workerTypes.edges.length) {
+      if ('runningCapacity' in this.workerTypes.edges[0].node) {
         headers.push('Running Capacity');
       }
 
-      if ('pendingCapacity' in connection.edges[0].node) {
+      if ('pendingCapacity' in this.workerTypes.edges[0].node) {
         headers.push('Pending Capacity');
       }
     }
@@ -182,7 +190,7 @@ export default class WorkerTypesTable extends Component {
     return (
       <Fragment>
         <ConnectionDataTable
-          connection={connection}
+          connection={this.workerTypes}
           pageSize={VIEW_WORKER_TYPES_PAGE_SIZE}
           sortByHeader={sortBy}
           sortDirection={sortDirection}
@@ -195,7 +203,8 @@ export default class WorkerTypesTable extends Component {
                 <Button
                   className={classes.infoButton}
                   size="small"
-                  onClick={() => this.handleDrawerOpen(workerType)}>
+                  name={workerType.workerType}
+                  onClick={this.handleDrawerOpen}>
                   <InformationVariantIcon size={iconSize} />
                 </Button>
                 <TableCellListItem

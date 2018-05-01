@@ -37,7 +37,7 @@ export default class ViewWorker extends Component {
       quarantineUntilInput:
         worker && worker.quarantineUntil
           ? worker.quarantineUntil
-          : addYears(Date(), 1000),
+          : addYears(new Date(), 1000),
     };
   }
 
@@ -101,7 +101,10 @@ export default class ViewWorker extends Component {
               <SpeedDial>
                 <SpeedDialAction
                   icon={
-                    isAfter(worker.quarantineUntil || Date(), Date()) ? (
+                    isAfter(
+                      worker.quarantineUntil || new Date(),
+                      new Date()
+                    ) ? (
                       <HomeLockOpenIcon />
                     ) : (
                       <HomeLockIcon />

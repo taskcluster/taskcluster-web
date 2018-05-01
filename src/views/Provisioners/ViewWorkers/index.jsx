@@ -156,13 +156,8 @@ export default class ViewWorkers extends Component {
                         key={action.title}
                         ButtonProps={{ color: 'secondary' }}
                         icon={<HammerIcon />}
-                        tooltipTitle={
-                          <div>
-                            <div>{action.title}</div>
-                            <div>{action.description}</div>
-                          </div>
-                        }
-                        onClick={() => this.handleActionClick(action)}
+                        tooltipTitle={action.title}
+                        onClick={this.handleActionClick}
                       />
                     ))}
                   </SpeedDial>
