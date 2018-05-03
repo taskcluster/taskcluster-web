@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { func } from 'prop-types';
-import { DatePicker } from 'material-ui-pickers';
+import { DatePicker as MuiDatePicker } from 'material-ui-pickers';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
@@ -11,7 +11,7 @@ import { date } from '../../utils/prop-types';
 /**
  * Display a date picker modal to select a date.
  */
-export default class DateChooser extends Component {
+export default class DatePicker extends Component {
   static propTypes = {
     /** Picker value */
     value: date,
@@ -24,7 +24,7 @@ export default class DateChooser extends Component {
 
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <DatePicker
+        <MuiDatePicker
           showTodayButton
           keyboard
           keyboardIcon={<CalendarIcon />}

@@ -1,10 +1,7 @@
 import { PureComponent, Fragment } from 'react';
 import { hot } from 'react-hot-loader';
 import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
-import Switch from 'material-ui/Switch';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Button from 'material-ui/Button';
 import PlusIcon from 'mdi-react/PlusIcon';
 import dotProp from 'dot-prop-immutable';
@@ -17,7 +14,6 @@ import { VIEW_CLIENTS_PAGE_SIZE } from '../../../utils/constants';
 import clientsQuery from './clients.graphql';
 
 @hot(module)
-@withRouter
 @graphql(clientsQuery, {
   options: () => ({
     variables: {
@@ -36,7 +32,6 @@ import clientsQuery from './clients.graphql';
 }))
 export default class ViewWorker extends PureComponent {
   state = {
-    sortByLastUsed: false,
     clientSearch: '',
   };
 
@@ -79,10 +74,6 @@ export default class ViewWorker extends PureComponent {
     });
   };
 
-  handleSwitchChange = () => {
-    this.setState({ sortByLastUsed: !this.state.sortByLastUsed });
-  };
-
   handleClientSearchChange = ({ target }) => {
     this.setState({ clientSearch: target.value });
   };
@@ -121,7 +112,7 @@ export default class ViewWorker extends PureComponent {
       onSignOut,
       data: { loading, error, clients },
     } = this.props;
-    const { sortByLastUsed, clientSearch } = this.state;
+    const { clientSearch } = this.state;
 
     return (
       <Dashboard
@@ -132,7 +123,7 @@ export default class ViewWorker extends PureComponent {
             value={clientSearch}
             onChange={this.handleClientSearchChange}
             onSubmit={this.handleClientSearchSubmit}
-            placeholder="Client beginning with"
+            placeholder="Client starts with"
           />
         }
         user={user}
@@ -142,24 +133,10 @@ export default class ViewWorker extends PureComponent {
           {!clients && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
           {clients && (
-            <Fragment>
-              <FormGroup row>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={sortByLastUsed}
-                      onChange={this.handleSwitchChange}
-                    />
-                  }
-                  label="Last Used"
-                />
-              </FormGroup>
-              <ClientsTable
-                onPageChange={this.handlePageChange}
-                clientsConnection={clients}
-                sortByLastUsed={this.state.sortByLastUsed}
-              />
-            </Fragment>
+            <ClientsTable
+              onPageChange={this.handlePageChange}
+              clientsConnection={clients}
+            />
           )}
           <Button
             onClick={this.handleCreate}

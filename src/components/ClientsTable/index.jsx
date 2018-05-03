@@ -1,14 +1,17 @@
 import { Fragment, Component } from 'react';
 import { Link } from 'react-router-dom';
-import { array, shape, func, bool } from 'prop-types';
+import { shape, func, arrayOf } from 'prop-types';
 import { memoizeWith, pipe, map, sort as rSort } from 'ramda';
-import { withStyles } from 'material-ui/styles';
+import { camelCase } from 'change-case/change-case';
 import { TableRow, TableCell } from 'material-ui/Table';
-import Button from 'material-ui/Button';
-import PencilIcon from 'mdi-react/PencilIcon';
+import Typography from 'material-ui/Typography';
+import { ListItemText } from 'material-ui/List';
+import LinkIcon from 'mdi-react/LinkIcon';
 import ConnectionDataTable from '../ConnectionDataTable';
+import DateDistance from '../DateDistance';
+import TableCellListItem from '../TableCellListItem';
 import { VIEW_CLIENTS_PAGE_SIZE } from '../../utils/constants';
-import { pageInfo } from '../../utils/prop-types';
+import { pageInfo, client } from '../../utils/prop-types';
 import sort from '../../utils/sort';
 
 const sorted = pipe(
@@ -16,82 +19,96 @@ const sorted = pipe(
   map(({ node: { clientId } }) => clientId)
 );
 
-@withStyles(theme => ({
-  iconButton: {
-    '& svg': {
-      transition: theme.transitions.create('fill'),
-      fill: theme.palette.primary.light,
-    },
-    '&:hover svg': {
-      fill: theme.palette.common.white,
-    },
-  },
-  editWrapper: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-  },
-}))
 export default class ClientsTable extends Component {
   static propTypes = {
     clientsConnection: shape({
-      edges: array,
+      edges: arrayOf(client),
       pageInfo,
     }).isRequired,
     onPageChange: func.isRequired,
-    sortByLastUsed: bool.isRequired,
+  };
+
+  state = {
+    sortBy: null,
+    sortDirection: null,
   };
 
   createSortedClientsConnection = memoizeWith(
-    (sortByLastUsed, clientsConnection) => {
+    (clientsConnection, sortBy, sortDirection) => {
       const ids = sorted(clientsConnection.edges);
 
-      return `${ids.join('-')}-${sortByLastUsed}`;
+      return `${ids.join('-')}-${sortBy}-${sortDirection}`;
     },
-    (sortByLastUsed, clientsConnection) => {
-      if (!sortByLastUsed) {
+    (clientsConnection, sortBy, sortDirection) => {
+      const sortByProperty = camelCase(sortBy);
+
+      if (!sortBy) {
         return clientsConnection;
       }
 
       return {
         ...clientsConnection,
-        edges: [...clientsConnection.edges].sort((a, b) =>
-          sort(a.node.lastDateUsed, b.node.lastDateUsed)
-        ),
+        edges: [...clientsConnection.edges].sort((a, b) => {
+          const firstElement =
+            sortDirection === 'desc'
+              ? b.node[sortByProperty]
+              : a.node[sortByProperty];
+          const secondElement =
+            sortDirection === 'desc'
+              ? a.node[sortByProperty]
+              : b.node[sortByProperty];
+
+          return sort(firstElement, secondElement);
+        }),
       };
     }
   );
 
+  handleHeaderClick = sortBy => {
+    const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
+    const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
+
+    this.setState({ sortBy, sortDirection });
+  };
+
   render() {
-    const {
-      classes,
-      onPageChange,
-      sortByLastUsed,
-      clientsConnection,
-    } = this.props;
+    const { onPageChange, clientsConnection } = this.props;
+    const { sortBy, sortDirection } = this.state;
+    const iconSize = 16;
 
     return (
       <Fragment>
         <ConnectionDataTable
           connection={this.createSortedClientsConnection(
-            sortByLastUsed,
-            clientsConnection
+            clientsConnection,
+            sortBy,
+            sortDirection
           )}
           pageSize={VIEW_CLIENTS_PAGE_SIZE}
-          columnsSize={1}
+          headers={['Client ID', 'Last Date Used']}
+          sortByHeader={sortBy}
+          sortDirection={sortDirection}
+          onHeaderClick={this.handleHeaderClick}
           onPageChange={onPageChange}
           renderRow={({ node: client }) => (
             <TableRow key={client.clientId}>
-              <TableCell>{client.clientId}</TableCell>
               <TableCell>
-                <div className={classes.editWrapper}>
-                  <Button
-                    size="small"
-                    className={classes.iconButton}
-                    component={Link}
-                    to={`/auth/clients/${encodeURIComponent(client.clientId)}`}>
-                    <PencilIcon />
-                  </Button>
-                </div>
+                <TableCellListItem
+                  dense
+                  button
+                  component={Link}
+                  to={`/auth/clients/${encodeURIComponent(client.clientId)}`}>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography variant="body1">{client.clientId}</Typography>
+                    }
+                  />
+                  <LinkIcon size={iconSize} />
+                </TableCellListItem>
+              </TableCell>
+              <TableCell>
+                <DateDistance from={client.lastDateUsed} />
               </TableCell>
             </TableRow>
           )}

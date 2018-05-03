@@ -12,7 +12,7 @@ const ViewClient = loadable(() =>
 );
 
 @hot(module)
-export default class Client extends Component {
+export default class Clients extends Component {
   render() {
     const {
       match: { path },
@@ -23,7 +23,7 @@ export default class Client extends Component {
       <Switch>
         <RouteWithProps
           path={`${path}/create`}
-          newClient
+          isNewClient
           {...props}
           component={ViewClient}
         />

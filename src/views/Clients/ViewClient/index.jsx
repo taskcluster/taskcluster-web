@@ -18,7 +18,7 @@ import clientQuery from './client.graphql';
 })
 export default class ViewClient extends Component {
   render() {
-    const { user, onSignIn, onSignOut, newClient, data } = this.props;
+    const { user, onSignIn, onSignOut, isNewClient, data } = this.props;
 
     return (
       <Dashboard
@@ -26,8 +26,8 @@ export default class ViewClient extends Component {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}>
-        {newClient ? (
-          <ClientForm newClient />
+        {isNewClient ? (
+          <ClientForm isNewClient />
         ) : (
           <Fragment>
             {data.loading && <Spinner loading />}

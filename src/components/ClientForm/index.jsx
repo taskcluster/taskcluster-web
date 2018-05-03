@@ -15,7 +15,7 @@ import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
 import LockResetIcon from 'mdi-react/LockResetIcon';
 import SpeedDial from '../SpeedDial';
-import DateChooser from '../DateChooser';
+import DatePicker from '../DatePicker';
 import { client } from '../../utils/prop-types';
 // import splitLines from '../../utils/splitLines';
 
@@ -35,6 +35,15 @@ import { client } from '../../utils/prop-types';
   listItemButton: {
     ...theme.mixins.listItemButton,
   },
+  saveIcon: {
+    backgroundColor: theme.palette.success.main,
+    '&:hover': {
+      backgroundColor: theme.palette.success.dark,
+    },
+    '& svg': {
+      backgroundColor: 'transparent',
+    },
+  },
 }))
 /** A form to view/edit/create a client */
 export default class ClientForm extends Component {
@@ -42,11 +51,11 @@ export default class ClientForm extends Component {
     /** A GraphQL client response. Not needed when creating a new client  */
     client,
     /** Set to `true` when creating a new client. */
-    newClient: bool,
+    isNewClient: bool,
   };
 
   static defaultProps = {
-    newClient: false,
+    isNewClient: false,
     client: null,
   };
 
@@ -63,8 +72,8 @@ export default class ClientForm extends Component {
     expandedScopes: null,
   };
 
-  static getDerivedStateFromProps({ newClient, client }) {
-    if (newClient) {
+  static getDerivedStateFromProps({ isNewClient, client }) {
+    if (isNewClient) {
       return null;
     }
 
@@ -106,7 +115,7 @@ export default class ClientForm extends Component {
   };
 
   render() {
-    const { client, classes, newClient } = this.props;
+    const { client, classes, isNewClient } = this.props;
     const {
       description,
       scopeText,
@@ -142,22 +151,25 @@ export default class ClientForm extends Component {
                 <ListItemText primary="Client ID" secondary={clientId} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Created" secondary={created} />
+                <ListItemText primary="Date Created" secondary={created} />
               </ListItem>
               <ListItem>
                 <ListItemText
-                  primary="Last Modified"
+                  primary="Date Last Modified"
                   secondary={lastModified}
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
-                  primary="Last Date Used"
+                  primary="Date Last Used"
                   secondary={lastDateUsed}
                 />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Last Rotated" secondary={lastRotated} />
+                <ListItemText
+                  primary="Date Last Rotated"
+                  secondary={lastRotated}
+                />
               </ListItem>
             </Fragment>
           )}
@@ -170,10 +182,10 @@ export default class ClientForm extends Component {
                 </Typography>
               }
               secondary={
-                <DateChooser
-                  value={newClient ? addYears(new Date(), 1000) : expires}
+                <DatePicker
+                  value={isNewClient ? addYears(new Date(), 1000) : expires}
                   onChange={this.handleExpirationChange}
-                  format="DD/MM/YYYY"
+                  format="YYYY/MM/DD"
                   maxDate={addYears(new Date(), 1001)}
                 />
               }
@@ -198,7 +210,7 @@ export default class ClientForm extends Component {
               fullWidth
               multiline
               rows={5}
-              placeholder={newClient ? 'new-scope:for-something:*' : null}
+              placeholder={isNewClient ? 'new-scope:for-something:*' : null}
               value={scopeText}
             />
           </ListItem>
@@ -240,7 +252,7 @@ export default class ClientForm extends Component {
             </Fragment>
           ) : null}
         </List>
-        {newClient ? (
+        {isNewClient ? (
           <Tooltip title="Save">
             <Button
               variant="fab"
@@ -253,15 +265,16 @@ export default class ClientForm extends Component {
         ) : (
           <SpeedDial>
             <SpeedDialAction
-              icon={<ContentSaveIcon />}
+              icon={<ContentSaveIcon className={classes.saveIcon} />}
               onClick={this.handleSaveClient}
-              ButtonProps={{ color: 'secondary' }}
+              classes={{ button: classes.saveIcon }}
               tooltipTitle="Save"
             />
             <SpeedDialAction
               icon={<LockResetIcon />}
               onClick={this.handleResetAccessToken}
               ButtonProps={{ color: 'secondary' }}
+              className={classes.saveIcon}
               tooltipTitle="Reset Access Token"
             />
           </SpeedDial>
