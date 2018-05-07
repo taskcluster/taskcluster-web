@@ -90,6 +90,11 @@ const theme = createMuiTheme({
         fill: 'white',
       },
     },
+    fab: {
+      position: 'fixed',
+      bottom: 16,
+      right: 24,
+    },
   },
   overrides: {
     MuiPaper: {

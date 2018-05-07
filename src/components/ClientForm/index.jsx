@@ -21,9 +21,7 @@ import { client } from '../../utils/prop-types';
 
 @withStyles(theme => ({
   saveButton: {
-    position: 'fixed',
-    bottom: theme.spacing.double,
-    right: theme.spacing.triple,
+    ...theme.mixins.fab,
   },
   expandedScopesListItem: {
     paddingTop: 0,
@@ -256,8 +254,8 @@ export default class ClientForm extends Component {
           <Tooltip title="Save">
             <Button
               variant="fab"
-              color="secondary"
               onClick={this.handleSaveClient}
+              classes={{ root: classes.saveIcon }}
               className={classes.saveButton}>
               <ContentSaveIcon />
             </Button>
