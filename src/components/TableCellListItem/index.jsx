@@ -7,6 +7,8 @@ import List, { ListItem } from 'material-ui/List';
   root: {
     display: 'inline-block',
     verticalAlign: 'middle',
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   listItem: {
     marginLeft: -theme.spacing.unit,
