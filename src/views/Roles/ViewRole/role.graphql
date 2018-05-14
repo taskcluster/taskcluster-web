@@ -1,4 +1,4 @@
-query Role($roleId: ID) {
+query Role($roleId: ID!) {
   role(roleId: $roleId) {
     roleId
     description
