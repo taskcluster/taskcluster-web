@@ -143,7 +143,7 @@ export default class ClientForm extends Component {
               />
             </FormGroup>
           </ListItem>
-          {isNewClient ? (
+          {isNewClient && (
             <ListItem>
               <TextField
                 label="Client ID"
@@ -153,7 +153,7 @@ export default class ClientForm extends Component {
                 value={clientId}
               />
             </ListItem>
-          ) : null}
+          )}
           {client && (
             <Fragment>
               <ListItem>
