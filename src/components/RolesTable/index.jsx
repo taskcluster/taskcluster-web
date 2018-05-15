@@ -14,6 +14,7 @@ import {
   sort as rSort,
 } from 'ramda';
 import { camelCase } from 'change-case/change-case';
+import { withStyles } from 'material-ui/styles';
 import { TableRow, TableCell } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
 import { ListItemText } from 'material-ui/List';
@@ -28,6 +29,11 @@ const sorted = pipe(
   map(({ roleId }) => roleId)
 );
 
+@withStyles({
+  listItemCell: {
+    width: '100%',
+  },
+})
 export default class RolesTable extends Component {
   static propTypes = {
     /** A GraphQL roles response. */
@@ -82,7 +88,7 @@ export default class RolesTable extends Component {
   );
 
   render() {
-    const { roles, searchTerm } = this.props;
+    const { classes, roles, searchTerm } = this.props;
     const { sortBy, sortDirection } = this.state;
     const sortedRoles = this.createSortedRoles(
       roles,
@@ -104,6 +110,7 @@ export default class RolesTable extends Component {
             <TableRow key={roleId}>
               <TableCell>
                 <TableCellListItem
+                  className={classes.listItemCell}
                   dense
                   button
                   component={Link}
