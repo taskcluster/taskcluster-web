@@ -4,12 +4,9 @@ import { string, arrayOf } from 'prop-types';
 import {
   memoizeWith,
   pipe,
-  prop,
   map,
   ifElse,
   isEmpty,
-  filter,
-  contains,
   identity,
   sort as rSort,
 } from 'ramda';
@@ -66,11 +63,9 @@ export default class RolesTable extends Component {
     },
     (roles, sortBy, sortDirection, searchTerm) => {
       const sortByProperty = camelCase(sortBy);
-      const filteredRoles = ifElse(
-        () => Boolean(searchTerm),
-        filter(pipe(prop('roleId'), contains(searchTerm))),
-        identity
-      )(roles);
+      const filteredRoles = searchTerm
+        ? roles.filter(({ roleId }) => searchTerm.includes(roleId))
+        : roles;
 
       return ifElse(
         isEmpty,
