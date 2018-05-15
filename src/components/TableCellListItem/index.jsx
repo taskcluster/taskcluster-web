@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { node, bool } from 'prop-types';
+import { node, bool, string } from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem } from 'material-ui/List';
 
@@ -28,7 +28,7 @@ export default class TableCellListItem extends Component {
     /** Set to true to remove the padding applied to the List component */
     dense: bool,
     /** The CSS class name of the wrapper element */
-    className: null,
+    className: string,
   };
 
   static defaultProps = {

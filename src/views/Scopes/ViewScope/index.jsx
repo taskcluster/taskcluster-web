@@ -4,11 +4,10 @@ import { graphql } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import { withStyles } from 'material-ui/styles';
 import Divider from 'material-ui/Divider';
-import Checkbox from 'material-ui/Checkbox';
 import { MenuItem } from 'material-ui/Menu';
 import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
 import TextField from 'material-ui/TextField';
+import CheckIcon from 'mdi-react/CheckIcon';
 import Dashboard from '../../../components/Dashboard';
 import Search from '../../../components/Search';
 import Spinner from '../../../components/Spinner';
@@ -24,11 +23,8 @@ import scopesQuery from '../scopes.graphql';
 @hot(module)
 @graphql(scopesQuery)
 @withStyles(theme => ({
-  checkboxWrapper: {
-    display: 'flex',
-    alignItems: 'center',
-    marginLeft: -14,
-    paddingRight: theme.spacing.unit,
+  icon: {
+    marginRight: theme.spacing.unit,
   },
   tabs: {
     marginBottom: theme.spacing.triple,
@@ -146,10 +142,8 @@ export default class ViewScope extends Component {
               <MenuItem value={SCOPES_SEARCH_MODE.EXACT}>Exact</MenuItem>
               <Divider />
               <MenuItem selected={directEntitySearch} value="Direct Ownership">
-                <div className={classes.checkboxWrapper}>
-                  <Checkbox checked={directEntitySearch} color="secondary" />
-                  <Typography component="span">Direct Ownership</Typography>
-                </div>
+                {directEntitySearch && <CheckIcon className={classes.icon} />}
+                Direct Ownership
               </MenuItem>
             </TextField>
           </div>
