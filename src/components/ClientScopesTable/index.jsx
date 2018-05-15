@@ -12,7 +12,6 @@ import {
   any,
   identity,
   contains,
-  prop,
   sort as rSort,
 } from 'ramda';
 import { withStyles } from 'material-ui/styles';
@@ -65,9 +64,11 @@ export default class ClientScopesTable extends Component {
     searchProperty: 'expandedScopes',
   };
 
-  clientScopes = null;
+  // If the prop `selectedScope` is set, clients will be a list of client IDs.
+  // Else, clients will be a list of scopes.
+  clients = null;
 
-  createSortedClientScopesConnection = memoizeWith(
+  createSortedClientsConnection = memoizeWith(
     (clientsConnection, searchMode, selectedScope, searchProperty) => {
       const ids = sorted(clientsConnection.edges);
 
@@ -85,13 +86,13 @@ export default class ClientScopesTable extends Component {
         rSort(sort)
       );
       const extractClients = pipe(
-        filter(pipe(prop('node'), prop(searchProperty), any(match))),
-        map(pipe(prop('node'), prop('clientId'))),
+        filter(pipe(path(['node', searchProperty]), any(match))),
+        map(pipe(path(['node', 'clientId']))),
         rSort(sort)
       );
 
       if (clientsConnection) {
-        this.clientScopes = selectedScope
+        this.clients = selectedScope
           ? extractClients(clientsConnection.edges)
           : extractExpandedScopes(clientsConnection.edges);
       }
@@ -101,7 +102,7 @@ export default class ClientScopesTable extends Component {
   );
 
   renderRow = (scope, index) => {
-    const { searchTerm, classes } = this.props;
+    const { searchTerm, classes, selectedScope } = this.props;
 
     if (index !== 0) {
       return null;
@@ -109,21 +110,25 @@ export default class ClientScopesTable extends Component {
 
     return pipe(
       searchTerm ? filter(contains(searchTerm)) : identity,
-      map(scope => (
-        <TableRow key={`scope-${scope}`}>
+      map(node => (
+        <TableRow key={node}>
           <TableCell padding="dense">
             <TableCellListItem
               className={classes.listItemCell}
               button
               component={Link}
-              to={`/auth/scopes/${encodeURIComponent(scope)}`}>
-              <ListItemText disableTypography primary={<code>{scope}</code>} />
+              to={
+                selectedScope
+                  ? `/auth/clients/${encodeURIComponent(node)}`
+                  : `/auth/scopes/${encodeURIComponent(node)}`
+              }>
+              <ListItemText disableTypography primary={<code>{node}</code>} />
               <LinkIcon size={16} />
             </TableCellListItem>
           </TableCell>
         </TableRow>
       ))
-    )(this.clientScopes);
+    )(this.clients);
   };
 
   render() {
@@ -135,7 +140,7 @@ export default class ClientScopesTable extends Component {
       onPageChange,
       ...props
     } = this.props;
-    const connection = this.createSortedClientScopesConnection(
+    const connection = this.createSortedClientsConnection(
       clientsConnection,
       searchMode,
       selectedScope,

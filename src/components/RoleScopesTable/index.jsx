@@ -85,16 +85,21 @@ export default class RoleScopesTable extends Component {
   );
 
   renderRow = node => {
+    const { classes, selectedScope } = this.props;
     const iconSize = 16;
 
     return (
-      <TableRow key={`scope-${node}`}>
+      <TableRow key={node}>
         <TableCell padding="dense">
           <TableCellListItem
-            className={this.props.classes.listItemCell}
+            className={classes.listItemCell}
             button
             component={Link}
-            to={`/auth/scopes/${encodeURIComponent(node)}`}>
+            to={
+              selectedScope
+                ? `/auth/roles/${encodeURIComponent(node)}`
+                : `/auth/scopes/${encodeURIComponent(node)}`
+            }>
             <ListItemText disableTypography primary={<code>{node}</code>} />
             <LinkIcon size={iconSize} />
           </TableCellListItem>
