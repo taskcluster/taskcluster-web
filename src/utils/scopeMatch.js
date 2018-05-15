@@ -18,7 +18,7 @@ import { SCOPES_SEARCH_MODE } from './constants';
  * scopeMatch :: String mode -> String selectedScope ->
  *  (String scope -> Boolean isMatch)
  * */
-const scopeMatch = (mode, selectedScope) => {
+export default (mode, selectedScope) => {
   const exact = equals(selectedScope);
   const hasScope = cond([
     [exact, T],
@@ -28,26 +28,22 @@ const scopeMatch = (mode, selectedScope) => {
     ],
     [T, F],
   ]);
+  const hasSubScopePattern = cond([
+    [compose(not, test(/\\*$/)), pattern => `${pattern}*`],
+    [T, identity],
+  ])(selectedScope);
 
-  return cond([
-    [() => equals(mode, SCOPES_SEARCH_MODE.EXACT), exact],
-    [() => equals(mode, SCOPES_SEARCH_MODE.HAS_SCOPE), hasScope],
-    [
-      () => equals(mode, SCOPES_SEARCH_MODE.HAS_SUB_SCOPE),
-      () => {
-        const pattern = cond([
-          [compose(not, test(/\\*$/)), pattern => `${pattern}*`],
-          [T, identity],
-        ])(selectedScope);
-
-        return cond([
-          [equals(pattern), T],
-          [T, scope => scope.indexOf(dropLast(1, pattern)), equals(0)],
-        ]);
-      },
-    ],
-    [T, T],
-  ]);
+  switch (mode) {
+    case SCOPES_SEARCH_MODE.EXACT:
+      return exact;
+    case SCOPES_SEARCH_MODE.HAS_SCOPE:
+      return hasScope;
+    case SCOPES_SEARCH_MODE.HAS_SUB_SCOPE:
+      return cond([
+        [equals(hasSubScopePattern), T],
+        [T, scope => scope.indexOf(dropLast(1, hasSubScopePattern)), equals(0)],
+      ]);
+    default:
+      return T;
+  }
 };
-
-export default scopeMatch;
