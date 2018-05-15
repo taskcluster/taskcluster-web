@@ -46,6 +46,7 @@ export default class ViewScope extends Component {
     searchTerm: '',
     searchMode: SCOPES_SEARCH_MODE.HAS_SCOPE,
     directEntitySearch: false,
+    currentTabIndex: 0,
   };
 
   handleSearchChange = ({ target: { value } }) => {
@@ -59,16 +60,7 @@ export default class ViewScope extends Component {
   };
 
   handleTabChange = (event, value) => {
-    const {
-      match: {
-        params: { selectedScope, view },
-      },
-    } = this.props;
-    const selectedScopeView = value === 1 ? 'clients' : 'roles';
-
-    this.props.history.replace(
-      `/auth/scopes/${view}/${selectedScope}/${selectedScopeView}`
-    );
+    this.setState({ currentTabIndex: value });
   };
 
   handleClientsPageChange = ({ cursor, previousCursor }) => {
@@ -112,12 +104,16 @@ export default class ViewScope extends Component {
       onSignOut,
       data: { loading, error, clients, roles },
     } = this.props;
-    const { searchTerm, searchMode, directEntitySearch } = this.state;
+    const {
+      searchTerm,
+      searchMode,
+      directEntitySearch,
+      currentTabIndex,
+    } = this.state;
     const selectedScope = decodeURIComponent(params.selectedScope);
     const searchProperty = this.state.directEntitySearch
       ? 'scopes'
       : 'expandedScopes';
-    const tabView = params.selectedScopeView === 'clients' ? 1 : 0;
 
     return (
       <Dashboard
@@ -160,7 +156,7 @@ export default class ViewScope extends Component {
           <Tabs
             className={classes.tabs}
             fullWidth
-            value={tabView}
+            value={currentTabIndex}
             onChange={this.handleTabChange}>
             <Tab label="Roles" />
             <Tab label="Clients" />
@@ -168,7 +164,7 @@ export default class ViewScope extends Component {
           {!(clients && roles) && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
           {roles &&
-            tabView === 0 && (
+            currentTabIndex === 0 && (
               <RoleScopesTable
                 roles={roles}
                 searchTerm={searchTerm}
@@ -178,7 +174,7 @@ export default class ViewScope extends Component {
               />
             )}
           {clients &&
-            tabView === 1 && (
+            currentTabIndex === 1 && (
               <ClientScopesTable
                 clientsConnection={clients}
                 onPageChange={this.handleClientsPageChange}

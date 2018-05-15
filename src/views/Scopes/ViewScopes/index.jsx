@@ -33,14 +33,13 @@ import scopesQuery from '../scopes.graphql';
 export default class ViewScopes extends PureComponent {
   state = {
     searchTerm: '',
+    currentTabIndex: 0,
   };
 
   clientScopes = null;
 
   handleTabChange = (event, value) => {
-    this.props.history.replace(
-      `/auth/scopes/${value === 0 ? 'roles' : 'clients'}`
-    );
+    this.setState({ currentTabIndex: value });
   };
 
   handleClientsPageChange = ({ cursor, previousCursor }) => {
@@ -81,17 +80,13 @@ export default class ViewScopes extends PureComponent {
 
   render() {
     const {
-      match: {
-        params: { view },
-      },
       classes,
       user,
       onSignIn,
       onSignOut,
       data: { loading, error, clients, roles },
     } = this.props;
-    const { searchTerm } = this.state;
-    const tabView = view === 'clients' ? 1 : 0;
+    const { searchTerm, currentTabIndex } = this.state;
 
     return (
       <Dashboard
@@ -111,18 +106,18 @@ export default class ViewScopes extends PureComponent {
           <Tabs
             className={classes.tabs}
             fullWidth
-            value={tabView}
+            value={currentTabIndex}
             onChange={this.handleTabChange}>
             <Tab label="Roles" />
             <Tab label="Clients" />
           </Tabs>
           {!(clients && roles) && loading && <Spinner loading />}
           {roles &&
-            tabView === 0 && (
+            currentTabIndex === 0 && (
               <RoleScopesTable roles={roles} searchTerm={searchTerm} />
             )}
           {clients &&
-            tabView === 1 && (
+            currentTabIndex === 1 && (
               <ClientScopesTable
                 searchTerm={searchTerm}
                 onPageChange={this.handleClientsPageChange}

@@ -22,15 +22,11 @@ export default class Scopes extends Component {
     return (
       <Switch>
         <RouteWithProps
-          path={`${path}/:view(clients|roles)/:selectedScope/:selectedScopeView(clients|roles)?`}
+          path={`${path}/:selectedScope`}
           {...props}
           component={ViewScope}
         />
-        <RouteWithProps
-          path={`${path}/:view(clients|roles)?`}
-          {...props}
-          component={ViewScopes}
-        />
+        <RouteWithProps path={path} {...props} component={ViewScopes} />
       </Switch>
     );
   }

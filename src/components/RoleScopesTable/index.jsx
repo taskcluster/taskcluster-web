@@ -94,8 +94,7 @@ export default class RoleScopesTable extends Component {
             className={this.props.classes.listItemCell}
             button
             component={Link}
-            to={`/auth/scopes/${this.props.match.params.view ||
-              'roles'}/${encodeURIComponent(node)}`}>
+            to={`/auth/scopes/${encodeURIComponent(node)}`}>
             <ListItemText disableTypography primary={<code>{node}</code>} />
             <LinkIcon size={iconSize} />
           </TableCellListItem>

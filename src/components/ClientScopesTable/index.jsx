@@ -116,7 +116,7 @@ export default class ClientScopesTable extends Component {
               className={classes.listItemCell}
               button
               component={Link}
-              to={`/auth/scopes/roles/${encodeURIComponent(scope)}`}>
+              to={`/auth/scopes/${encodeURIComponent(scope)}`}>
               <ListItemText disableTypography primary={<code>{scope}</code>} />
               <LinkIcon size={16} />
             </TableCellListItem>
