@@ -15,6 +15,7 @@ import {
   pluck,
   sort as rSort,
 } from 'ramda';
+import { withStyles } from 'material-ui/styles';
 import { ListItemText } from 'material-ui/List';
 import { TableRow, TableCell } from 'material-ui/Table';
 import LinkIcon from 'mdi-react/LinkIcon';
@@ -30,6 +31,11 @@ const sorted = pipe(
 );
 
 @withRouter
+@withStyles({
+  listItemCell: {
+    width: '100%',
+  },
+})
 export default class RoleScopesTable extends Component {
   static propTypes = {
     /** A GraphQL roles response. */
@@ -85,6 +91,7 @@ export default class RoleScopesTable extends Component {
       <TableRow key={`scope-${node}`}>
         <TableCell padding="dense">
           <TableCellListItem
+            className={this.props.classes.listItemCell}
             button
             component={Link}
             to={`/auth/scopes/${this.props.match.params.view ||

@@ -7,6 +7,7 @@ import {
   memoizeWith,
   filter,
   pipe,
+  path,
   map,
   any,
   identity,
@@ -14,6 +15,7 @@ import {
   prop,
   sort as rSort,
 } from 'ramda';
+import { withStyles } from 'material-ui/styles';
 import { ListItemText } from 'material-ui/List';
 import { TableRow, TableCell } from 'material-ui/Table';
 import LinkIcon from 'mdi-react/LinkIcon';
@@ -29,6 +31,11 @@ const sorted = pipe(
   map(({ node: { clientId } }) => clientId)
 );
 
+@withStyles({
+  listItemCell: {
+    width: '100%',
+  },
+})
 export default class ClientScopesTable extends Component {
   static propTypes = {
     /** Callback function fired when a page is changed. */
@@ -71,7 +78,7 @@ export default class ClientScopesTable extends Component {
     (clientsConnection, searchMode, selectedScope, searchProperty) => {
       const match = scopeMatch(searchMode, selectedScope);
       const extractExpandedScopes = pipe(
-        map(pipe(prop('node'), prop('expandedScopes'))),
+        map(path(['node', 'expandedScopes'])),
         flatten,
         uniq,
         searchMode ? filter(match) : identity,
@@ -94,7 +101,7 @@ export default class ClientScopesTable extends Component {
   );
 
   renderRow = (scope, index) => {
-    const { searchTerm } = this.props;
+    const { searchTerm, classes } = this.props;
 
     if (index !== 0) {
       return null;
@@ -106,6 +113,7 @@ export default class ClientScopesTable extends Component {
         <TableRow key={`scope-${scope}`}>
           <TableCell padding="dense">
             <TableCellListItem
+              className={classes.listItemCell}
               button
               component={Link}
               to={`/auth/scopes/roles/${encodeURIComponent(scope)}`}>
