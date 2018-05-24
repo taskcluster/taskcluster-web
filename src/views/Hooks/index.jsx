@@ -4,11 +4,11 @@ import { Switch } from 'react-router-dom';
 import RouteWithProps from '../../components/RouteWithProps';
 import loadable from '../../utils/loadable';
 
-const ViewHooks = loadable(() =>
-  import(/* webpackChunkName: 'Clients.ViewHooks' */ './ViewHooks')
+const ListHooks = loadable(() =>
+  import(/* webpackChunkName: 'Hooks.ListHooks' */ './ListHooks')
 );
 const ViewHook = loadable(() =>
-  import(/* webpackChunkName: 'Clients.ViewHook' */ './ViewHook')
+  import(/* webpackChunkName: 'Hooks.ViewHook' */ './ViewHook')
 );
 
 @hot(module)
@@ -32,7 +32,7 @@ export default class Hooks extends Component {
           {...props}
           component={ViewHook}
         />
-        <RouteWithProps path={path} {...props} component={ViewHooks} />
+        <RouteWithProps path={path} {...props} component={ListHooks} />
       </Switch>
     );
   }

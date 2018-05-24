@@ -1,9 +1,10 @@
 import { Component } from 'react';
-import { object, string, func, number } from 'prop-types';
-import CodeMirror from '@skidding/react-codemirror';
+import { object, string, func } from 'prop-types';
+import { Controlled } from 'react-codemirror2';
 import { withStyles } from 'material-ui/styles';
-import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/yaml/yaml';
+import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/display/placeholder';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/lint/lint.css';
@@ -12,7 +13,7 @@ import './yaml-lint';
 import './styles.css';
 
 @withStyles({
-  codeMirror: {
+  root: {
     width: '100%',
   },
 })
@@ -20,34 +21,29 @@ import './styles.css';
 export default class CodeEditor extends Component {
   static propTypes = {
     /** Callback function fired when the editor is changed. */
-    onChange: func.isRequired,
+    onChange: func,
     /** The value of the editor. */
     value: string.isRequired,
     /** Code mirror options */
     options: object,
-    /** The height of the editor. */
-    height: number,
-    /** The width of the editor. */
-    width: number,
   };
 
   static defaultProps = {
+    onChange: null,
     options: null,
-    height: null,
-    width: null,
   };
 
-  register = ref => {
-    this.codeMirror = ref ? ref.getCodeMirror() : null;
-    this.codeMirror.setSize(this.props.width, this.props.height);
+  handleTextUpdate = (editor, data, value) => {
+    if (this.props.onChange) {
+      this.props.onChange(value);
+    }
   };
 
   render() {
-    const { classes, value, onChange, ...options } = this.props;
+    const { classes, value, onChange: _, ...options } = this.props;
     const opts = {
       mode: 'application/json',
       theme: 'material',
-      tabSize: 2,
       indentWithTabs: false,
       gutters: ['CodeMirror-lint-markers'],
       lineNumbers: true,
@@ -55,12 +51,11 @@ export default class CodeEditor extends Component {
     };
 
     return (
-      <CodeMirror
-        ref={this.register}
-        className={classes.codeMirror}
-        value={value}
-        onChange={onChange}
+      <Controlled
+        className={classes.root}
         options={opts}
+        onBeforeChange={this.handleTextUpdate}
+        value={value}
       />
     );
   }

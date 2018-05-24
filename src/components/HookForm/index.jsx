@@ -17,6 +17,7 @@ import DeleteIcon from 'mdi-react/DeleteIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
 import RefreshIcon from 'mdi-react/RefreshIcon';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
+import { docs } from 'taskcluster-lib-urls';
 import SpeedDial from '../../components/SpeedDial';
 import CodeEditor from '../../components/CodeEditor';
 import DateDistance from '../../components/DateDistance';
@@ -99,7 +100,10 @@ export default class HookForm extends Component {
     owner: '',
     description: '',
     emailOnError: true,
+    // eslint-disable-next-line react/no-unused-state
     task: null,
+    taskInput: null,
+    // eslint-disable-next-line react/no-unused-state
     triggerSchema: null,
     taskValidJson: true,
     triggerSchemaValidJson: true,
@@ -116,7 +120,9 @@ export default class HookForm extends Component {
       description: hook.metadata.description,
       emailOnError: hook.metadata.emailOnError,
       task: hook.task,
+      taskInput: hook.task,
       triggerSchema: hook.triggerSchema,
+      triggerSchemaInput: hook.triggerSchema,
       schedule: hook.schedule,
     };
   }
@@ -126,10 +132,14 @@ export default class HookForm extends Component {
   };
 
   // TODO: Handle trigger hook
-  handleTriggerHook = () => {};
+  handleTriggerHook = () => {
+    // const hook = this.state.triggerSchema;
+  };
 
   // TODO: Handle save hook
-  handleSaveHook = () => {};
+  handleSaveHook = () => {
+    // const hook = this.state.hook;
+  };
 
   handleEmailOnErrorChange = () => {
     this.setState({ emailOnError: !this.state.emailOnError });
@@ -138,12 +148,15 @@ export default class HookForm extends Component {
   handleTriggerSchemaChange = value => {
     try {
       this.setState({
+        // eslint-disable-next-line react/no-unused-state
         triggerSchema: JSON.parse(value),
         triggerSchemaValidJson: true,
+        triggerSchemaInput: value,
       });
     } catch (err) {
       this.setState({
         triggerSchemaValidJson: false,
+        triggerSchemaInput: value,
       });
     }
   };
@@ -151,12 +164,15 @@ export default class HookForm extends Component {
   handleTaskChange = value => {
     try {
       this.setState({
+        // eslint-disable-next-line react/no-unused-state
         task: JSON.parse(value),
         taskValidJson: true,
+        taskInput: value,
       });
     } catch (err) {
       this.setState({
         taskValidJson: false,
+        taskInput: value,
       });
     }
   };
@@ -208,8 +224,8 @@ export default class HookForm extends Component {
       emailOnError,
       scheduleTextField,
       schedule,
-      task,
-      triggerSchema,
+      taskInput,
+      triggerSchemaInput,
     } = this.state;
     /* eslint-disable-next-line no-underscore-dangle */
     const lastFireTypeName = !isNewHook && hook.status.lastFire.__typename;
@@ -395,18 +411,23 @@ export default class HookForm extends Component {
                     JSON-e
                   </a>{' '}
                   to create the the task definition. See{' '}
-                  <a
-                    href="https://docs.taskcluster.net/reference/core/taskcluster-hooks/docs/firing-hooks"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    {'"'}firing hooks{'"'}
-                  </a>{' '}
+                  {
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={docs(
+                        `https://${process.env.DOMAIN}`,
+                        'reference/core/taskcluster-hooks/docs/firing-hooks'
+                      )}>
+                      {'"'}firing hooks{'"'}
+                    </a>
+                  }{' '}
                   for more information.
                 </span>
               </Typography>
               <CodeEditor
                 options={{ mode: 'json' }}
-                value={JSON.stringify(task, null, 2)}
+                value={JSON.stringify(taskInput, null, 2)}
                 onChange={this.handleTaskChange}
               />
             </ListItem>
@@ -414,14 +435,11 @@ export default class HookForm extends Component {
           <List subheader={<ListSubheader>Trigger Schema *</ListSubheader>}>
             <ListItem className={classes.editorListItem}>
               <Typography variant="caption">
-                <span>
-                  The payload to <code>triggerHook</code> must match this
-                  schema.
-                </span>
+                The payload to <code>triggerHook</code> must match this schema.
               </Typography>
               <CodeEditor
                 options={{ mode: 'json' }}
-                value={JSON.stringify(triggerSchema, null, 2)}
+                value={JSON.stringify(triggerSchemaInput, null, 2)}
                 onChange={this.handleTriggerSchemaChange}
               />
             </ListItem>

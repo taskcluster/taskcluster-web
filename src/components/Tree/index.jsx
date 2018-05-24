@@ -8,7 +8,6 @@ import ExpansionPanel, {
   ExpansionPanelDetails,
 } from 'material-ui/ExpansionPanel';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
-import theme from '../../theme';
 
 /** Prop-type for a recursive data structure */
 const tree = {
@@ -17,38 +16,41 @@ const tree = {
 
 tree.nodes = arrayOf(oneOfType([shape(tree), string]));
 
-@withStyles(theme => ({
-  panel: {
-    width: '100%',
-    paddingRight: 0,
-    paddingLeft: 0,
-  },
-  panelSummary: {
-    padding: 0,
-    marginLeft: theme.spacing.unit,
-  },
-  panelDetails: {
-    padding: 0,
-    display: 'block',
-  },
-  panelExpanded: {
-    margin: 0,
-    '&:before': {
-      opacity: 0,
+@withStyles(
+  theme => ({
+    panel: {
+      width: '100%',
+      paddingRight: 0,
+      paddingLeft: 0,
     },
-  },
-  childPanel: {
-    '&:before': {
-      opacity: 0,
+    panelSummary: {
+      padding: 0,
+      marginLeft: theme.spacing.unit,
     },
-  },
-  text: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'noWrap',
-    maxWidth: '75vw',
-  },
-}))
+    panelDetails: {
+      padding: 0,
+      display: 'block',
+    },
+    panelExpanded: {
+      margin: 0,
+      '&:before': {
+        opacity: 0,
+      },
+    },
+    childPanel: {
+      '&:before': {
+        opacity: 0,
+      },
+    },
+    text: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'noWrap',
+      maxWidth: '75vw',
+    },
+  }),
+  { withTheme: true }
+)
 /**
  * Render a tree view.
  */
@@ -78,8 +80,10 @@ export default class Tree extends Component {
   );
 
   renderNode = (node, parent, depth = 0) => {
-    let treeDepth = depth;
     const {
+      theme: {
+        spacing: { unit },
+      },
       classes,
       searchTerm,
       onLeafClick,
@@ -90,7 +94,6 @@ export default class Tree extends Component {
     } = this.props;
     const value = this.getNodeValue(node);
     const isLeaf = this.isLeaf(node);
-    const { unit } = theme.spacing;
     const textIndent = isLeaf
       ? depth * unit + unit + (parent ? unit : 0)
       : unit * depth + unit;
@@ -137,32 +140,24 @@ export default class Tree extends Component {
         <ExpansionPanelDetails
           className={classes.panelDetails}
           {...expansionPanelDetailsProps}>
-          {(treeDepth += 1) &&
-            node.nodes.map(l => this.renderNode(l, node, treeDepth))}
+          {node.nodes.map(l => this.renderNode(l, node, depth + 1))}
         </ExpansionPanelDetails>
       </ExpansionPanel>
     );
   };
 
   isLeaf(node) {
-    if (typeof node === 'string' || !node.nodes || !node.nodes.length) {
-      return true;
-    }
-
-    return false;
+    return typeof node === 'string' || !node.nodes || !node.nodes.length;
   }
 
   getNodeValue(node) {
-    if (typeof node === 'string') {
-      return node;
-    }
-
-    return node.value;
+    return typeof node === 'string' ? node : node.value;
   }
 
   filter(tree) {
     const { searchTerm } = this.props;
-    const newTree = tree.filter(node => {
+
+    return tree.filter(node => {
       const value = this.getNodeValue(node);
       const isLeaf = this.isLeaf(node);
 
@@ -178,8 +173,6 @@ export default class Tree extends Component {
 
       return Boolean(subtree.length);
     });
-
-    return newTree;
   }
 
   render() {

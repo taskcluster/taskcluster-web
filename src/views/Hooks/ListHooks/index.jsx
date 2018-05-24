@@ -20,7 +20,7 @@ import hooksQuery from './hooks.graphql';
     ...theme.mixins.fab,
   },
 }))
-export default class ViewHooks extends Component {
+export default class ListHooks extends Component {
   state = {
     hookSearch: '',
   };

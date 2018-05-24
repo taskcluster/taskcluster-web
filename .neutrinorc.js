@@ -65,6 +65,7 @@ module.exports = {
       'AUTH0_RESPONSE_TYPE',
       'AUTH0_SCOPE',
       'BASE_URL',
+      'DOMAIN',
     ]],
     (neutrino) => {
       if (process.env.NODE_ENV === 'development') {
