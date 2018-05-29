@@ -1,11 +1,16 @@
 import { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import { TableCell, TableRow } from 'material-ui/Table';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Drawer from 'material-ui/Drawer';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  TableCell,
+  TableRow,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Button,
+  Drawer,
+} from '@material-ui/core';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
 import { string, func, array, shape, arrayOf } from 'prop-types';

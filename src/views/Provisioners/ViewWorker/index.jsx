@@ -4,7 +4,7 @@ import { graphql } from 'react-apollo';
 import { format, addYears, isAfter } from 'date-fns';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import HammerIcon from 'mdi-react/HammerIcon';
-import TextField from 'material-ui/TextField';
+import { TextField } from '@material-ui/core';
 import HomeLockIcon from 'mdi-react/HomeLockIcon';
 import HomeLockOpenIcon from 'mdi-react/HomeLockOpenIcon';
 import Dashboard from '../../../components/Dashboard';

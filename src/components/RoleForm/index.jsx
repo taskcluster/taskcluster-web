@@ -1,11 +1,15 @@
 import { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { bool } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import TextField from 'material-ui/TextField';
-import Tooltip from 'material-ui/Tooltip';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Tooltip,
+} from '@material-ui/core';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
 import { role } from '../../utils/prop-types';

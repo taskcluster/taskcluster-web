@@ -11,10 +11,13 @@ import {
   sort as rSort,
 } from 'ramda';
 import { camelCase } from 'change-case/change-case';
-import { withStyles } from 'material-ui/styles';
-import { TableRow, TableCell } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
-import { ListItemText } from 'material-ui/List';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  TableRow,
+  TableCell,
+  ListItemText,
+  Typography,
+} from '@material-ui/core';
 import LinkIcon from 'mdi-react/LinkIcon';
 import TableCellListItem from '../TableCellListItem';
 import { role } from '../../utils/prop-types';

@@ -1,14 +1,15 @@
 import { Component } from 'react';
 import { bool, func, instanceOf, oneOfType, string } from 'prop-types';
 import classNames from 'classnames';
-import { withStyles } from 'material-ui/styles';
-import { lighten } from 'material-ui/styles/colorManipulator';
-import ExpansionPanel, {
-  ExpansionPanelSummary,
+import { withStyles } from '@material-ui/core/styles';
+import { lighten } from '@material-ui/core/styles/colorManipulator';
+import {
+  ExpansionPanel,
   ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
-import IconButton from 'material-ui/IconButton';
-import Paper from 'material-ui/Paper';
+  ExpansionPanelSummary,
+  IconButton,
+  Paper,
+} from '@material-ui/core';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
 import CloseIcon from 'mdi-react/CloseIcon';
 import ErrorBox from './ErrorBox';

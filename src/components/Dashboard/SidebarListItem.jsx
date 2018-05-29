@@ -2,8 +2,8 @@ import { Component, cloneElement } from 'react';
 import { node, string } from 'prop-types';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import { withStyles } from '@material-ui/core/styles';
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 @withStyles(theme => ({
   active: {

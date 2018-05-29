@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { bool, node, oneOf } from 'prop-types';
 import classNames from 'classnames';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 
 @withStyles(theme => ({
   dense: {

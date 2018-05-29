@@ -3,14 +3,19 @@ import { Link } from 'react-router-dom';
 import { bool } from 'prop-types';
 import { addYears } from 'date-fns';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import TextField from 'material-ui/TextField';
-import Tooltip from 'material-ui/Tooltip';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import Switch from 'material-ui/Switch';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Button,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Tooltip,
+  Switch,
+  FormGroup,
+  FormControlLabel,
+} from '@material-ui/core';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
 import LockResetIcon from 'mdi-react/LockResetIcon';

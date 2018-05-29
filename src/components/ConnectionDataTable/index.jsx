@@ -1,14 +1,15 @@
 import { Component, Fragment } from 'react';
 import { array, arrayOf, func, number, shape, string, oneOf } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Table, {
-  TableBody,
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Table,
   TableCell,
+  TableBody,
   TableHead,
   TableSortLabel,
   TablePagination,
   TableRow,
-} from 'material-ui/Table';
+} from '@material-ui/core';
 import Spinner from '../Spinner';
 import { pageInfo } from '../../utils/prop-types';
 

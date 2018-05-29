@@ -1,11 +1,16 @@
 import { Component, Fragment } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import Card, { CardContent } from 'material-ui/Card';
-import Collapse from 'material-ui/transitions/Collapse';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
 import ChevronUpIcon from 'mdi-react/ChevronUpIcon';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';

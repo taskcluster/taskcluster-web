@@ -1,13 +1,14 @@
 import { Component, Fragment } from 'react';
 import { func } from 'prop-types';
-import Button from 'material-ui/Button';
-import Dialog, {
+import {
+  Button,
+  Dialog,
+  DialogTitle,
   DialogActions,
   DialogContent,
-  DialogTitle,
-} from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import Tooltip from 'material-ui/Tooltip';
+  TextField,
+  Tooltip,
+} from '@material-ui/core';
 import NumericIcon from 'mdi-react/NumericIcon';
 
 export default class GoToLineButton extends Component {

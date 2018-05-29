@@ -2,14 +2,16 @@ import { Component } from 'react';
 import { bool, func, node, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { withStyles } from 'material-ui/styles';
-import Drawer from 'material-ui/Drawer';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import Hidden from 'material-ui/Hidden';
-import Divider from 'material-ui/Divider';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Drawer,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Hidden,
+  Divider,
+} from '@material-ui/core';
 import MenuIcon from 'mdi-react/MenuIcon';
 import PageTitle from '../PageTitle';
 import ErrorPanel from '../ErrorPanel';

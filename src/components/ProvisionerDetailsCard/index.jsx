@@ -1,13 +1,18 @@
 import { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { bool } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Card, { CardContent } from 'material-ui/Card';
-import Collapse from 'material-ui/transitions/Collapse';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
-import Tooltip from 'material-ui/Tooltip';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Card,
+  CardContent,
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Tooltip,
+  Button,
+} from '@material-ui/core';
 import ChevronUpIcon from 'mdi-react/ChevronUpIcon';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
 import LinkIcon from 'mdi-react/LinkIcon';

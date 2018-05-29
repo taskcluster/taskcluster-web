@@ -1,15 +1,16 @@
 import { Component } from 'react';
 import { node, string, func, bool } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Dialog, {
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Button,
+  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  CircularProgress,
   withMobileDialog,
-} from 'material-ui/Dialog';
-import { CircularProgress } from 'material-ui/Progress';
+} from '@material-ui/core';
 import ErrorPanel from '../ErrorPanel';
 
 @withMobileDialog()

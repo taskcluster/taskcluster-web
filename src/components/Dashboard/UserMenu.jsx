@@ -1,9 +1,14 @@
 import { Component, Fragment } from 'react';
 import { func } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Avatar,
+  Menu,
+  MenuItem,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
 import AccountCircleIcon from 'mdi-react/AccountCircleIcon';
 import { user } from '../../utils/prop-types';
 

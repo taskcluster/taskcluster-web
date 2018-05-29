@@ -1,11 +1,8 @@
 import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { graphql } from 'react-apollo';
-import { withStyles } from 'material-ui/styles';
-import Chip from 'material-ui/Chip';
-import Divider from 'material-ui/Divider';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import { Chip, Divider, Grid, Typography } from '@material-ui/core';
 import dotProp from 'dot-prop-immutable';
 import Dashboard from '../../../components/Dashboard';
 import TaskDetailsCard from '../../../components/TaskDetailsCard';

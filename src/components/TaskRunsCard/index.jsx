@@ -2,14 +2,20 @@ import { Component, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { func, number, string } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Card, { CardContent } from 'material-ui/Card';
-import Collapse from 'material-ui/transitions/Collapse';
-import MobileStepper from 'material-ui/MobileStepper';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import { TableCell, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Button,
+  Typography,
+  Card,
+  CardContent,
+  Collapse,
+  MobileStepper,
+  List,
+  ListItem,
+  ListItemText,
+  TableCell,
+  TableRow,
+} from '@material-ui/core';
 import ChevronLeftIcon from 'mdi-react/ChevronLeftIcon';
 import ChevronUpIcon from 'mdi-react/ChevronUpIcon';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
@@ -64,6 +70,9 @@ const DOTS_VARIANT_LIMIT = 5;
   },
   logButton: {
     marginRight: theme.spacing.unit,
+  },
+  artifactsListItemContainer: {
+    display: 'block',
   },
 }))
 /**
@@ -316,7 +325,10 @@ export default class TaskRunsCard extends Component {
               </ListItem>
               <Collapse in={showArtifacts} timeout="auto">
                 <List component="div" disablePadding>
-                  <ListItem component="div" disableGutters>
+                  <ListItem
+                    className={classes.artifactsListItemContainer}
+                    component="div"
+                    disableGutters>
                     {this.renderArtifactsTable()}
                   </ListItem>
                 </List>

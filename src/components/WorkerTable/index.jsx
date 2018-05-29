@@ -1,12 +1,15 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { TableCell, TableRow } from 'material-ui/Table';
+import {
+  TableCell,
+  TableRow,
+  Typography,
+  ListItemText,
+} from '@material-ui/core';
 import { camelCase } from 'change-case';
 import { memoizeWith } from 'ramda';
 import LinkIcon from 'mdi-react/LinkIcon';
-import { withStyles } from 'material-ui/styles';
-import { ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import TableCellListItem from '../TableCellListItem';
 import DateDistance from '../DateDistance';

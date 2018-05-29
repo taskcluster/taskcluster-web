@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import { func, string } from 'prop-types';
 import { formatDistanceStrict } from 'date-fns';
 import { memoizeWith, pipe, filter, map, sort as rSort } from 'ramda';
-import { ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
-import { TableCell, TableRow } from 'material-ui/Table';
+import {
+  ListItemText,
+  Typography,
+  TableCell,
+  TableRow,
+} from '@material-ui/core';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
 import StatusLabel from '../StatusLabel';
