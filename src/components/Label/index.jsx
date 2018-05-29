@@ -14,7 +14,7 @@ import { Button } from '@material-ui/core';
     padding: '3px 8px 2px',
   },
   disabled: {
-    color: 'white',
+    color: 'white !important',
   },
   error: {
     backgroundColor: `${theme.palette.error.dark} !important`,
