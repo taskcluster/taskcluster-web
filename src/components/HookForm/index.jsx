@@ -1,15 +1,21 @@
 import { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { bool, func } from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText, ListSubheader } from 'material-ui/List';
-import TextField from 'material-ui/TextField';
-import Switch from 'material-ui/Switch';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
-import Tooltip from 'material-ui/Tooltip';
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+  TextField,
+  Switch,
+  FormGroup,
+  FormControlLabel,
+  Tooltip,
+  Button,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import FlashIcon from 'mdi-react/FlashIcon';
 import PlusIcon from 'mdi-react/PlusIcon';

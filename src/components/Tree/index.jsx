@@ -1,12 +1,13 @@
 import { Component } from 'react';
 import { arrayOf, shape, string, func, oneOfType, object } from 'prop-types';
 import { memoizeWith } from 'ramda';
-import { withStyles } from 'material-ui/styles';
-import { ListItem } from 'material-ui/List';
-import ExpansionPanel, {
+import { withStyles } from '@material-ui/core/styles';
+import {
+  ListItem,
+  ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
+} from '@material-ui/core';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
 
 /** Prop-type for a recursive data structure */
