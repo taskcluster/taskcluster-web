@@ -117,7 +117,11 @@ export default class HookForm extends Component {
     schedule: null,
   };
 
-  static getDerivedStateFromProps({ hook }) {
+  static getDerivedStateFromProps({ hook }, prevState) {
+    if (prevState.hookId) {
+      return null;
+    }
+
     return {
       hookId: hook.hookId,
       hookGroupId: hook.hookGroupId,
