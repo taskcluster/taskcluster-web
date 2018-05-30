@@ -2412,11 +2412,7 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codemirror@^5.36.0:
-  version "5.38.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
-
-codemirror@^5.38.0:
+codemirror@^5.36.0, codemirror@^5.38.0:
   version "5.38.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
 
@@ -6603,6 +6599,13 @@ material-ui-pickers@^1.0.0-rc.9:
   dependencies:
     babel-runtime "^6.26.0"
     react-text-mask "^5.3.1"
+
+material-ui-treeview@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/material-ui-treeview/-/material-ui-treeview-1.0.0.tgz#1c5f75dc3f342b587eb20f3906460af27669b74b"
+  dependencies:
+    "@material-ui/icons" "^1.1.0"
+    ramda "^0.25.0"
 
 math-expression-evaluator@^1.2.14:
   version "1.2.17"

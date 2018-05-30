@@ -41,6 +41,7 @@
     "markdown-it-highlightjs": "^3.0.0",
     "markdown-it-link-attributes": "^2.1.0",
     "material-ui-pickers": "^1.0.0-rc.9",
+    "material-ui-treeview": "^1.0.0",
     "mdi-react": "^3.0.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",

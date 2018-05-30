@@ -4,10 +4,10 @@ import { graphql } from 'react-apollo';
 import { prop, map } from 'ramda';
 import { withStyles } from '@material-ui/core/styles';
 import { Tooltip, Button } from '@material-ui/core';
+import MuiTreeView from 'material-ui-treeview';
 import PlusIcon from 'mdi-react/PlusIcon';
 import Dashboard from '../../../components/Dashboard';
 import Search from '../../../components/Search';
-import Tree from '../../../components/Tree';
 import Spinner from '../../../components/Spinner';
 import ErrorPanel from '../../../components/ErrorPanel';
 import hooksQuery from './hooks.graphql';
@@ -68,7 +68,7 @@ export default class ListHooks extends Component {
         {!hookGroups && loading && <Spinner loading />}
         {error && error.graphQLErrors && <ErrorPanel error={error} />}
         {hookGroups && (
-          <Tree
+          <MuiTreeView
             searchTerm={hookSearch || null}
             tree={tree}
             onLeafClick={this.handleLeafClick}
