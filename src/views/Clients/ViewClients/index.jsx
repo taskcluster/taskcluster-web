@@ -2,7 +2,7 @@ import { PureComponent, Fragment } from 'react';
 import { hot } from 'react-hot-loader';
 import { graphql } from 'react-apollo';
 import { withStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import PlusIcon from 'mdi-react/PlusIcon';
 import dotProp from 'dot-prop-immutable';
 import Dashboard from '../../../components/Dashboard';

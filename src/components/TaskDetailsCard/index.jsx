@@ -2,15 +2,13 @@ import { Component, Fragment } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Collapse,
-  List,
-  ListItem,
-  ListItemText,
-} from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Collapse from '@material-ui/core/Collapse';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import ChevronUpIcon from 'mdi-react/ChevronUpIcon';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';

@@ -3,19 +3,17 @@ import { Link, withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { func, number, string } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  Collapse,
-  MobileStepper,
-  List,
-  ListItem,
-  ListItemText,
-  TableCell,
-  TableRow,
-} from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Collapse from '@material-ui/core/Collapse';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 import ChevronLeftIcon from 'mdi-react/ChevronLeftIcon';
 import ChevronUpIcon from 'mdi-react/ChevronUpIcon';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';

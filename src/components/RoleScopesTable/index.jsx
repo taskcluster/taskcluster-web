@@ -16,7 +16,9 @@ import {
   sort as rSort,
 } from 'ramda';
 import { withStyles } from '@material-ui/core/styles';
-import { ListItemText, TableRow, TableCell } from '@material-ui/core';
+import ListItemText from '@material-ui/core/ListItemText';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
 import LinkIcon from 'mdi-react/LinkIcon';
 import TableCellListItem from '../TableCellListItem';
 import DataTable from '../DataTable';

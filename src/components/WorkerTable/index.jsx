@@ -1,11 +1,9 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  TableCell,
-  TableRow,
-  Typography,
-  ListItemText,
-} from '@material-ui/core';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+import ListItemText from '@material-ui/core/ListItemText';
 import { camelCase } from 'change-case';
 import { memoizeWith } from 'ramda';
 import LinkIcon from 'mdi-react/LinkIcon';

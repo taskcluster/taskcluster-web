@@ -3,7 +3,9 @@ import { node, string } from 'prop-types';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 @withStyles(theme => ({
   active: {
