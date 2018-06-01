@@ -221,3 +221,37 @@ export const hook = shape({
   deadline: date,
   triggerSchema: object,
 });
+
+const aws = {
+  region: string,
+  az: string,
+  instanceType: string,
+};
+
+export const awsProvisionerHealth = shape({
+  running: arrayOf(shape(aws)),
+  terminationHealth: arrayOf(
+    shape({
+      ...aws,
+      clean_shutdown: number,
+      spot_kill: number,
+      insufficient_capacity: number,
+      volume_limit_exceeded: number,
+      missing_ami: number,
+      startup_failed: number,
+      unknown_codes: number,
+      no_code: number,
+    })
+  ),
+  requestHealth: arrayOf(
+    shape({
+      ...aws,
+      successful: number,
+      failed: number,
+      configuration_issue: number,
+      throttled_calls: number,
+      insufficient_capacity: number,
+      limit_exceeded: number,
+    })
+  ),
+});

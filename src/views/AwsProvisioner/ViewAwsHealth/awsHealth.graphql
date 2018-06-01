@@ -1,0 +1,33 @@
+query AwsHealth {
+  awsProvisionerHealth {
+    running {
+      region
+      az
+      instanceType
+    }
+    terminationHealth {
+      region
+      az
+      instanceType
+      clean_shutdown
+      spot_kill
+      insufficient_capacity
+      volume_limit_exceeded
+      missing_ami
+      startup_failed
+      unknown_codes
+      no_code
+    }
+    requestHealth {
+      region
+      az
+      instanceType
+      successful
+      failed
+      configuration_issue
+      throttled_calls
+      insufficient_capacity
+      limit_exceeded
+    }
+  }
+}
