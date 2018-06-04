@@ -5,11 +5,11 @@ import RouteWithProps from '../../components/RouteWithProps';
 import loadable from '../../utils/loadable';
 
 const ViewAwsHealth = loadable(() =>
-  import(/* webpackChunkName: 'Clients.ViewClients' */ './ViewAwsHealth')
+  import(/* webpackChunkName: 'AwsProvisioner.ViewAwsHealth' */ './ViewAwsHealth')
 );
 
 @hot(module)
-export default class Clients extends Component {
+export default class AwsProvisioner extends Component {
   render() {
     const {
       match: { path },

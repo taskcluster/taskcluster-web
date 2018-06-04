@@ -234,13 +234,13 @@ export const awsProvisionerHealth = shape({
     shape({
       ...aws,
       clean_shutdown: number,
-      spot_kill: number,
-      insufficient_capacity: number,
-      volume_limit_exceeded: number,
-      missing_ami: number,
-      startup_failed: number,
-      unknown_codes: number,
-      no_code: number,
+      spotKill: number,
+      insufficientCapacity: number,
+      volumeLimitExceeded: number,
+      missingAmi: number,
+      startupFailed: number,
+      unknownCodes: number,
+      noCode: number,
     })
   ),
   requestHealth: arrayOf(
@@ -248,10 +248,10 @@ export const awsProvisionerHealth = shape({
       ...aws,
       successful: number,
       failed: number,
-      configuration_issue: number,
-      throttled_calls: number,
-      insufficient_capacity: number,
-      limit_exceeded: number,
+      configurationIssue: number,
+      throttledCalls: number,
+      insufficientCapacity: number,
+      limitExceeded: number,
     })
   ),
 });

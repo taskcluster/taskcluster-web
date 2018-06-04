@@ -3,9 +3,7 @@ import {
   memoizeWith,
   pipe,
   map,
-  ifElse,
   isEmpty,
-  identity,
   defaultTo,
   sort as rSort,
 } from 'ramda';
@@ -33,6 +31,8 @@ const sorted = pipe(
   ),
   map(({ region, az, instanceType }) => `${region}-${az}-${instanceType}`)
 );
+const iconSize = 18;
+const or0 = defaultTo(0);
 
 @withStyles(theme => ({
   drawerContainer: {
@@ -75,7 +75,6 @@ export default class AwsProvisionerHealthTable extends Component {
       const { requestHealth, terminationHealth, running } = healthData;
       const identifier = item =>
         `${item.az}-${item.region}-${item.instanceType}`;
-      const or0 = defaultTo(0);
 
       requestHealth.forEach(item => {
         healthSummary[identifier(item)] = {
@@ -101,34 +100,30 @@ export default class AwsProvisionerHealthTable extends Component {
           or0(item.successful) + or0(item.clean_shutdown) + or0(item.running);
         healthSummary[key].unhealthy =
           or0(item.failed) +
-          or0(item.spot_kill) +
-          or0(item.insufficient_capacity) +
-          or0(item.volume_limit_exceeded) +
-          or0(item.missing_ami) +
-          or0(item.startup_failed) +
-          or0(item.unknown_codes) +
-          or0(item.no_code);
+          or0(item.spotKill) +
+          or0(item.insufficientCapacity) +
+          or0(item.volumeLimitExceeded) +
+          or0(item.missingAmi) +
+          or0(item.startupFailed) +
+          or0(item.unknownCodes) +
+          or0(item.noCode);
       });
 
       const sortByProperty = camelCase(sortBy);
       const healthValues = Object.values(healthSummary);
 
-      if (!sortBy) {
+      if (!sortBy || isEmpty(healthValues)) {
         return healthValues;
       }
 
-      return ifElse(
-        isEmpty,
-        identity,
-        rSort((a, b) => {
-          const firstElement =
-            sortDirection === 'desc' ? b[sortByProperty] : a[sortByProperty];
-          const secondElement =
-            sortDirection === 'desc' ? a[sortByProperty] : b[sortByProperty];
+      return healthValues.sort((a, b) => {
+        const firstElement =
+          sortDirection === 'desc' ? b[sortByProperty] : a[sortByProperty];
+        const secondElement =
+          sortDirection === 'desc' ? a[sortByProperty] : b[sortByProperty];
 
-          return sort(firstElement, secondElement);
-        })
-      )(healthValues);
+        return sort(firstElement, secondElement);
+      });
     }
   );
 
@@ -157,8 +152,6 @@ export default class AwsProvisionerHealthTable extends Component {
       sortBy,
       sortDirection
     );
-    const iconSize = 18;
-    const or0 = defaultTo('0');
 
     if (isEmpty(sortedHealth)) {
       return <Typography>Health stats not available</Typography>;
@@ -194,7 +187,7 @@ export default class AwsProvisionerHealthTable extends Component {
                   button
                   dense
                   onClick={() => this.handleDrawerOpen(item, 'Healthy')}>
-                  <ListItemText primary={item.healthy || '0'} />
+                  <ListItemText primary={or0(item.healthy)} />
                   <InformationVariantIcon size={iconSize} />
                 </TableCellListItem>
               </TableCell>
@@ -203,7 +196,7 @@ export default class AwsProvisionerHealthTable extends Component {
                   button
                   dense
                   onClick={() => this.handleDrawerOpen(item, 'Unhealthy')}>
-                  <ListItemText primary={item.unhealthy || '0'} />
+                  <ListItemText primary={or0(item.unhealthy)} />
                   <InformationVariantIcon size={iconSize} />
                 </TableCellListItem>
               </TableCell>
