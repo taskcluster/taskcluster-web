@@ -116,7 +116,7 @@ const theme = createMuiTheme({
         backgroundColor: 'transparent',
       },
     },
-    yellowIcon: {
+    warningIcon: {
       backgroundColor: warning.main,
       '&:hover': {
         backgroundColor: warning.dark,
@@ -125,7 +125,7 @@ const theme = createMuiTheme({
         backgroundColor: 'transparent',
       },
     },
-    redIcon: {
+    errorIcon: {
       backgroundColor: error.main,
       '&:hover': {
         backgroundColor: error.dark,

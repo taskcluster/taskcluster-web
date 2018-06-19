@@ -19,10 +19,10 @@ import workerTypesQuery from './workerTypes.graphql';
 @graphql(workerTypesQuery)
 @withStyles(theme => ({
   alertIcon: {
-    ...theme.mixins.yellowIcon,
+    ...theme.mixins.warningIcon,
   },
   heartIcon: {
-    ...theme.mixins.redIcon,
+    ...theme.mixins.errorIcon,
   },
 }))
 export default class ViewRoles extends Component {
