@@ -9,7 +9,7 @@ const ViewCachePurges = loadable(() =>
 );
 
 @hot(module)
-export default class PurgeCaches extends Component {
+export default class CachePurges extends Component {
   render() {
     const {
       match: { path },
