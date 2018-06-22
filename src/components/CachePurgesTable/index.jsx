@@ -22,7 +22,7 @@ export default class CachePurgesTable extends Component {
   static propTypes = {
     /** Callback function fired when a page is changed. */
     onPageChange: func.isRequired,
-    /** Secrets GraphQL PageConnection instance. */
+    /** CachePurges GraphQL PageConnection instance. */
     cachePurgesConnection: shape({
       edges: arrayOf(cachePurge),
       pageInfo,
