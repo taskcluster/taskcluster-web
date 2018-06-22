@@ -83,7 +83,7 @@ export default [
   },
   {
     component: loadable(() =>
-      import(/* webpackChunkName: 'Secrets' */ '../views/CachePurges')
+      import(/* webpackChunkName: 'CachePurges' */ '../views/CachePurges')
     ),
     path: '/purge-caches',
   },
