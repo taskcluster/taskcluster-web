@@ -1,0 +1,5 @@
+query Github($owner: String!, $repo: String!) {
+  githubRepository(owner:$owner, repo: $repo) {
+    installed
+  }
+}
