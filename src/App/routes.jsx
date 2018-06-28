@@ -89,7 +89,7 @@ export default [
   },
   {
     component: loadable(() =>
-      import(/* webpackChunkName: 'CachePurges' */ '../views/Quickstart')
+      import(/* webpackChunkName: 'Quickstart' */ '../views/Quickstart')
     ),
     path: '/quickstart',
   },

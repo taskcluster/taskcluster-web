@@ -144,10 +144,6 @@ export default class QuickStart extends Component {
     installedState: null,
   };
 
-  handleAccessChange = ({ target: { value } }) => {
-    this.setState({ access: value, editorValue: null });
-  };
-
   handleEventsSelection = ({ target: { value } }) => {
     const events = new Set(this.state.events);
 
@@ -325,35 +321,6 @@ export default class QuickStart extends Component {
             <ListItem>
               <FormControl component="fieldset">
                 <FormLabel component="legend">
-                  Who can trigger tasks from PRs?
-                </FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={access === 'public'}
-                        onChange={this.handleAccessChange}
-                        value="public"
-                      />
-                    }
-                    label="Public"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={access === 'collaborators'}
-                        onChange={this.handleAccessChange}
-                        value="collaborators"
-                      />
-                    }
-                    label="Only Collaborators"
-                  />
-                </FormGroup>
-              </FormControl>
-            </ListItem>
-            <ListItem>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">
                   This task should run on
                 </FormLabel>
                 <FormGroup>
@@ -419,6 +386,20 @@ export default class QuickStart extends Component {
                   label="Release or tag created"
                 />
               </FormControl>
+            </ListItem>
+            <ListItem>
+              <TextField
+                id="select-access"
+                select
+                label="Access"
+                helperText="Who can trigger tasks from PRs?"
+                value={access}
+                name="access"
+                onChange={this.handleInputChange}
+                margin="normal">
+                <MenuItem value="public">Public</MenuItem>
+                <MenuItem value="collaborators">Collaborators</MenuItem>
+              </TextField>
             </ListItem>
             <ListItem>
               <TextField
