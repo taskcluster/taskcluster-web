@@ -5,10 +5,10 @@ import RouteWithProps from '../../components/RouteWithProps';
 import loadable from '../../utils/loadable';
 
 const ViewScopes = loadable(() =>
-  import(/* webpackChunkName: 'Clients.ViewScopes' */ './ViewScopes')
+  import(/* webpackChunkName: 'Scopes.ViewScopes' */ './ViewScopes')
 );
 const ViewScope = loadable(() =>
-  import(/* webpackChunkName: 'Clients.ViewScope' */ './ViewScope')
+  import(/* webpackChunkName: 'Scopes.ViewScope' */ './ViewScope')
 );
 
 @hot(module)
