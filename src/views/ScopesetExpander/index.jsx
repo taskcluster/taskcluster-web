@@ -63,7 +63,7 @@ export default class ScopesetExpander extends Component {
 
     return (
       <Dashboard
-        title="Scopeset Expander"
+        title="Expand Scopesets"
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}>
