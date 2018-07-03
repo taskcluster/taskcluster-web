@@ -14,6 +14,7 @@ import Dashboard from '../../components/Dashboard/index';
 import Spinner from '../../components/Spinner/index';
 import ErrorPanel from '../../components/ErrorPanel/index';
 import CodeEditor from '../../components/CodeEditor/index';
+import splitLines from '../../utils/splitLines';
 import scopesetQuery from './scopeset.graphql';
 
 @hot(module)
@@ -37,7 +38,7 @@ export default class ScopesetExpander extends Component {
   };
 
   handleExpandScopesClick = async () => {
-    const scopes = this.parseScopes(this.state.scopeText);
+    const scopes = splitLines(this.state.scopeText);
 
     this.setState({ scopes });
   };
@@ -45,17 +46,6 @@ export default class ScopesetExpander extends Component {
   handleScopesChange = scopeText => {
     this.setState({ scopeText });
   };
-
-  parseScopes(scopeText) {
-    return [
-      ...new Set(
-        scopeText
-          .split(/[\r\n]+/)
-          .map(s => s.trim())
-          .filter(Boolean)
-      ),
-    ];
-  }
 
   render() {
     const { classes, user, onSignIn, onSignOut } = this.props;
