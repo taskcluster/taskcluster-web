@@ -6,10 +6,14 @@ import Dashboard from '../../../components/Dashboard';
 @hot(module)
 export default class TaskGroup extends Component {
   render() {
-    const { user, onSignIn, onSignOut } = this.props;
+    const { user, onSignIn, onSignOut, onThemeToggle } = this.props;
 
     return (
-      <Dashboard user={user} onSignIn={onSignIn} onSignOut={onSignOut}>
+      <Dashboard
+        user={user}
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}>
         <Typography variant="display1">
           Hello, {user.nickname || user.name}!
         </Typography>

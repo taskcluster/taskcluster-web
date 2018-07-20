@@ -6,13 +6,14 @@ import Dashboard from '../../components/Dashboard';
 @hot(module)
 export default class Documentation extends Component {
   render() {
-    const { user, onSignIn, onSignOut } = this.props;
+    const { user, onSignIn, onSignOut, onThemeToggle } = this.props;
 
     return (
       <Dashboard
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}
         title="Documentation">
         <Typography variant="display1">Documentation</Typography>
       </Dashboard>

@@ -19,12 +19,20 @@ import hookQuery from './hook.graphql';
 })
 export default class ViewHook extends Component {
   render() {
-    const { isNewHook, user, onSignIn, onSignOut, data } = this.props;
+    const {
+      isNewHook,
+      user,
+      onSignIn,
+      onSignOut,
+      onThemeToggle,
+      data,
+    } = this.props;
 
     return (
       <Dashboard
         title={isNewHook ? 'Create Hook' : 'Hook'}
         user={user}
+        onThemeToggle={onThemeToggle}
         onSignIn={onSignIn}
         onSignOut={onSignOut}>
         {isNewHook ? (

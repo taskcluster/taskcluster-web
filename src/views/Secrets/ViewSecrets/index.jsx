@@ -71,6 +71,7 @@ export default class ViewSecrets extends Component {
       user,
       onSignIn,
       onSignOut,
+      onThemeToggle,
       data: { loading, error, secrets },
     } = this.props;
 
@@ -79,7 +80,8 @@ export default class ViewSecrets extends Component {
         title="Secrets"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}>
+        onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}>
         <Fragment>
           {!secrets && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}

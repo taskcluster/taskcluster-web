@@ -10,16 +10,17 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { CachePersistor } from 'apollo-cache-persist';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
-import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Authorize } from 'react-auth0-components';
 import RouteWithProps from '../components/RouteWithProps';
 import FontStager from '../components/FontStager';
-import theme from '../theme';
+import withThemeToggler from './withThemeToggler';
 import routes from './routes';
 
 @hot(module)
-@withStyles({
+@withThemeToggler
+@withStyles(theme => ({
   '@global': {
     [[
       'input:-webkit-autofill',
@@ -32,7 +33,7 @@ import routes from './routes';
       transitionDelay: 'background-color 5000s, color 5000s',
     },
     '.mdi-icon': {
-      fill: theme.palette.common.white,
+      fill: theme.palette.text.primary,
     },
     '.CodeMirror': {
       fontSize: 13,
@@ -42,7 +43,10 @@ import routes from './routes';
       fill: theme.palette.primary.light,
     },
     a: {
-      color: theme.palette.primary.contrastText,
+      color: theme.palette.text.primary,
+    },
+    'html, body': {
+      color: theme.palette.text.secondary,
     },
     pre: {
       overflowX: 'auto',
@@ -51,7 +55,7 @@ import routes from './routes';
       ...theme.mixins.highlight,
     },
   },
-})
+}))
 export default class App extends Component {
   state = {
     authResult: null,
@@ -118,35 +122,34 @@ export default class App extends Component {
 
     return (
       <ApolloProvider client={this.apolloClient}>
-        <MuiThemeProvider theme={theme}>
-          <FontStager />
-          <CssBaseline />
-          {error && <ErrorPanel error={error} />}
-          <Authorize
-            popup
-            authorize={authorize}
-            onError={this.handleError}
-            onAuthorize={this.handleAuthorization}
-            domain={process.env.AUTH0_DOMAIN}
-            clientID={process.env.AUTH0_CLIENT_ID}
-            redirectUri={process.env.AUTH0_REDIRECT_URI}
-            responseType={process.env.AUTH0_RESPONSE_TYPE}
-            scope={process.env.AUTH0_SCOPE}
-          />
-          <BrowserRouter>
-            <Switch>
-              {routes.map(props => (
-                <RouteWithProps
-                  key={props.path || 'not-found'}
-                  {...props}
-                  user={userInfo}
-                  onSignIn={this.handleStartAuthorization}
-                  onSignOut={this.handleSignOut}
-                />
-              ))}
-            </Switch>
-          </BrowserRouter>
-        </MuiThemeProvider>
+        <FontStager />
+        <CssBaseline />
+        {error && <ErrorPanel error={error} />}
+        <Authorize
+          popup
+          authorize={authorize}
+          onError={this.handleError}
+          onAuthorize={this.handleAuthorization}
+          domain={process.env.AUTH0_DOMAIN}
+          clientID={process.env.AUTH0_CLIENT_ID}
+          redirectUri={process.env.AUTH0_REDIRECT_URI}
+          responseType={process.env.AUTH0_RESPONSE_TYPE}
+          scope={process.env.AUTH0_SCOPE}
+        />
+        <BrowserRouter>
+          <Switch>
+            {routes.map(props => (
+              <RouteWithProps
+                onThemeToggle={this.props.onThemeToggle}
+                key={props.path || 'not-found'}
+                {...props}
+                user={userInfo}
+                onSignIn={this.handleStartAuthorization}
+                onSignOut={this.handleSignOut}
+              />
+            ))}
+          </Switch>
+        </BrowserRouter>
       </ApolloProvider>
     );
   }

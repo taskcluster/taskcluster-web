@@ -28,7 +28,14 @@ import Log from '../../../components/Log';
 }))
 export default class TaskLog extends Component {
   render() {
-    const { classes, user, onSignIn, onSignOut, match } = this.props;
+    const {
+      classes,
+      user,
+      onSignIn,
+      onSignOut,
+      onThemeToggle,
+      match,
+    } = this.props;
     const url = decodeURIComponent(match.params.logUrl);
 
     return (
@@ -36,6 +43,7 @@ export default class TaskLog extends Component {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}
         disablePadding>
         <Log
           url={url}

@@ -19,6 +19,10 @@ import hooksQuery from './hooks.graphql';
   actionButton: {
     ...theme.mixins.fab,
   },
+  listItemProps: {
+    button: true,
+    color: '#fff',
+  },
 }))
 export default class ListHooks extends Component {
   state = {
@@ -43,6 +47,7 @@ export default class ListHooks extends Component {
       user,
       onSignIn,
       onSignOut,
+      onThemeToggle,
       data: { loading, error, hookGroups },
     } = this.props;
     const { hookSearch } = this.state;
@@ -59,6 +64,7 @@ export default class ListHooks extends Component {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}
         search={
           <Search
             value={hookSearch}
@@ -70,6 +76,7 @@ export default class ListHooks extends Component {
         {error && error.graphQLErrors && <ErrorPanel error={error} />}
         {hookGroups && (
           <MuiTreeView
+            listItemProps={{ color: classes.listItemProps }}
             searchTerm={hookSearch || null}
             tree={tree}
             onLeafClick={this.handleLeafClick}

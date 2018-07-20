@@ -243,7 +243,7 @@ export default class QuickStart extends Component {
   };
 
   render() {
-    const { classes, user, onSignIn, onSignOut } = this.props;
+    const { classes, user, onSignIn, onSignOut, onThemeToggle } = this.props;
     const {
       repo,
       owner,
@@ -261,7 +261,8 @@ export default class QuickStart extends Component {
         title="GitHub Quick Start"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}>
+        onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}>
         <Fragment>
           <div className={classes.orgRepo}>
             <TextField

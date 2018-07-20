@@ -15,6 +15,7 @@ export default class ViewAwsHealth extends Component {
       user,
       onSignIn,
       onSignOut,
+      onThemeToggle,
       data: { loading, error, awsProvisionerHealth },
     } = this.props;
 
@@ -23,7 +24,8 @@ export default class ViewAwsHealth extends Component {
         title="AWS Provisioner Health"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}>
+        onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}>
         {loading && <Spinner loading />}
         {error &&
           error.graphQLErrors && (

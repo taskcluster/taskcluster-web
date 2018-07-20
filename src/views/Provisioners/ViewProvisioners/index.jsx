@@ -22,6 +22,7 @@ export default class ViewProvisioners extends Component {
       user,
       onSignIn,
       onSignOut,
+      onThemeToggle,
       classes,
       data: { loading, error, provisioners },
     } = this.props;
@@ -31,7 +32,8 @@ export default class ViewProvisioners extends Component {
         title="Provisioners"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}>
+        onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}>
         {loading && <Spinner loading />}
         {error &&
           error.graphQLErrors && (

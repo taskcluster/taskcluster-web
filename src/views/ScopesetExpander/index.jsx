@@ -48,7 +48,7 @@ export default class ScopesetExpander extends Component {
   };
 
   render() {
-    const { classes, user, onSignIn, onSignOut } = this.props;
+    const { classes, user, onSignIn, onSignOut, onThemeToggle } = this.props;
     const { scopes, scopeText } = this.state;
 
     return (
@@ -56,7 +56,8 @@ export default class ScopesetExpander extends Component {
         title="Expand Scopesets"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}>
+        onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}>
         <Fragment>
           <CodeEditor
             className={classes.editor}

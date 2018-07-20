@@ -1,6 +1,7 @@
 import { hot } from 'react-hot-loader';
 import { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import Dashboard from '../../../components/Dashboard';
 import Search from '../../../components/Search';
 
@@ -34,7 +35,7 @@ export default class NoTask extends Component {
   };
 
   render() {
-    const { user, onSignIn, onSignOut } = this.props;
+    const { user, onSignIn, onSignOut, onThemeToggle } = this.props;
     const { taskSearch } = this.state;
 
     // TODO: If there isn't a selected task, fill with recent task cards
@@ -43,6 +44,7 @@ export default class NoTask extends Component {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}
         search={
           <Search
             value={taskSearch}
@@ -50,7 +52,7 @@ export default class NoTask extends Component {
             onSubmit={this.handleTaskSearchSubmit}
           />
         }>
-        <span>Enter a task ID in the search box</span>
+        <Typography>Enter a task ID in the search box</Typography>
       </Dashboard>
     );
   }

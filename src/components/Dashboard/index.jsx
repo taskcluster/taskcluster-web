@@ -10,8 +10,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from 'mdi-react/MenuIcon';
+import LightBulbOn from 'mdi-react/LightbulbOnIcon';
+import LightBulbOnOutline from 'mdi-react/LightbulbOnOutlineIcon';
 import PageTitle from '../PageTitle';
 import UserMenu from './UserMenu';
 import SidebarList from './SidebarList';
@@ -39,6 +42,7 @@ import { user } from '../../utils/prop-types';
     appBarTitle: {
       fontFamily: 'Roboto300',
       flex: 1,
+      color: 'rgba(255, 255, 255, 0.9)',
     },
     navIconHide: {
       [theme.breakpoints.up('md')]: {
@@ -60,10 +64,12 @@ import { user } from '../../utils/prop-types';
         position: 'fixed',
       },
       borderRight: 0,
+      backgroundColor:
+        theme.palette.type === 'dark' ? theme.palette.primary.main : '#fafafa',
     },
     title: {
       textDecoration: 'none',
-      color: theme.palette.common.white,
+      color: theme.palette.text.primary,
     },
     contentPadding: {
       paddingTop: theme.spacing.triple,
@@ -86,6 +92,12 @@ import { user } from '../../utils/prop-types';
         width: `calc(100% - ${theme.drawerWidth}px)`,
       },
     },
+    lightBulbButton: {
+      marginLeft: theme.spacing.unit,
+    },
+    appIcon: {
+      fill: theme.palette.common.white,
+    },
   }),
   { withTheme: true }
 )
@@ -98,6 +110,8 @@ export default class Dashboard extends Component {
      * The content to render within the main view body.
      */
     children: node.isRequired,
+    /** A function to execute to toggle the theme. */
+    onThemeToggle: func.isRequired,
     /**
      * A function to execute to trigger the sign in flow.
      */
@@ -156,6 +170,7 @@ export default class Dashboard extends Component {
       user,
       onSignIn,
       onSignOut,
+      onThemeToggle,
       search,
       ...props
     } = this.props;
@@ -196,12 +211,23 @@ export default class Dashboard extends Component {
               aria-label="open drawer"
               onClick={this.handleDrawerToggle}
               className={classes.navIconHide}>
-              <MenuIcon />
+              <MenuIcon className={classes.appIcon} />
             </IconButton>
             <Typography variant="title" noWrap className={classes.appBarTitle}>
               {title}
             </Typography>
             {search}
+            <Tooltip placement="bottom" title="Toggle light/dark theme">
+              <IconButton
+                className={classes.lightBulbButton}
+                onClick={onThemeToggle}>
+                {theme.palette.type === 'dark' ? (
+                  <LightBulbOn className={classes.appIcon} />
+                ) : (
+                  <LightBulbOnOutline className={classes.appIcon} />
+                )}
+              </IconButton>
+            </Tooltip>
           </Toolbar>
         </AppBar>
         <Hidden mdUp>

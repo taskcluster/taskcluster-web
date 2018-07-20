@@ -118,6 +118,7 @@ export default class ViewTask extends Component {
       user,
       onSignIn,
       onSignOut,
+      onThemeToggle,
       data: { loading, error, task, dependentTasks },
       match,
     } = this.props;
@@ -128,6 +129,7 @@ export default class ViewTask extends Component {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
+        onThemeToggle={onThemeToggle}
         search={
           <Search
             value={taskSearch}
