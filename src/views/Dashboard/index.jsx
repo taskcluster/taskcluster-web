@@ -17,14 +17,10 @@ import Dashboard from '../../components/Dashboard';
 }))
 export default class DashboardView extends Component {
   render() {
-    const { classes, user, onSignIn, onSignOut, onThemeToggle } = this.props;
+    const { classes, user, onSignIn, onSignOut } = this.props;
 
     return (
-      <Dashboard
-        user={user}
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+      <Dashboard user={user} onSignIn={onSignIn} onSignOut={onSignOut}>
         <Typography variant="display1">
           Hello, {user.nickname || user.name}!
         </Typography>

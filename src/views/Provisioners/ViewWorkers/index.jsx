@@ -112,7 +112,6 @@ export default class ViewWorkers extends Component {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       match: { params },
       data: { loading, error, workers, workerType },
     } = this.props;
@@ -122,8 +121,7 @@ export default class ViewWorkers extends Component {
         title="Workers"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+        onSignOut={onSignOut}>
         <Fragment>
           {(!workers || !workerType) && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}

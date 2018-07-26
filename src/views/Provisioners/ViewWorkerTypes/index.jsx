@@ -95,7 +95,6 @@ export default class ViewWorkerTypes extends Component {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       data: {
         loading,
         error,
@@ -110,8 +109,7 @@ export default class ViewWorkerTypes extends Component {
         title="Worker Types"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+        onSignOut={onSignOut}>
         <Fragment>
           {!workerTypes && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}

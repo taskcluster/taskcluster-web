@@ -20,6 +20,7 @@ import UserMenu from './UserMenu';
 import SidebarList from './SidebarList';
 import { user } from '../../utils/prop-types';
 import { THEME } from '../../utils/constants';
+import ThemeContext from '../../App/ThemeContext';
 
 @withStyles(
   theme => ({
@@ -110,8 +111,6 @@ export default class Dashboard extends Component {
      * The content to render within the main view body.
      */
     children: node.isRequired,
-    /** A function to execute to toggle the theme. */
-    onThemeToggle: func.isRequired,
     /**
      * A function to execute to trigger the sign in flow.
      */
@@ -170,7 +169,6 @@ export default class Dashboard extends Component {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       search,
       ...props
     } = this.props;
@@ -202,74 +200,81 @@ export default class Dashboard extends Component {
     );
 
     return (
-      <div className={classes.root}>
-        <PageTitle>{title}</PageTitle>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={this.handleDrawerToggle}
-              className={classes.navIconHide}>
-              <MenuIcon className={classes.appIcon} />
-            </IconButton>
-            <Typography variant="title" noWrap className={classes.appBarTitle}>
-              {title}
-            </Typography>
-            {search}
-            <Tooltip placement="bottom" title="Toggle light/dark theme">
-              <IconButton
-                className={classes.lightBulbButton}
-                onClick={onThemeToggle}>
-                {theme.palette.type === 'dark' ? (
-                  <LightBulbOn className={classes.appIcon} />
-                ) : (
-                  <LightBulbOnOutline className={classes.appIcon} />
-                )}
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-        </AppBar>
-        <Hidden mdUp>
-          <Drawer
-            variant="temporary"
-            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-            open={mobileOpen}
-            onClose={this.handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true,
-            }}>
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden smDown implementation="css">
-          <Drawer
-            variant="permanent"
-            open
-            PaperProps={{
-              elevation: 2,
-            }}
-            classes={{
-              paper: classes.drawerPaper,
-            }}>
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <main
-          className={classNames(
-            classes.content,
-            {
-              [classes.contentPadding]: !disablePadding,
-            },
-            className
-          )}
-          {...props}>
-          {error ? <ErrorPanel error={error} /> : children}
-        </main>
-      </div>
+      <ThemeContext.Consumer>
+        {toggleTheme => (
+          <div className={classes.root}>
+            <PageTitle>{title}</PageTitle>
+            <AppBar className={classes.appBar}>
+              <Toolbar>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={this.handleDrawerToggle}
+                  className={classes.navIconHide}>
+                  <MenuIcon className={classes.appIcon} />
+                </IconButton>
+                <Typography
+                  variant="title"
+                  noWrap
+                  className={classes.appBarTitle}>
+                  {title}
+                </Typography>
+                {search}
+                <Tooltip placement="bottom" title="Toggle light/dark theme">
+                  <IconButton
+                    className={classes.lightBulbButton}
+                    onClick={toggleTheme}>
+                    {theme.palette.type === 'dark' ? (
+                      <LightBulbOn className={classes.appIcon} />
+                    ) : (
+                      <LightBulbOnOutline className={classes.appIcon} />
+                    )}
+                  </IconButton>
+                </Tooltip>
+              </Toolbar>
+            </AppBar>
+            <Hidden mdUp>
+              <Drawer
+                variant="temporary"
+                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                open={mobileOpen}
+                onClose={this.handleDrawerToggle}
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                ModalProps={{
+                  keepMounted: true,
+                }}>
+                {drawer}
+              </Drawer>
+            </Hidden>
+            <Hidden smDown implementation="css">
+              <Drawer
+                variant="permanent"
+                open
+                PaperProps={{
+                  elevation: 2,
+                }}
+                classes={{
+                  paper: classes.drawerPaper,
+                }}>
+                {drawer}
+              </Drawer>
+            </Hidden>
+            <main
+              className={classNames(
+                classes.content,
+                {
+                  [classes.contentPadding]: !disablePadding,
+                },
+                className
+              )}
+              {...props}>
+              {error ? <ErrorPanel error={error} /> : children}
+            </main>
+          </div>
+        )}
+      </ThemeContext.Consumer>
     );
   }
 }
