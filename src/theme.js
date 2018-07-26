@@ -1,19 +1,15 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import { fade, lighten } from '@material-ui/core/styles/colorManipulator';
+import { lighten } from '@material-ui/core/styles/colorManipulator';
 import transitions from '@material-ui/core/styles/transitions';
 import red from '@material-ui/core/colors/red';
 import amber from '@material-ui/core/colors/amber';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
+import { THEME } from './utils/constants';
 
 const Roboto300 = { fontFamily: 'Roboto300, sans-serif' };
 const Roboto400 = { fontFamily: 'Roboto400, sans-serif' };
 const Roboto500 = { fontFamily: 'Roboto500, sans-serif' };
-const TEN_PERCENT_WHITE = fade('#fff', 0.1);
-const TEN_PERCENT_BLACK = fade('#000', 0.1);
-const DARK_THEME_BACKGROUND = '#12202c';
-const PRIMARY = '#1b2a39';
-const SECONDARY = '#4177a5';
 const success = {
   main: green[500],
   dark: green[800],
@@ -32,12 +28,12 @@ const error = {
 const createTheme = isDarkTheme => ({
   palette: {
     type: isDarkTheme ? 'dark' : 'light',
-    background: isDarkTheme ? DARK_THEME_BACKGROUND : 'white',
+    background: isDarkTheme ? THEME.DARK_THEME_BACKGROUND : 'white',
     primary: {
-      main: PRIMARY,
+      main: isDarkTheme ? THEME.PRIMARY_DARK : THEME.PRIMARY_LIGHT,
     },
     secondary: {
-      main: SECONDARY,
+      main: THEME.SECONDARY,
     },
     error: {
       ...red,
@@ -55,7 +51,7 @@ const createTheme = isDarkTheme => ({
       ...blue,
     },
     text: {
-      primary: isDarkTheme ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+      primary: isDarkTheme ? THEME.PRIMARY_TEXT_DARK : THEME.PRIMARY_TEXT_LIGHT,
       secondary: isDarkTheme
         ? 'rgba(255, 255, 255, 0.7)'
         : 'rgba(0, 0, 0, 0.7)',
@@ -90,8 +86,8 @@ const createTheme = isDarkTheme => ({
   mixins: {
     highlight: {
       fontFamily: 'Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace',
-      backgroundColor: TEN_PERCENT_WHITE,
-      border: `1px solid ${TEN_PERCENT_WHITE}`,
+      backgroundColor: THEME.TEN_PERCENT_WHITE,
+      border: `1px solid ${THEME.TEN_PERCENT_WHITE}`,
       borderRadius: 2,
       paddingLeft: 4,
       paddingRight: 4,
@@ -99,10 +95,13 @@ const createTheme = isDarkTheme => ({
     listItemButton: {
       '& svg': {
         transition: transitions.create('fill'),
-        fill: isDarkTheme ? lighten(PRIMARY, 0.2) : 'rgba(0, 0, 0, 0.3)',
+        fill: lighten(
+          isDarkTheme ? THEME.PRIMARY_TEXT_LIGHT : THEME.PRIMARY_TEXT_LIGHT,
+          0.4
+        ),
       },
       '&:hover svg': {
-        fill: isDarkTheme ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+        fill: isDarkTheme ? THEME.PRIMARY_TEXT_DARK : THEME.PRIMARY_TEXT_LIGHT,
       },
     },
     fab: {
@@ -144,7 +143,7 @@ const createTheme = isDarkTheme => ({
   overrides: {
     MuiPaper: {
       root: {
-        backgroundColor: isDarkTheme ? PRIMARY : 'white',
+        backgroundColor: isDarkTheme ? THEME.PRIMARY_DARK : THEME.PRIMARY_LIGHT,
       },
     },
     MuiButton: {
@@ -154,7 +153,7 @@ const createTheme = isDarkTheme => ({
     },
     MuiCircularProgress: {
       colorPrimary: {
-        color: isDarkTheme ? 'white' : PRIMARY,
+        color: isDarkTheme ? THEME.PRIMARY_LIGHT : THEME.PRIMARY_DARK,
       },
     },
     MuiMobileStepper: {
@@ -165,7 +164,7 @@ const createTheme = isDarkTheme => ({
     MuiTableCell: {
       root: {
         borderBottom: `1px solid ${
-          isDarkTheme ? TEN_PERCENT_WHITE : TEN_PERCENT_BLACK
+          isDarkTheme ? THEME.TEN_PERCENT_WHITE : THEME.TEN_PERCENT_BLACK
         }`,
         whiteSpace: 'nowrap',
       },
@@ -182,7 +181,7 @@ const createTheme = isDarkTheme => ({
     },
     MuiPickersDay: {
       selected: {
-        backgroundColor: SECONDARY,
+        backgroundColor: THEME.SECONDARY,
       },
       current: {
         color: isDarkTheme ? 'white' : '#000',
@@ -192,7 +191,9 @@ const createTheme = isDarkTheme => ({
       dialogAction: {
         color: isDarkTheme ? 'white' : '#000',
         '&:hover': {
-          backgroundColor: isDarkTheme ? TEN_PERCENT_WHITE : TEN_PERCENT_BLACK,
+          backgroundColor: isDarkTheme
+            ? THEME.TEN_PERCENT_WHITE
+            : THEME.TEN_PERCENT_BLACK,
         },
       },
     },
@@ -208,7 +209,7 @@ export default {
       root: {
         overflowY: 'scroll',
         minHeight: '100vh',
-        backgroundColor: DARK_THEME_BACKGROUND,
+        backgroundColor: THEME.DARK_THEME_BACKGROUND,
       },
     },
     fontFamily: {
@@ -224,7 +225,7 @@ export default {
       link: theme.palette.text.primary,
       linkHover: theme.palette.text.primary,
       border: theme.palette.divider,
-      baseBackground: DARK_THEME_BACKGROUND,
+      baseBackground: THEME.DARK_THEME_BACKGROUND,
       sidebarBackground: theme.palette.primary.main,
       codeBackground: theme.palette.primary.main,
     },

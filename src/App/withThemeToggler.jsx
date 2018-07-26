@@ -3,7 +3,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from '../theme';
 
 /** A HOC that provides the ability toggle themes  */
-const withThemeToggler = ComposedComponent =>
+export default ComposedComponent =>
   class ThemeToggler extends Component {
     state = {
       theme: theme.lightTheme,
@@ -30,5 +30,3 @@ const withThemeToggler = ComposedComponent =>
       );
     }
   };
-
-export default withThemeToggler;

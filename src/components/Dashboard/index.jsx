@@ -19,6 +19,7 @@ import PageTitle from '../PageTitle';
 import UserMenu from './UserMenu';
 import SidebarList from './SidebarList';
 import { user } from '../../utils/prop-types';
+import { THEME } from '../../utils/constants';
 
 @withStyles(
   theme => ({
@@ -42,7 +43,7 @@ import { user } from '../../utils/prop-types';
     appBarTitle: {
       fontFamily: 'Roboto300',
       flex: 1,
-      color: 'rgba(255, 255, 255, 0.9)',
+      color: THEME.PRIMARY_TEXT_DARK,
     },
     navIconHide: {
       [theme.breakpoints.up('md')]: {
@@ -64,8 +65,7 @@ import { user } from '../../utils/prop-types';
         position: 'fixed',
       },
       borderRight: 0,
-      backgroundColor:
-        theme.palette.type === 'dark' ? theme.palette.primary.main : '#fafafa',
+      backgroundColor: theme.palette.primary.main,
     },
     title: {
       textDecoration: 'none',
