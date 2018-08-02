@@ -9,6 +9,7 @@ export const VIEW_WORKERS_PAGE_SIZE = 15;
 export const VIEW_CLIENTS_PAGE_SIZE = 20;
 export const VIEW_CLIENT_SCOPES_INSPECT_SIZE = 10;
 export const VIEW_SECRETS_PAGE_SIZE = 100;
+export const VIEW_NAMESPACES_PAGE_SIZE = 20;
 export const VIEW_CACHE_PURGES_PAGE_SIZE = 20;
 export const SCOPES_SEARCH_MODE = {
   EXACT: 'EXACT',
@@ -81,3 +82,42 @@ export const TASK_STATE = {
 // export const TASK_GROUP_POLLING_INTERVAL = 30000;
 export const TASK_GROUP_POLLING_INTERVAL = 30000;
 export const INITIAL_CURSOR = '$$FIRST$$';
+export const MIMETYPE_ICONS = {
+  'file-pdf-o': ['application/pdf', 'application/postscript'],
+  'file-archive-o': [
+    'application/zip',
+    'application/gzip',
+    'application/x-tar',
+    'application/x-gzip',
+    'application/x-bzip2',
+    'application/x-lzip',
+    'application/x-lzma',
+    'application/x-lzop',
+    'application/x-xz',
+    'application/x-compress',
+    'application/x-apple-diskimage',
+    'application/vnd.ms-cab-compressed',
+    'application/vnd.android.package-archive',
+    'application/x-gtar',
+    /compressed/,
+    /tar/,
+    /zip/,
+  ],
+  'file-word-o': ['text/rtf', 'text/html'],
+  'file-excel-o': ['text/csv'],
+  'file-powerpoint-o': [],
+  'file-code-o': [
+    'application/javascript',
+    'application/json',
+    'application/xml',
+    'text/css',
+    'text/javascript',
+    'text/xml',
+    'application/ecmascript',
+  ],
+  'file-video-o': [/^video\//],
+  'file-image-o': [/^image\//],
+  'file-text-o': [/^text\//],
+  'file-audio-o': [/^audio\//],
+  'file-o': [/.*/],
+};
