@@ -1,6 +1,5 @@
 import { hot } from 'react-hot-loader';
 import { Component } from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
 import storage from 'localforage';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -9,60 +8,22 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { CachePersistor } from 'apollo-cache-persist';
-import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Authorize } from 'react-auth0-components';
-import RouteWithProps from '../components/RouteWithProps';
 import FontStager from '../components/FontStager';
-import ErrorPanel from '../components/ErrorPanel';
+import Main from './main';
 import ThemeContext from './ThemeContext';
-import routes from './routes';
 import theme from '../theme';
 
 @hot(module)
-@withStyles(theme => ({
-  '@global': {
-    [[
-      'input:-webkit-autofill',
-      'input:-webkit-autofill:hover',
-      'input:-webkit-autofill:focus',
-      'input:-webkit-autofill:active',
-    ].join(',')]: {
-      transition:
-        'background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s',
-      transitionDelay: 'background-color 5000s, color 5000s',
-    },
-    '.mdi-icon': {
-      fill: theme.palette.text.primary,
-    },
-    '.CodeMirror': {
-      fontSize: 13,
-      height: '100% !important',
-    },
-    '[disabled] .mdi-icon': {
-      fill: theme.palette.primary.light,
-    },
-    a: {
-      color: theme.palette.text.primary,
-    },
-    'html, body': {
-      color: theme.palette.text.secondary,
-    },
-    pre: {
-      overflowX: 'auto',
-    },
-    'pre, :not(pre) > code': {
-      ...theme.mixins.highlight,
-    },
-  },
-}))
 export default class App extends Component {
   state = {
     authResult: null,
     userInfo: null,
     error: null,
     authorize: Authorize.AUTHORIZATION_DONE || false,
-    theme: theme.lightTheme,
+    theme: theme.darkTheme,
   };
 
   cache = new InMemoryCache();
@@ -136,7 +97,6 @@ export default class App extends Component {
           <MuiThemeProvider theme={theme}>
             <FontStager />
             <CssBaseline />
-            {error && <ErrorPanel error={error} />}
             <Authorize
               popup
               authorize={authorize}
@@ -148,19 +108,12 @@ export default class App extends Component {
               responseType={process.env.AUTH0_RESPONSE_TYPE}
               scope={process.env.AUTH0_SCOPE}
             />
-            <BrowserRouter>
-              <Switch>
-                {routes.map(props => (
-                  <RouteWithProps
-                    key={props.path || 'not-found'}
-                    {...props}
-                    user={userInfo}
-                    onSignIn={this.handleStartAuthorization}
-                    onSignOut={this.handleSignOut}
-                  />
-                ))}
-              </Switch>
-            </BrowserRouter>
+            <Main
+              error={error}
+              userInfo={userInfo}
+              onSignIn={this.handleStartAuthorization}
+              onSignOut={this.handleSignOut}
+            />
           </MuiThemeProvider>
         </ThemeContext.Provider>
       </ApolloProvider>

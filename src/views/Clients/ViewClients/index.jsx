@@ -108,7 +108,6 @@ export default class ViewWorker extends PureComponent {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       data: { loading, error, clients },
     } = this.props;
     const { clientSearch } = this.state;
@@ -127,8 +126,7 @@ export default class ViewWorker extends PureComponent {
         }
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+        onSignOut={onSignOut}>
         <Fragment>
           {!clients && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}

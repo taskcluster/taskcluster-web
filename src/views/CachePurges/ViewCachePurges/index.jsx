@@ -76,7 +76,6 @@ export default class ViewCachePurges extends Component {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       data: { loading, error, cachePurges },
     } = this.props;
 
@@ -85,8 +84,7 @@ export default class ViewCachePurges extends Component {
         title="Cache Purges"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+        onSignOut={onSignOut}>
         <Fragment>
           <Typography className={classes.description}>
             All currently active cache purges are displayed below. 24 hours

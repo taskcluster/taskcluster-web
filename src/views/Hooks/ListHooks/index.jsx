@@ -47,7 +47,6 @@ export default class ListHooks extends Component {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       data: { loading, error, hookGroups },
     } = this.props;
     const { hookSearch } = this.state;
@@ -64,7 +63,6 @@ export default class ListHooks extends Component {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}
         search={
           <Search
             value={hookSearch}

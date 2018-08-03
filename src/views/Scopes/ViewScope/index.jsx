@@ -99,7 +99,6 @@ export default class ViewScope extends Component {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       data: { loading, error, clients, roles },
     } = this.props;
     const {
@@ -117,7 +116,6 @@ export default class ViewScope extends Component {
       <Dashboard
         title={selectedScope}
         user={user}
-        onThemeToggle={onThemeToggle}
         search={
           <Search
             value={searchTerm}

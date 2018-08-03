@@ -39,7 +39,7 @@ export default class CreatePurgeCacheRequest extends Component {
   handleCreate() {}
 
   render() {
-    const { classes, user, onSignIn, onSignOut, onThemeToggle } = this.props;
+    const { classes, user, onSignIn, onSignOut } = this.props;
     const { provisionerId, workerType, cacheName } = this.state;
 
     return (
@@ -47,8 +47,7 @@ export default class CreatePurgeCacheRequest extends Component {
         title="Create Purge Cache Request"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+        onSignOut={onSignOut}>
         <Fragment>
           <List>
             <ListItem>

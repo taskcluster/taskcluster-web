@@ -18,22 +18,14 @@ import roleQuery from './role.graphql';
 })
 export default class ViewRole extends Component {
   render() {
-    const {
-      user,
-      onSignIn,
-      onSignOut,
-      isNewRole,
-      data,
-      onThemeToggle,
-    } = this.props;
+    const { user, onSignIn, onSignOut, isNewRole, data } = this.props;
 
     return (
       <Dashboard
         title={isNewRole ? 'Create Role' : 'Role'}
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+        onSignOut={onSignOut}>
         {isNewRole ? (
           <RoleForm isNewRole />
         ) : (

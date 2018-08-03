@@ -85,7 +85,6 @@ export default class ListScopes extends PureComponent {
       user,
       onSignIn,
       onSignOut,
-      onThemeToggle,
       data: { loading, error, clients, roles },
     } = this.props;
     const { searchTerm, currentTabIndex } = this.state;
@@ -96,7 +95,6 @@ export default class ListScopes extends PureComponent {
         user={user}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}
         search={
           <Search
             value={searchTerm}

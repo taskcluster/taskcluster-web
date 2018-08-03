@@ -47,7 +47,7 @@ export default class CreateWorkerType extends Component {
   handleCreateClick = () => {};
 
   render() {
-    const { classes, user, onSignIn, onSignOut, onThemeToggle } = this.props;
+    const { classes, user, onSignIn, onSignOut } = this.props;
     const { definition, workerType, invalidDefinition } = this.state;
 
     return (
@@ -55,8 +55,7 @@ export default class CreateWorkerType extends Component {
         title="AWS Provisioner Create Worker Type"
         user={user}
         onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        onThemeToggle={onThemeToggle}>
+        onSignOut={onSignOut}>
         <div>
           <List>
             <ListItem>
