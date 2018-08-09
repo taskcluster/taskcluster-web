@@ -168,11 +168,13 @@ export default class PulseMessages extends Component {
                 />
               </ListItem>
             </List>
-            <IconButton
-              className={classNames(classes.iconButton, classes.plusIcon)}
-              onClick={this.handleAddBinding}>
-              <PlusIcon />
-            </IconButton>
+            <Tooltip title="Add Binding">
+              <IconButton
+                className={classNames(classes.iconButton, classes.plusIcon)}
+                onClick={this.handleAddBinding}>
+                <PlusIcon />
+              </IconButton>
+            </Tooltip>
           </div>
           <List>
             {bindings.map(binding => (
@@ -188,12 +190,17 @@ export default class PulseMessages extends Component {
                     </Typography>
                   }
                 />
-                <IconButton
-                  className={classNames(classes.iconButton, classes.deleteIcon)}
-                  name={binding}
-                  onClick={() => this.handleDeleteBinding(binding)}>
-                  <DeleteIcon />
-                </IconButton>
+                <Tooltip title="Delete Binding">
+                  <IconButton
+                    className={classNames(
+                      classes.iconButton,
+                      classes.deleteIcon
+                    )}
+                    name={binding}
+                    onClick={() => this.handleDeleteBinding(binding)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
               </ListItem>
             ))}
             <Toolbar>
