@@ -14,9 +14,35 @@ import Dashboard from '../../../components/Dashboard';
 import TaskDetailsCard from '../../../components/TaskDetailsCard';
 import TaskRunsCard from '../../../components/TaskRunsCard';
 import Search from '../../../components/Search';
-import { ARTIFACTS_PAGE_SIZE } from '../../../utils/constants';
+import {
+  ARTIFACTS_PAGE_SIZE,
+  RECENT_TASKS_STORAGE_KEY,
+  VALID_TASK,
+} from '../../../utils/constants';
+import getTaskIdHistory from '../../../utils/getTaskIdHistory';
 import taskQuery from './task.graphql';
 import pageArtifactsQuery from './pageArtifacts.graphql';
+
+const updateTaskIdHistory = id => {
+  if (!VALID_TASK.test(id)) {
+    return;
+  }
+
+  const ids = new Set(getTaskIdHistory.reverse());
+
+  // If the id exists in the collection, remove it so we can push it to the end
+  if (ids.has(id)) {
+    ids.delete(id);
+  }
+
+  ids.add(id);
+
+  // Keep the 5 most recent history items in the collection
+  localStorage.setItem(
+    RECENT_TASKS_STORAGE_KEY,
+    JSON.stringify([...ids].slice(-5).reverse())
+  );
+};
 
 @hot(module)
 @withStyles(theme => ({
@@ -43,20 +69,35 @@ import pageArtifactsQuery from './pageArtifacts.graphql';
   }),
 })
 export default class ViewTask extends Component {
-  static getDerivedStateFromProps(nextProps, prevState) {
-    return {
-      taskSearch:
-        nextProps.match.params.taskId !== prevState.taskSearch
-          ? nextProps.match.params.taskId || ''
-          : prevState.taskSearch,
-      showError: !!nextProps.data.error,
+  constructor(props) {
+    super(props);
+
+    const taskId = props.match.params.taskId || '';
+
+    this.state = {
+      taskSearch: taskId,
+      showError: false,
     };
+
+    if (taskId) {
+      updateTaskIdHistory(taskId);
+    }
   }
 
-  state = {
-    taskSearch: '',
-    showError: false,
-  };
+  componentDidUpdate(prevProps) {
+    const { taskId } = this.props.match.params;
+
+    if (prevProps.match.params.taskId !== taskId) {
+      updateTaskIdHistory(taskId);
+      this.props.history.push(`/tasks/${taskId}`);
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    return {
+      showError: Boolean(nextProps.data.error),
+    };
+  }
 
   handleHideError = () => {
     this.setState({
@@ -70,7 +111,12 @@ export default class ViewTask extends Component {
 
   handleTaskSearchSubmit = e => {
     e.preventDefault();
-    this.props.history.push(`/tasks/${this.state.taskSearch}`);
+
+    const { taskSearch } = this.state;
+
+    if (this.props.match.params.taskId !== taskSearch) {
+      this.props.history.push(`/tasks/${this.state.taskSearch}`);
+    }
   };
 
   handleArtifactsPageChange = ({ cursor, previousCursor }) => {

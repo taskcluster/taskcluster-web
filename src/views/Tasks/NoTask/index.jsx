@@ -1,23 +1,36 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
+import { graphql } from 'react-apollo/index';
+import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
+import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemText from '@material-ui/core/ListItemText';
+import LinkIcon from 'mdi-react/LinkIcon';
 import Dashboard from '../../../components/Dashboard';
+import StatusLabel from '../../../components/StatusLabel';
 import Search from '../../../components/Search';
+import getTaskIdHistory from '../../../utils/getTaskIdHistory';
+import recentTasksQuery from './recentTask.graphql';
 
 @hot(module)
+@graphql(recentTasksQuery, {
+  options: {
+    variables: {
+      taskIds: getTaskIdHistory,
+    },
+  },
+})
 @withStyles(theme => ({
-  title: {
+  infoText: {
     marginBottom: theme.spacing.unit,
   },
-  divider: {
-    margin: `${theme.spacing.triple}px 0`,
-  },
-  owner: {
-    textAlign: 'right',
-    [theme.breakpoints.down('xs')]: {
-      textAlign: 'left',
-    },
+  listItemButton: {
+    ...theme.mixins.listItemButton,
   },
 }))
 export default class NoTask extends Component {
@@ -35,9 +48,12 @@ export default class NoTask extends Component {
   };
 
   render() {
+    const {
+      classes,
+      data: { loading, error, tasks },
+    } = this.props;
     const { taskSearch } = this.state;
 
-    // TODO: If there isn't a selected task, fill with recent task cards
     return (
       <Dashboard
         search={
@@ -47,7 +63,40 @@ export default class NoTask extends Component {
             onSubmit={this.handleTaskSearchSubmit}
           />
         }>
-        <Typography>Enter a task ID in the search box</Typography>
+        {loading && <Spinner />}
+        {!loading && (
+          <Fragment>
+            <Typography className={classes.infoText}>
+              Enter a task ID in the search box
+            </Typography>
+            {error && <ErrorPanel error={error} />}
+            {tasks &&
+              tasks.length && (
+                <Fragment>
+                  <List
+                    dense
+                    subheader={
+                      <ListSubheader component="div">
+                        Recent Tasks
+                      </ListSubheader>
+                    }>
+                    {tasks.map(task => (
+                      <ListItem
+                        button
+                        className={classes.listItemButton}
+                        component={Link}
+                        to={`/tasks/${task.taskId}`}
+                        key={task.taskId}>
+                        <StatusLabel state={task.status.state} />
+                        <ListItemText primary={task.metadata.name} />
+                        <LinkIcon />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Fragment>
+              )}
+          </Fragment>
+        )}
       </Dashboard>
     );
   }
