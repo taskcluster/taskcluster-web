@@ -77,6 +77,7 @@ module.exports = {
       }
 
       neutrino.config.output.publicPath('/');
+      neutrino.config.node.set('Buffer', true);
       neutrino.config.module
         .rule('graphql')
           .test(/\.graphql$/)

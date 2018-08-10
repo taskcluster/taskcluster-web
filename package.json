@@ -32,6 +32,7 @@
     "codemirror": "^5.39.0",
     "date-fns": "2.0.0-alpha.7",
     "dexie": "^2.0.4",
+    "deepmerge": "^2.1.1",
     "dot-prop-immutable": "^1.4.0",
     "error-stack-parser": "^2.0.2",
     "graphql": "^0.13.2",
@@ -39,6 +40,7 @@
     "is-absolute-url": "^2.1.0",
     "js-yaml": "^3.12.0",
     "localforage": "^1.7.2",
+    "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "markdown-it": "^8.4.1",
     "markdown-it-highlightjs": "^3.0.0",
@@ -58,6 +60,7 @@
     "react-loadable": "^5.3.1",
     "react-router-dom": "^4.3.1",
     "redbox-react": "^1.5.0",
+    "slugid": "^2.0.0",
     "taskcluster-lib-urls": "^10.0.0",
     "typeface-roboto": "^0.0.54"
   },
