@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Dashboard from '../../../components/Dashboard';
 import Search from '../../../components/Search';
 import RecentTasks from './RecentTasks';
-import getTaskIdHistory from '../../../utils/getTaskIdHistory';
+import db from '../../../utils/db';
 
 @hot(module)
 @withStyles(theme => ({
@@ -21,7 +21,10 @@ export default class NoTask extends Component {
   };
 
   async componentDidMount() {
-    const recentTasks = await getTaskIdHistory();
+    const recentTasks = await db.taskIdsHistory
+      .limit(5)
+      .reverse()
+      .toArray();
 
     this.setState({ recentTasks });
   }

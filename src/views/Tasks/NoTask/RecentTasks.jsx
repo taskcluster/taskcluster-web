@@ -1,7 +1,7 @@
 import { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import { arrayOf, string } from 'prop-types';
+import { shape, arrayOf, string } from 'prop-types';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
@@ -16,7 +16,7 @@ import recentTasksQuery from './recentTask.graphql';
 @graphql(recentTasksQuery, {
   options: props => ({
     variables: {
-      taskIds: props.tasks,
+      taskIds: props.tasks.map(({ taskId }) => taskId),
     },
   }),
 })
@@ -30,7 +30,12 @@ import recentTasksQuery from './recentTask.graphql';
 }))
 export default class RecentTasks extends Component {
   static propTypes = {
-    tasks: arrayOf(string).isRequired,
+    /** A list of recent tasks */
+    tasks: arrayOf(
+      shape({
+        taskId: string,
+      })
+    ).isRequired,
   };
 
   render() {

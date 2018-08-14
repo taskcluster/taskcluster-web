@@ -1,7 +1,6 @@
 import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { graphql } from 'react-apollo';
-import storage from 'localforage';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Markdown from '@mozilla-frontend-infra/components/Markdown';
@@ -15,32 +14,17 @@ import Dashboard from '../../../components/Dashboard';
 import TaskDetailsCard from '../../../components/TaskDetailsCard';
 import TaskRunsCard from '../../../components/TaskRunsCard';
 import Search from '../../../components/Search';
-import {
-  ARTIFACTS_PAGE_SIZE,
-  RECENT_TASKS_STORAGE_KEY,
-  VALID_TASK,
-} from '../../../utils/constants';
-import getTaskIdHistory from '../../../utils/getTaskIdHistory';
+import { ARTIFACTS_PAGE_SIZE, VALID_TASK } from '../../../utils/constants';
 import taskQuery from './task.graphql';
 import pageArtifactsQuery from './pageArtifacts.graphql';
+import db from '../../../utils/db';
 
-const updateTaskIdHistory = async id => {
+const updateTaskIdHistory = id => {
   if (!VALID_TASK.test(id)) {
     return;
   }
 
-  const recentTasks = await getTaskIdHistory();
-  const ids = new Set(recentTasks.reverse());
-
-  // If the id exists in the collection, remove it so we can push it to the end
-  if (ids.has(id)) {
-    ids.delete(id);
-  }
-
-  ids.add(id);
-
-  // Keep the 5 most recent history items in the collection
-  storage.setItem(RECENT_TASKS_STORAGE_KEY, [...ids].slice(-5).reverse());
+  db.taskIdsHistory.put({ taskId: id });
 };
 
 @hot(module)
