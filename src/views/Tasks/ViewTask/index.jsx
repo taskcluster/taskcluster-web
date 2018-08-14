@@ -1,6 +1,7 @@
 import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { graphql } from 'react-apollo';
+import storage from 'localforage';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Markdown from '@mozilla-frontend-infra/components/Markdown';
@@ -23,12 +24,13 @@ import getTaskIdHistory from '../../../utils/getTaskIdHistory';
 import taskQuery from './task.graphql';
 import pageArtifactsQuery from './pageArtifacts.graphql';
 
-const updateTaskIdHistory = id => {
+const updateTaskIdHistory = async id => {
   if (!VALID_TASK.test(id)) {
     return;
   }
 
-  const ids = new Set(getTaskIdHistory.reverse());
+  const recentTasks = await getTaskIdHistory();
+  const ids = new Set(recentTasks.reverse());
 
   // If the id exists in the collection, remove it so we can push it to the end
   if (ids.has(id)) {
@@ -38,10 +40,7 @@ const updateTaskIdHistory = id => {
   ids.add(id);
 
   // Keep the 5 most recent history items in the collection
-  localStorage.setItem(
-    RECENT_TASKS_STORAGE_KEY,
-    JSON.stringify([...ids].slice(-5).reverse())
-  );
+  storage.setItem(RECENT_TASKS_STORAGE_KEY, [...ids].slice(-5).reverse());
 };
 
 @hot(module)

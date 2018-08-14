@@ -1,5 +1,8 @@
+import storage from 'localforage';
 import { RECENT_TASKS_STORAGE_KEY } from './constants';
 
-export default JSON.parse(
-  localStorage.getItem(RECENT_TASKS_STORAGE_KEY) || '[]'
-);
+export default async () => {
+  const recentTasks = await storage.getItem(RECENT_TASKS_STORAGE_KEY);
+
+  return recentTasks || [];
+};
