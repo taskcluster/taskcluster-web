@@ -69,33 +69,36 @@ const updateTaskIdHistory = id => {
   }),
 })
 export default class ViewTask extends Component {
-  constructor(props) {
-    super(props);
-
-    const taskId = props.match.params.taskId || '';
-
-    this.state = {
-      taskSearch: taskId,
-      showError: false,
-    };
-
-    if (taskId) {
-      updateTaskIdHistory(taskId);
-    }
-  }
+  state = {
+    taskSearch: '',
+    showError: false,
+  };
 
   componentDidUpdate(prevProps) {
     const { taskId } = this.props.match.params;
 
     if (prevProps.match.params.taskId !== taskId) {
       updateTaskIdHistory(taskId);
-      this.props.history.push(`/tasks/${taskId}`);
     }
   }
 
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(props, state) {
+    // initialize
+    if (!state.taskSearch) {
+      const taskId = props.match.params.taskId || '';
+
+      if (taskId) {
+        updateTaskIdHistory(taskId);
+      }
+
+      return {
+        taskSearch: taskId,
+        showError: false,
+      };
+    }
+
     return {
-      showError: Boolean(nextProps.data.error),
+      showError: Boolean(props.data.error),
     };
   }
 
