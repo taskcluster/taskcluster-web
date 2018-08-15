@@ -75,7 +75,7 @@ export default class CredentialsDialog extends Component {
               label="Client ID"
               value={clientId}
               onChange={this.handleFieldChange}
-              error={!clientId}
+              error={!clientId && clientId !== ''}
               required
               fullWidth
             />
@@ -85,7 +85,7 @@ export default class CredentialsDialog extends Component {
               label="Access Token"
               value={accessToken}
               onChange={this.handleFieldChange}
-              error={!accessToken}
+              error={!accessToken && accessToken !== ''}
               required
               fullWidth
             />
@@ -94,7 +94,7 @@ export default class CredentialsDialog extends Component {
               label="JSON Certificate"
               value={certificate}
               onChange={this.handleFieldChange}
-              error={!isCertificateValid}
+              error={!isCertificateValid && certificate !== ''}
               fullWidth
             />
           </DialogContent>

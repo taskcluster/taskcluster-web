@@ -3,6 +3,7 @@ import { bool, func } from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -75,7 +76,7 @@ export default class SignInDialog extends Component {
         onClose={onClose}
         aria-labelledby="sign-in-dialog-title">
         <DialogTitle id="sign-in-dialog-title">Sign In</DialogTitle>
-        <div>
+        <DialogContent>
           <List>
             {process.env.LOGIN_STRATEGIES.includes('github') && (
               <ListItem
@@ -98,14 +99,14 @@ export default class SignInDialog extends Component {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary="Sign in with credentials" />
-              <CredentialsDialog
-                onSignIn={this.handleCredentialsSignIn}
-                open={credentialsDialogOpen}
-                onClose={this.handleCredentialsDialogClose}
-              />
             </ListItem>
           </List>
-        </div>
+          <CredentialsDialog
+            onSignIn={this.handleCredentialsSignIn}
+            open={credentialsDialogOpen}
+            onClose={this.handleCredentialsDialogClose}
+          />
+        </DialogContent>
       </Dialog>
     );
   }
