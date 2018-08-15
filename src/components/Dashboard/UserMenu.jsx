@@ -43,11 +43,11 @@ export default class UserMenu extends Component {
     this.setState({ anchorEl: null });
   };
 
-  handleClickSignIn = () => {
+  handleSignInDialogOpen = () => {
     this.setState({ signInDialogOpen: true });
   };
 
-  handleCloseSignIn = () => {
+  handleSignInDialogClose = () => {
     this.setState({ signInDialogOpen: false });
   };
 
@@ -68,7 +68,7 @@ export default class UserMenu extends Component {
             aria-haspopup="true"
             aria-controls="user-menu"
             aria-label="user menu"
-            onClick={this.handleClickSignIn}>
+            onClick={this.handleSignInDialogOpen}>
             <ListItemIcon className={classes.icon}>
               <AccountCircleIcon />
             </ListItemIcon>
@@ -80,7 +80,7 @@ export default class UserMenu extends Component {
             />
             <SignInDialog
               open={signInDialogOpen}
-              onClose={this.handleCloseSignIn}
+              onClose={this.handleSignInDialogClose}
             />
           </ListItem>
         </List>

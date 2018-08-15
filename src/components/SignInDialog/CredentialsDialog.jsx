@@ -14,47 +14,53 @@ export default class CredentialsDialog extends Component {
   };
 
   state = {
-    isValid: true,
+    isCertificateValid: true,
     clientId: '',
     accessToken: '',
     certificate: '',
   };
 
   handleFieldChange = e => {
-    let { isValid } = this.state;
+    let { isCertificateValid } = this.state;
 
     try {
-      if (e.target.name === 'certificate') {
+      if (e.target.name === 'certificate' && e.target.value) {
         JSON.parse(e.target.value);
-        isValid = true;
+        isCertificateValid = true;
       }
     } catch (err) {
-      isValid = false;
+      isCertificateValid = false;
     }
 
     this.setState({
       [e.target.name]: e.target.value,
-      isValid,
+      isCertificateValid,
     });
   };
 
   handleSubmit = e => {
     e.preventDefault();
 
-    const { isValid, ...credentials } = this.state;
+    const { isCertificateValid, ...credentials } = this.state;
 
-    if (isValid) {
+    if (isCertificateValid && credentials.clientId && credentials.accessToken) {
       this.props.onSignIn(credentials);
     }
   };
 
   render() {
     const { onSignIn, ...props } = this.props;
-    const { isValid, clientId, accessToken, certificate } = this.state;
+    const {
+      isCertificateValid,
+      clientId,
+      accessToken,
+      certificate,
+    } = this.state;
+    const isFormValid = clientId && accessToken && isCertificateValid;
 
     return (
       <Dialog {...props} aria-labelledby="credentials-dialog-title">
-        <form onSubmit={this.handleSubmit} aria-disabled={!isValid}>
+        <form onSubmit={this.handleSubmit} aria-disabled={!isFormValid}>
           <DialogTitle id="credentials-dialog-title">
             Sign in with credentials
           </DialogTitle>
@@ -69,6 +75,7 @@ export default class CredentialsDialog extends Component {
               label="Client ID"
               value={clientId}
               onChange={this.handleFieldChange}
+              error={!clientId}
               required
               fullWidth
             />
@@ -78,6 +85,7 @@ export default class CredentialsDialog extends Component {
               label="Access Token"
               value={accessToken}
               onChange={this.handleFieldChange}
+              error={!accessToken}
               required
               fullWidth
             />
@@ -86,7 +94,7 @@ export default class CredentialsDialog extends Component {
               label="JSON Certificate"
               value={certificate}
               onChange={this.handleFieldChange}
-              error={!isValid}
+              error={!isCertificateValid}
               fullWidth
             />
           </DialogContent>
@@ -95,7 +103,7 @@ export default class CredentialsDialog extends Component {
             <Button
               color="secondary"
               variant="raised"
-              disabled={!isValid}
+              disabled={!isFormValid}
               type="submit">
               Sign In
             </Button>
