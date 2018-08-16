@@ -2,8 +2,7 @@ import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
 import { safeLoad, safeDump } from 'js-yaml';
-import { nice } from 'slugid';
-import { bool } from 'prop-types';
+import { bool, object } from 'prop-types';
 import {
   toDate,
   differenceInMilliseconds,
@@ -21,6 +20,7 @@ import RotateLeftIcon from 'mdi-react/RotateLeftIcon';
 import ClockOutlineIcon from 'mdi-react/ClockOutlineIcon';
 import SpeedDial from '../../../components/SpeedDial';
 import Dashboard from '../../../components/Dashboard';
+import { nice } from '../../../utils/slugid';
 import {
   TASKS_CREATE_STORAGE_KEY,
   ISO_8601_REGEX,
@@ -67,6 +67,7 @@ export default class CreateTask extends Component {
   static propTypes = {
     /** If true, the task will initially be set as an interactive task. */
     interactive: bool,
+    user: object,
   };
 
   static defaultProps = {
@@ -88,11 +89,6 @@ export default class CreateTask extends Component {
         task: null,
       });
     }
-  }
-
-  componentWillReceiveProps(/* nextProps */) {
-    // TODO: If user has changed, clear any errors in state
-    // https://github.com/taskcluster/taskcluster-tools/blob/46b8ccb2f209f4dc7a5ea667be29d0233a9b82b5/src/views/TaskCreator/TaskCreator.jsx#L67-L71
   }
 
   parameterizeTask(task) {
