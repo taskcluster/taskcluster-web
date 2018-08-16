@@ -261,6 +261,7 @@ export default class ClientForm extends Component {
         {isNewClient ? (
           <Tooltip title="Save">
             <Button
+              requiresAuth
               variant="fab"
               onClick={this.handleSaveClient}
               classes={{ root: classes.saveIcon }}

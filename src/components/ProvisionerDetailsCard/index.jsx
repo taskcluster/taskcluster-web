@@ -101,6 +101,7 @@ export default class ProvisionerDetailsCard extends Component {
             id={`${action.title}-tooltip`}
             title={action.description}>
             <Button
+              requiresAuth
               onClick={this.handleActionClick}
               className={classes.actionButton}
               size="small"

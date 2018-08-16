@@ -464,6 +464,7 @@ export default class HookForm extends Component {
           <Tooltip title="Save Hook">
             <div className={classes.actionButton}>
               <Button
+                requiresAuth
                 color="secondary"
                 variant="fab"
                 disabled={!this.validHook()}

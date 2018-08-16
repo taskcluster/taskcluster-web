@@ -79,6 +79,7 @@ export default class CreatePurgeCacheRequest extends Component {
             id="create-purge-cache-request-tooltip"
             title="Create Request">
             <Button
+              requiresAuth
               disabled={!this.isFormFilled()}
               onClick={this.handleCreate}
               variant="fab"

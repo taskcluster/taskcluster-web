@@ -183,6 +183,7 @@ export default class RoleForm extends Component {
         </List>
         <Tooltip title="Save">
           <Button
+            requiresAuth
             variant="fab"
             onClick={this.handleSaveRole}
             classes={{ root: classes.saveIcon }}

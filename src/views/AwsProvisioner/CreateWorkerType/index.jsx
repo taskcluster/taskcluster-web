@@ -74,6 +74,7 @@ export default class CreateWorkerType extends Component {
         <Tooltip placement="bottom" title="Create Worker Type">
           <div>
             <Button
+              requiresAuth
               onClick={this.handleCreateClick}
               disabled={invalidDefinition || !isWorkerTypeNameValid(workerType)}
               variant="fab"
