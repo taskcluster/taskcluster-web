@@ -119,7 +119,7 @@ export default class PulseMessages extends Component {
   };
 
   render() {
-    const { classes, user, onSignIn, onSignOut } = this.props;
+    const { classes } = this.props;
     const {
       pulseExchange,
       routingKeyPattern,
@@ -129,11 +129,7 @@ export default class PulseMessages extends Component {
     } = this.state;
 
     return (
-      <Dashboard
-        title="Pulse Messages"
-        user={user}
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}>
+      <Dashboard title="Pulse Messages">
         <Fragment>
           <div className={classes.inputWrapper}>
             <List className={classes.inputList}>
