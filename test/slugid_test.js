@@ -56,7 +56,6 @@ const spreader = (generator) => {
 };
 
 describe('slugs', function() {
-
   it('should spread v4 slugs', () => {
     const charsAll = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'.split('').sort().join('');
     // 16, 17, 18, 19: 0b0100xx

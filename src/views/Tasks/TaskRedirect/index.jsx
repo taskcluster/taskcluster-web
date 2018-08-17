@@ -21,9 +21,6 @@ import taskQuery from './task.graphql';
 export default class TaskRedirect extends Component {
   render() {
     const {
-      user,
-      onSignIn,
-      onSignOut,
       match: {
         params: { action },
       },
@@ -33,7 +30,7 @@ export default class TaskRedirect extends Component {
     const sanitizedTask = task && removeKeys(cloneDeep(task), ['__typename']);
 
     return (
-      <Dashboard user={user} onSignIn={onSignIn} onSignOut={onSignOut}>
+      <Dashboard>
         <Fragment>
           {error ? (
             <ErrorPanel error={error} />
