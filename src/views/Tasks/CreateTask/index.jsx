@@ -1,8 +1,10 @@
 import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
+import storage from 'localforage';
 import { safeLoad, safeDump } from 'js-yaml';
-import { bool, object } from 'prop-types';
+import { bool } from 'prop-types';
 import {
   toDate,
   differenceInMilliseconds,
@@ -14,17 +16,18 @@ import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';
 import { withStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import PlusIcon from 'mdi-react/PlusIcon';
 import RotateLeftIcon from 'mdi-react/RotateLeftIcon';
 import ClockOutlineIcon from 'mdi-react/ClockOutlineIcon';
 import SpeedDial from '../../../components/SpeedDial';
+import SpeedDialAction from '../../../components/SpeedDialAction';
 import Dashboard from '../../../components/Dashboard';
 import { nice } from '../../../utils/slugid';
 import {
   TASKS_CREATE_STORAGE_KEY,
   ISO_8601_REGEX,
 } from '../../../utils/constants';
+import createTaskQuery from './createTask.graphql';
 
 const defaultTask = {
   provisionerId: 'aws-provisioner-v1',
@@ -50,6 +53,7 @@ const defaultTask = {
 };
 
 @hot(module)
+@withApollo
 @withStyles(theme => ({
   createIcon: {
     ...theme.mixins.successIcon,
@@ -67,15 +71,14 @@ export default class CreateTask extends Component {
   static propTypes = {
     /** If true, the task will initially be set as an interactive task. */
     interactive: bool,
-    user: object,
   };
 
   static defaultProps = {
     interactive: false,
   };
 
-  componentDidMount() {
-    const task = this.getTask();
+  async componentDidMount() {
+    const task = await this.getTask();
 
     try {
       this.setState({
@@ -121,7 +124,7 @@ export default class CreateTask extends Component {
     return `${safeDump(iter(task), { noCompatMode: true, noRefs: true })}`;
   }
 
-  getTask() {
+  async getTask() {
     const { location } = this.props;
     const { task } = this.state;
 
@@ -134,9 +137,9 @@ export default class CreateTask extends Component {
     }
 
     try {
-      return (
-        safeLoad(localStorage.getItem(TASKS_CREATE_STORAGE_KEY)) || defaultTask
-      );
+      const task = await storage.getItem(TASKS_CREATE_STORAGE_KEY);
+
+      return task || defaultTask;
     } catch (err) {
       return defaultTask;
     }
@@ -159,17 +162,24 @@ export default class CreateTask extends Component {
     );
   };
 
-  // TODO: Handle action request
-  handleCreateTask = () => {
+  handleCreateTask = async () => {
     const { task } = this.state;
 
     if (task) {
       const taskId = nice();
-      // const payload = safeLoad(task);
+      const payload = safeLoad(task);
 
       try {
-        // TODO: Create task using the payload and set storage
+        await this.props.client.mutate({
+          mutation: createTaskQuery,
+          variables: {
+            taskId,
+            task: payload,
+          },
+        });
+
         this.setState({ createdTaskId: taskId });
+        storage.setItem(TASKS_CREATE_STORAGE_KEY, payload);
       } catch (err) {
         this.setState({ createdTaskError: err, createdTaskId: null });
       }
@@ -186,6 +196,7 @@ export default class CreateTask extends Component {
     this.setState({
       createdTaskError: null,
       task: this.parameterizeTask(defaultTask),
+      invalid: false,
     });
 
   render() {
@@ -235,12 +246,13 @@ export default class CreateTask extends Component {
               />
               <SpeedDial>
                 <SpeedDialAction
+                  requiresAuth
                   icon={<PlusIcon />}
                   onClick={this.handleCreateTask}
                   tooltipTitle="Create Task"
                   classes={{ button: classes.createIcon }}
                   ButtonProps={{
-                    disabled: false,
+                    disabled: !task || invalid,
                   }}
                 />
                 <SpeedDialAction
@@ -249,7 +261,6 @@ export default class CreateTask extends Component {
                   tooltipTitle="Reset Editor"
                   ButtonProps={{
                     color: 'secondary',
-                    disabled: !task || invalid,
                   }}
                 />
                 <SpeedDialAction
