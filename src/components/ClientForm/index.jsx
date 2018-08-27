@@ -13,7 +13,10 @@ import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
+import CancelIcon from 'mdi-react/CancelIcon';
+import DeleteIcon from 'mdi-react/DeleteIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
+import PowerIcon from 'mdi-react/PowerIcon';
 import LockResetIcon from 'mdi-react/LockResetIcon';
 import SpeedDial from '../SpeedDial';
 import SpeedDialAction from '../SpeedDialAction';
@@ -39,6 +42,15 @@ import splitLines from '../../utils/splitLines';
   saveIcon: {
     ...theme.mixins.successIcon,
   },
+  deleteIcon: {
+    ...theme.mixins.errorIcon,
+  },
+  disableIcon: {
+    ...theme.mixins.warningIcon,
+  },
+  enableIcon: {
+    ...theme.mixins.successIcon,
+  },
 }))
 /** A form to view/edit/create a client */
 export default class ClientForm extends Component {
@@ -47,8 +59,14 @@ export default class ClientForm extends Component {
     client,
     /** Set to `true` when creating a new client. */
     isNewClient: bool,
-    /** Callback function fired when the a client is created/updated. */
+    /** Callback function fired when a client is created/updated. */
     onSaveClient: func.isRequired,
+    /** Callback function fired when a client is deleted. */
+    onDeleteClient: func,
+    /** Callback function fired when a client is disabled. */
+    onDisableClient: func,
+    /** Callback function fired when a client is enabled. */
+    onEnableClient: func,
     /** If true, form actions will be disabled. */
     loading: bool,
   };
@@ -57,6 +75,9 @@ export default class ClientForm extends Component {
     isNewClient: false,
     client: null,
     loading: false,
+    onDeleteClient: null,
+    onDisableClient: null,
+    onEnableClient: null,
   };
 
   state = {
@@ -70,10 +91,13 @@ export default class ClientForm extends Component {
     expires: addYears(new Date(), 1000),
     deleteOnExpiration: true,
     expandedScopes: null,
+    disabled: null,
+    // eslint-disable-next-line react/no-unused-state
+    prevClient: null,
   };
 
   static getDerivedStateFromProps({ isNewClient, client }, state) {
-    if (isNewClient || state.clientId) {
+    if (isNewClient || (state.clientId && state.prevClient === client)) {
       return null;
     }
 
@@ -88,6 +112,8 @@ export default class ClientForm extends Component {
       deleteOnExpiration: client.deleteOnExpiration,
       scopeText: client.scopes.join('\n'),
       expandedScopes: client.expandedScopes,
+      disabled: client.disabled,
+      prevClient: client,
     };
   }
 
@@ -108,7 +134,6 @@ export default class ClientForm extends Component {
   // TODO: Reset accessToken
   handleResetAccessToken = () => {};
 
-  // TODO: Handle save client request
   handleSaveClient = () => {
     const {
       clientId,
@@ -128,6 +153,18 @@ export default class ClientForm extends Component {
     this.props.onSaveClient(client, clientId);
   };
 
+  handleDeleteClient = () => {
+    this.props.onDeleteClient(this.state.clientId);
+  };
+
+  handleDisableClient = () => {
+    this.props.onDisableClient(this.state.clientId);
+  };
+
+  handleEnableClient = () => {
+    this.props.onEnableClient(this.state.clientId);
+  };
+
   render() {
     const { client, classes, isNewClient, loading } = this.props;
     const {
@@ -141,6 +178,7 @@ export default class ClientForm extends Component {
       expires,
       deleteOnExpiration,
       expandedScopes,
+      disabled,
     } = this.state;
 
     return (
@@ -298,6 +336,27 @@ export default class ClientForm extends Component {
               classes={{ button: classes.saveIcon }}
               tooltipTitle="Save"
               ButtonProps={{ disabled: loading }}
+            />
+            <SpeedDialAction
+              requiresAuth
+              icon={<DeleteIcon />}
+              onClick={this.handleDeleteClient}
+              classes={{ button: classes.deleteIcon }}
+              tooltipTitle="Delete"
+              ButtonProps={{ disabled: loading }}
+            />
+            <SpeedDialAction
+              icon={disabled ? <PowerIcon /> : <CancelIcon />}
+              onClick={
+                disabled ? this.handleEnableClient : this.handleDisableClient
+              }
+              tooltipTitle={disabled ? 'Enable' : 'Disable'}
+              classes={{
+                button: disabled ? classes.enableIcon : classes.disableIcon,
+              }}
+              ButtonProps={{
+                disabled: loading,
+              }}
             />
             <SpeedDialAction
               requiresAuth
