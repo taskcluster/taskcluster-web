@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { bool } from 'prop-types';
+import { bool, func } from 'prop-types';
 import { addYears } from 'date-fns';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -20,7 +20,7 @@ import SpeedDialAction from '../SpeedDialAction';
 import DatePicker from '../DatePicker';
 import Button from '../Button';
 import { client } from '../../utils/prop-types';
-// import splitLines from '../../utils/splitLines';
+import splitLines from '../../utils/splitLines';
 
 @withStyles(theme => ({
   saveButton: {
@@ -47,11 +47,16 @@ export default class ClientForm extends Component {
     client,
     /** Set to `true` when creating a new client. */
     isNewClient: bool,
+    /** Callback function fired when the a client is created/updated. */
+    onSaveClient: func.isRequired,
+    /** If true, form actions will be disabled. */
+    loading: bool,
   };
 
   static defaultProps = {
     isNewClient: false,
     client: null,
+    loading: false,
   };
 
   state = {
@@ -62,13 +67,13 @@ export default class ClientForm extends Component {
     lastModified: null,
     lastDateUsed: null,
     lastRotated: null,
-    expires: null,
+    expires: addYears(new Date(), 1000),
     deleteOnExpiration: true,
     expandedScopes: null,
   };
 
-  static getDerivedStateFromProps({ isNewClient, client }) {
-    if (isNewClient) {
+  static getDerivedStateFromProps({ isNewClient, client }, state) {
+    if (isNewClient || state.clientId) {
       return null;
     }
 
@@ -105,12 +110,26 @@ export default class ClientForm extends Component {
 
   // TODO: Handle save client request
   handleSaveClient = () => {
-    // const { scopeText } = this.state;
-    // const scopes = splitLines(scopeText);
+    const {
+      clientId,
+      scopeText,
+      description,
+      expires,
+      deleteOnExpiration,
+    } = this.state;
+    const scopes = splitLines(scopeText);
+    const client = {
+      expires,
+      description,
+      deleteOnExpiration,
+      scopes,
+    };
+
+    this.props.onSaveClient(client, clientId);
   };
 
   render() {
-    const { client, classes, isNewClient } = this.props;
+    const { client, classes, isNewClient, loading } = this.props;
     const {
       description,
       scopeText,
@@ -189,7 +208,7 @@ export default class ClientForm extends Component {
               }
               secondary={
                 <DatePicker
-                  value={isNewClient ? addYears(new Date(), 1000) : expires}
+                  value={expires}
                   onChange={this.handleExpirationChange}
                   format="YYYY/MM/DD"
                   maxDate={addYears(new Date(), 1001)}
@@ -262,6 +281,7 @@ export default class ClientForm extends Component {
           <Tooltip title="Save">
             <Button
               requiresAuth
+              disabled={loading}
               variant="fab"
               onClick={this.handleSaveClient}
               classes={{ root: classes.saveIcon }}
@@ -277,13 +297,17 @@ export default class ClientForm extends Component {
               onClick={this.handleSaveClient}
               classes={{ button: classes.saveIcon }}
               tooltipTitle="Save"
+              ButtonProps={{ disabled: loading }}
             />
             <SpeedDialAction
               requiresAuth
               icon={<LockResetIcon />}
               onClick={this.handleResetAccessToken}
-              ButtonProps={{ color: 'secondary' }}
               tooltipTitle="Reset Access Token"
+              ButtonProps={{
+                color: 'secondary',
+                disabled: loading,
+              }}
             />
           </SpeedDial>
         )}
