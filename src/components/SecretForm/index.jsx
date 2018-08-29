@@ -47,7 +47,7 @@ export default class SecretForm extends Component {
   static propTypes = {
     /** A GraphQL secret response. Not needed when creating a new secret.  */
     secret,
-    /** Set to `true` when creating a new hook. */
+    /** Set to `true` when creating a new secret. */
     isNewSecret: bool,
     /** Callback function fired when a secret is created/updated. */
     onSaveSecret: func.isRequired,
