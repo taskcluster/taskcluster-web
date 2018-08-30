@@ -13,7 +13,7 @@ import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import PlusIcon from 'mdi-react/PlusIcon';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
-import AlertCircleOutlineIcon from 'mdi-react/AlertCircleOutlineIcon';
+import DeleteIcon from 'mdi-react/DeleteIcon';
 import Button from '../../../components/Button';
 import Dashboard from '../../../components/Dashboard';
 import SpeedDial from '../../../components/SpeedDial';
@@ -47,7 +47,7 @@ const encodeUserData = obj => {
   }),
 })
 @withStyles(theme => ({
-  saveIcon: {
+  successIcon: {
     ...theme.mixins.successIcon,
   },
   deleteIcon: {
@@ -266,7 +266,7 @@ export default class ViewWorkerType extends Component {
                   !isWorkerTypeNameValid(workerType) ||
                   actionLoading
                 }
-                classes={{ root: classes.saveIcon }}
+                classes={{ root: classes.successIcon }}
                 variant="fab">
                 <PlusIcon />
               </Button>
@@ -277,14 +277,14 @@ export default class ViewWorkerType extends Component {
             <SpeedDialAction
               requiresAuth
               icon={<ContentSaveIcon />}
-              classes={{ button: classes.saveIcon }}
+              classes={{ button: classes.successIcon }}
               tooltipTitle="Update Worker Type"
               onClick={this.handleUpdateWorkerType}
               ButtonProps={{ disabled: invalidDefinition || actionLoading }}
             />
             <SpeedDialAction
               requiresAuth
-              icon={<AlertCircleOutlineIcon />}
+              icon={<DeleteIcon />}
               tooltipTitle="Delete Worker Type"
               classes={{ button: classes.deleteIcon }}
               onClick={this.handleDeleteWorkerType}
