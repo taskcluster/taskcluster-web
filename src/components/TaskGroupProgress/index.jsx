@@ -138,15 +138,11 @@ const getStatusCount = memoize(
   statusButtonTypographyDisabled: {
     color: 'currentColor',
   },
-  statusCount: {
-    marginBottom: theme.spacing.unit,
-  },
   statusTitle: {
-    textAlign: 'left',
+    textAlign: 'right',
   },
   statusIcon: {
     fill: THEME.PRIMARY_TEXT_DARK,
-    marginBottom: 10,
   },
   completedButton: {
     backgroundColor: theme.palette.success.dark,
@@ -191,10 +187,8 @@ export default class TaskGroupProgress extends Component {
     taskGroupId: string.isRequired,
     /** The selected task state. This will change the card icon. */
     filter: taskState,
-    /** Callback fired when the a state card is is clicked */
+    /** Callback fired when the a state card is clicked */
     onStatusClick: func.isRequired,
-    /** A GraphQL fetchMore function. */
-    onFetchMore: func,
     /** Callback fired when the status counts has been calculated. */
     onCountUpdate: func,
     /** A Task GraphQL PageConnection instance. */
@@ -365,6 +359,17 @@ export default class TaskGroupProgress extends Component {
               )}>
               <div>
                 <Icon color="white" className={classes.statusIcon} size={32} />
+              </div>
+              <div>
+                <Typography
+                  align="right"
+                  className={classNames({
+                    [classes.statusButtonTypography]: !disabled,
+                    [classes.statusButtonTypographyDisabled]: disabled,
+                  })}
+                  variant="display1">
+                  {count}
+                </Typography>
                 <Typography
                   className={classNames(classes.statusTitle, {
                     [classes.statusButtonTypography]: !disabled,
@@ -374,15 +379,6 @@ export default class TaskGroupProgress extends Component {
                   {title(status)}
                 </Typography>
               </div>
-              <Typography
-                align="right"
-                className={classNames(classes.statusCount, {
-                  [classes.statusButtonTypography]: !disabled,
-                  [classes.statusButtonTypographyDisabled]: disabled,
-                })}
-                variant="display1">
-                {count}
-              </Typography>
             </ButtonBase>
           );
         })}
