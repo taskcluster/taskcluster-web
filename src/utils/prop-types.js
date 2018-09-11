@@ -99,6 +99,7 @@ export const taskPriority = oneOf([
 export const task = shape({
   metadata: taskMetadata,
   status,
+  // TODO: Add taskActions
   retries: number,
   created: date,
   deadline: date,

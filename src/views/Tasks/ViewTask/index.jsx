@@ -1,6 +1,6 @@
 import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, withApollo } from 'react-apollo';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Markdown from '@mozilla-frontend-infra/components/Markdown';
@@ -10,14 +10,26 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import dotProp from 'dot-prop-immutable';
+import jsonSchemaDefaults from 'json-schema-defaults';
+import { safeDump } from 'js-yaml';
+import HammerIcon from 'mdi-react/HammerIcon';
 import Dashboard from '../../../components/Dashboard';
 import TaskDetailsCard from '../../../components/TaskDetailsCard';
 import TaskRunsCard from '../../../components/TaskRunsCard';
 import Search from '../../../components/Search';
-import { ARTIFACTS_PAGE_SIZE, VALID_TASK } from '../../../utils/constants';
+import SpeedDial from '../../../components/SpeedDial';
+import SpeedDialAction from '../../../components/SpeedDialAction';
+import DialogAction from '../../../components/DialogAction';
+import TaskActionForm from '../../../components/TaskActionForm';
+import {
+  ACTIONS_JSON_KNOWN_KINDS,
+  ARTIFACTS_PAGE_SIZE,
+  VALID_TASK,
+} from '../../../utils/constants';
 import taskQuery from './task.graphql';
 import pageArtifactsQuery from './pageArtifacts.graphql';
 import db from '../../../utils/db';
+import submitTaskAction from '../submitTaskAction';
 
 const updateTaskIdHistory = id => {
   if (!VALID_TASK.test(id)) {
@@ -27,7 +39,15 @@ const updateTaskIdHistory = id => {
   db.taskIdsHistory.put({ taskId: id });
 };
 
+const taskInContext = (tagSetList, taskTags) =>
+  tagSetList.some(tagSet =>
+    Object.keys(tagSet).every(
+      tag => taskTags[tag] && taskTags[tag] === tagSet[tag]
+    )
+  );
+
 @hot(module)
+@withApollo
 @withStyles(theme => ({
   title: {
     marginBottom: theme.spacing.unit,
@@ -48,47 +68,122 @@ const updateTaskIdHistory = id => {
       artifactsConnection: {
         limit: ARTIFACTS_PAGE_SIZE,
       },
+      taskActionsFilter: {
+        kind: {
+          $in: ACTIONS_JSON_KNOWN_KINDS,
+        },
+        context: {
+          $not: {
+            $size: 0,
+          },
+        },
+      },
     },
   }),
 })
 export default class ViewTask extends Component {
   state = {
     taskSearch: '',
-    showError: false,
+    // eslint-disable-next-line react/no-unused-state
+    previousTaskId: null,
+    taskActions: [],
+    actionInputs: {},
+    actionData: {},
+    selectedAction: null,
+    dialogOpen: false,
+    actionLoading: false,
   };
 
-  componentDidUpdate(prevProps) {
-    const { taskId } = this.props.match.params;
-
-    if (prevProps.match.params.taskId !== taskId) {
-      updateTaskIdHistory(taskId);
-    }
-  }
-
   static getDerivedStateFromProps(props, state) {
-    // initialize
-    if (!state.taskSearch) {
-      const taskId = props.match.params.taskId || '';
+    const taskId = props.match.params.taskId || '';
+    const {
+      data: { task },
+    } = props;
+    const taskActions = [];
+    const actionInputs = state.actionInputs || {};
+    const actionData = state.actionData || {};
 
-      if (taskId) {
-        updateTaskIdHistory(taskId);
-      }
+    if (taskId !== state.previousTaskId && task) {
+      const { taskActions: actions } = task;
+
+      updateTaskIdHistory(taskId);
+
+      actions.actions.forEach(action => {
+        const schema = action.schema || {};
+
+        if (task && task.tags && taskInContext(action.context, task.tags)) {
+          taskActions.push(action);
+        } else {
+          return;
+        }
+
+        actionInputs[action.name] = safeDump(jsonSchemaDefaults(schema) || {});
+        actionData[action.name] = {
+          action,
+        };
+      });
 
       return {
+        taskActions,
+        actionInputs,
+        actionData,
         taskSearch: taskId,
-        showError: false,
+        previousTaskId: taskId,
       };
     }
 
-    return {
-      showError: Boolean(props.data.error),
-    };
+    return null;
   }
 
-  handleHideError = () => {
-    this.setState({
-      showError: false,
+  handleActionClick = ({ target: { name } }) => {
+    const { action } = this.state.actionData[name];
+
+    this.setState({ dialogOpen: true, selectedAction: action });
+  };
+
+  handleActionDialogClose = () => {
+    this.setState({ dialogOpen: false, selectedAction: null });
+  };
+
+  handleActionTaskComplete = action => taskId => {
+    switch (action.name) {
+      case 'create-interactive':
+        this.props.history.push(`/tasks/${taskId}/connect`);
+        break;
+      default:
+        this.props.history.push(`/tasks/${taskId}`);
+    }
+  };
+
+  handleActionTaskSubmit = ({ name }) => async () => {
+    this.setState({ actionLoading: true });
+
+    const {
+      client,
+      data: { task },
+    } = this.props;
+    const { actionInputs, actionData } = this.state;
+    const form = actionInputs[name];
+    const { action } = actionData[name];
+    const taskId = await submitTaskAction({
+      task,
+      taskActions: task.taskActions,
+      form,
+      action,
+      apolloClient: client,
     });
+
+    this.setState({
+      actionLoading: false,
+      dialogOpen: false,
+      selectedAction: null,
+    });
+
+    return taskId;
+  };
+
+  handleTaskActionError = () => {
+    this.setState({ actionLoading: false });
   };
 
   handleTaskSearchChange = e => {
@@ -104,6 +199,14 @@ export default class ViewTask extends Component {
       this.props.history.push(`/tasks/${this.state.taskSearch}`);
     }
   };
+
+  handleFormChange = (value, name) =>
+    this.setState({
+      actionInputs: {
+        ...this.state.actionInputs,
+        [name]: value,
+      },
+    });
 
   handleArtifactsPageChange = ({ cursor, previousCursor }) => {
     const {
@@ -150,7 +253,14 @@ export default class ViewTask extends Component {
       data: { loading, error, task, dependentTasks },
       match,
     } = this.props;
-    const { taskSearch, showError } = this.state;
+    const {
+      taskActions,
+      taskSearch,
+      selectedAction,
+      dialogOpen,
+      actionInputs,
+      actionLoading,
+    } = this.state;
 
     return (
       <Dashboard
@@ -163,14 +273,7 @@ export default class ViewTask extends Component {
         }>
         {loading && <Spinner loading />}
         {error &&
-          error.graphQLErrors &&
-          showError && (
-            <ErrorPanel
-              onClose={this.handleHideError}
-              error={error.graphQLErrors[0].message}
-              warning={!!task}
-            />
-          )}
+          error.graphQLErrors && <ErrorPanel error={error} warning={!!task} />}
         {task && (
           <Fragment>
             <Typography variant="headline" className={classes.title}>
@@ -207,6 +310,44 @@ export default class ViewTask extends Component {
                 />
               </Grid>
             </Grid>
+            {taskActions && taskActions.length ? (
+              <SpeedDial>
+                {taskActions.map(action => (
+                  <SpeedDialAction
+                    requiresAuth
+                    tooltipOpen
+                    key={action.title}
+                    ButtonProps={{
+                      name: action.name,
+                      color: 'primary',
+                      disabled: actionLoading,
+                    }}
+                    icon={<HammerIcon />}
+                    tooltipTitle={action.title}
+                    onClick={this.handleActionClick}
+                  />
+                ))}
+              </SpeedDial>
+            ) : null}
+            {dialogOpen && (
+              <DialogAction
+                fullScreen={Boolean(selectedAction.schema)}
+                open={dialogOpen}
+                onSubmit={this.handleActionTaskSubmit(selectedAction)}
+                onComplete={this.handleActionTaskComplete(selectedAction)}
+                onError={this.handleTaskActionError}
+                onClose={this.handleActionDialogClose}
+                title={selectedAction.title}
+                body={
+                  <TaskActionForm
+                    action={selectedAction}
+                    form={actionInputs[selectedAction.name]}
+                    onFormChange={this.handleFormChange}
+                  />
+                }
+                confirmText={selectedAction.title}
+              />
+            )}
           </Fragment>
         )}
       </Dashboard>

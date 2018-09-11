@@ -25,7 +25,7 @@ import Button from '../Button';
   },
 })
 /**
- * A button that displays a dialog when clicked.
+ * A Material UI Dialog augmented with application specific props.
  */
 export default class DialogAction extends Component {
   static propTypes = {
@@ -36,9 +36,18 @@ export default class DialogAction extends Component {
     /** The body of the Dialog. */
     body: node,
     /** The text content of the executing action button */
-    confirmText: string,
+    confirmText: string.isRequired,
     /** Callback fired when the executing action button is clicked */
     onSubmit: func.isRequired,
+    /**
+     * Callback fired when the action is complete with
+     * the return value of onSubmit. This function will not
+     * be called if onSubmit throws an error.
+     * */
+    onComplete: func,
+    /** Callback fired when onSubmit throws an error.
+     * The error will be provided in the callback. */
+    onError: func,
     /** Callback fired when the component requests to be closed. */
     onClose: func.isRequired,
   };
@@ -55,14 +64,23 @@ export default class DialogAction extends Component {
   };
 
   handleSubmit = async () => {
+    const { onSubmit, onComplete, onError } = this.props;
+
     this.setState({ executing: true, error: null });
 
     try {
-      await this.props.onSubmit();
+      const result = await onSubmit();
+
+      if (onComplete) {
+        onComplete(result);
+      }
 
       this.setState({ executing: false });
-      this.props.onClose();
     } catch (error) {
+      if (onError) {
+        onError(error);
+      }
+
       this.setState({
         executing: false,
         error,

@@ -138,3 +138,4 @@ export const MIMETYPE_ICONS = [
   [FileMusicIcon, [/^audio\//]],
   [FileIcon, [/.*/]],
 ];
+export const ACTIONS_JSON_KNOWN_KINDS = ['task', 'hook'];
