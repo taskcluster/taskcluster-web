@@ -69,6 +69,7 @@ export default class IndexedEntry extends Component {
           ...buildArtifactUrl({
             name: edge.node.name,
             contentType: edge.node.contentType,
+            url: edge.node.url,
             namespace,
             taskId,
           }),

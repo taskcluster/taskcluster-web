@@ -2,7 +2,7 @@ import { isNil } from 'ramda';
 import getIconFromMime from './getIconFromMime';
 import urls from './urls';
 
-export default ({ name, contentType, namespace, runId, taskId }) => {
+export default ({ name, contentType, namespace, url, runId, taskId }) => {
   if (/^public\//.test(name)) {
     const icon = getIconFromMime(contentType);
 
@@ -40,10 +40,8 @@ export default ({ name, contentType, namespace, runId, taskId }) => {
     };
   }
 
-  // TODO: If we have a userSession we should create a signed URL
-
   return {
     name,
-    url: null,
+    url,
   };
 };
