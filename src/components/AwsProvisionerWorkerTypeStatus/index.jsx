@@ -1,4 +1,4 @@
-import { Fragment, Component } from 'react';
+import { Component } from 'react';
 import { object } from 'prop-types';
 import { pipe, map, sort as rSort } from 'ramda';
 import memoize from 'fast-memoize';
@@ -147,37 +147,35 @@ export default class AwsProvisionerWorkerTypeStatus extends Component {
     );
 
     return (
-      <Fragment>
-        <DataTable
-          items={sortedStatuses}
-          headers={[
-            'Instance Type',
-            'Availability Zones',
-            'Running Instances',
-            'Pending Instances',
-          ]}
-          sortByHeader={sortBy}
-          sortDirection={sortDirection}
-          onHeaderClick={this.handleHeaderClick}
-          noItemsMessage="No running instances"
-          renderRow={status => (
-            <TableRow key={`${status.instanceType}-${status.zone}`}>
-              <TableCell>
-                <Typography>{status.instanceType}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography>{status.zone}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography>{status.running}</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography>{status.pending}</Typography>
-              </TableCell>
-            </TableRow>
-          )}
-        />
-      </Fragment>
+      <DataTable
+        items={sortedStatuses}
+        headers={[
+          'Instance Type',
+          'Availability Zones',
+          'Running Instances',
+          'Pending Instances',
+        ]}
+        sortByHeader={sortBy}
+        sortDirection={sortDirection}
+        onHeaderClick={this.handleHeaderClick}
+        noItemsMessage="No running instances"
+        renderRow={status => (
+          <TableRow key={`${status.instanceType}-${status.zone}`}>
+            <TableCell>
+              <Typography>{status.instanceType}</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography>{status.zone}</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography>{status.running}</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography>{status.pending}</Typography>
+            </TableCell>
+          </TableRow>
+        )}
+      />
     );
   }
 }
