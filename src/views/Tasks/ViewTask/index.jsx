@@ -1,6 +1,7 @@
 import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { graphql, withApollo } from 'react-apollo';
+import { pathOr } from 'ramda';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Markdown from '@mozilla-frontend-infra/components/Markdown';
@@ -9,10 +10,20 @@ import Chip from '@material-ui/core/Chip';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Checkbox from '@material-ui/core/Checkbox';
 import dotProp from 'dot-prop-immutable';
 import jsonSchemaDefaults from 'json-schema-defaults';
 import { safeDump } from 'js-yaml';
 import HammerIcon from 'mdi-react/HammerIcon';
+import PencilIcon from 'mdi-react/PencilIcon';
+import ClockOutlineIcon from 'mdi-react/ClockOutlineIcon';
+import CancelIcon from 'mdi-react/CancelIcon';
+import FlashIcon from 'mdi-react/FlashIcon';
+import ConsoleLineIcon from 'mdi-react/ConsoleLineIcon';
+import RestartIcon from 'mdi-react/RestartIcon';
 import Dashboard from '../../../components/Dashboard';
 import TaskDetailsCard from '../../../components/TaskDetailsCard';
 import TaskRunsCard from '../../../components/TaskRunsCard';
@@ -45,6 +56,8 @@ const taskInContext = (tagSetList, taskTags) =>
       tag => taskTags[tag] && taskTags[tag] === tagSet[tag]
     )
   );
+const getCachesFromTask = task =>
+  Object.keys(pathOr({}, ['payload', 'cache'], task));
 
 @hot(module)
 @withApollo
@@ -92,6 +105,9 @@ export default class ViewTask extends Component {
     selectedAction: null,
     dialogOpen: false,
     actionLoading: false,
+    dialogActionProps: null,
+    caches: null,
+    selectedCaches: null,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -122,6 +138,7 @@ export default class ViewTask extends Component {
           action,
         };
       });
+      const caches = getCachesFromTask(task);
 
       return {
         taskActions,
@@ -129,6 +146,8 @@ export default class ViewTask extends Component {
         actionData,
         taskSearch: taskId,
         previousTaskId: taskId,
+        caches,
+        selectedCaches: new Set(caches),
       };
     }
 
@@ -142,7 +161,11 @@ export default class ViewTask extends Component {
   };
 
   handleActionDialogClose = () => {
-    this.setState({ dialogOpen: false, selectedAction: null });
+    this.setState({
+      dialogOpen: false,
+      selectedAction: null,
+      dialogActionProps: null,
+    });
   };
 
   handleActionTaskComplete = action => taskId => {
@@ -247,6 +270,258 @@ export default class ViewTask extends Component {
     });
   };
 
+  handleScheduleTaskClick = () => {
+    const title = 'Schedule Task';
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Typography>
+            This will <strong>overwrite any scheduling process</strong> taking
+            place. If this task is part of a continuous integration process,
+            scheduling this task may cause your commit to land with failing
+            tests.
+          </Typography>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
+  handleRetriggerTaskClick = () => {
+    const title = 'Retrigger Task';
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Fragment>
+            <Typography gutterBottom>
+              This will duplicate the task and create it under a different{' '}
+              <code>taskId</code>.
+            </Typography>
+            <Typography>The new task will be altered to:</Typography>
+            <ul>
+              <li>
+                <Typography>
+                  Update deadlines and other timestamps for the current time
+                </Typography>
+              </li>
+              <li>
+                <Typography>
+                  Strip self-dependencies from the task definition
+                </Typography>
+              </li>
+            </ul>
+            <Typography>Note: this may not work with all tasks.</Typography>
+          </Fragment>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
+  handleCancelTaskClick = () => {
+    const title = 'Cancel Task';
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Typography>
+            Note that another process or person may still be able to schedule a
+            re-run. All existing runs will be aborted and any scheduling process
+            will not be able to schedule the task.
+          </Typography>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
+  handleSelectCacheClick = cache => () => {
+    const selectedCaches = new Set([...this.state.selectedCaches]);
+
+    console.log('cache: ', cache);
+    console.log('selectedCaches: ', selectedCaches);
+
+    if (selectedCaches.has(cache)) {
+      console.log('deleting cache');
+      selectedCaches.delete(cache);
+    } else {
+      console.log('adding cache');
+      selectedCaches.add(cache);
+    }
+
+    console.log('selectedCaches is now: ', selectedCaches);
+
+    this.setState({ selectedCaches });
+  };
+
+  handlePurgeClick = () => {
+    const title = 'Purge Worker Cache';
+    const { caches, selectedCaches } = this.state;
+
+    console.log('selectedCaches: ', selectedCaches);
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Fragment>
+            <Typography>
+              This will purge caches used in this task across all workers of
+              this worker type.
+            </Typography>
+            <Typography>Select the caches to purge:</Typography>
+            <List>
+              {caches.map(cache => (
+                <ListItem
+                  onClick={this.handleSelectCacheClick(cache)}
+                  key={cache}>
+                  <Checkbox
+                    checked={selectedCaches.has(cache)}
+                    tabIndex={-1}
+                    disableRipple
+                  />
+                  <ListItemText primary={cache} />
+                </ListItem>
+              ))}
+            </List>
+          </Fragment>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
+  interactiveText = () => (
+    <Fragment>
+      <Typography>The new task will be altered to:</Typography>
+      <ul>
+        <li>
+          <Typography>
+            Set <code>task.payload.features.interactive = true</code>
+          </Typography>
+        </li>
+        <li>
+          <Typography>
+            Strip <code>task.payload.caches</code> to avoid poisoning
+          </Typography>
+        </li>
+        <li>
+          <Typography>
+            Ensures <code>task.payload.maxRunTime</code> is minimum of 60
+            minutes
+          </Typography>
+        </li>
+        <li>
+          <Typography>
+            Strip <code>task.routes</code> to avoid side-effects
+          </Typography>
+        </li>
+        <li>
+          <Typography>
+            Set the environment variable{' '}
+            <code>TASKCLUSTER_INTERACTIVE=true</code>
+          </Typography>
+        </li>
+      </ul>
+      <Typography>
+        Note: this may not work with all tasks. You may not have the scopes
+        required to create the task.
+      </Typography>
+    </Fragment>
+  );
+
+  handleCreateInteractiveTaskClick = () => {
+    const title = 'Create Interactive Task';
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Fragment>
+            <Typography>
+              This will duplicate the task and create it under a different{' '}
+              <code>taskId</code>.
+            </Typography>
+            {this.interactiveText()}
+          </Fragment>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
+  handleEditInteractiveTaskClick = () => {
+    const title = 'Edit As Interactive Task';
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Fragment>
+            <Typography>
+              This will duplicate and allow you to edit the new task prior to
+              creation.
+            </Typography>
+            {this.interactiveText()}
+          </Fragment>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
+  handleEditTaskClick = () => {
+    const title = 'Edit Task';
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Typography>
+            Note that the edited task will not be linked to other tasks nor have
+            the same <code>task.routes</code> as other tasks, so this is not a
+            way to fix a failing task in a larger task group. Note that you may
+            also not have the scopes required to create the resulting task.
+          </Typography>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
   render() {
     const {
       classes,
@@ -254,6 +529,8 @@ export default class ViewTask extends Component {
       match,
     } = this.props;
     const {
+      dialogActionProps,
+      actionData,
       taskActions,
       taskSearch,
       selectedAction,
@@ -273,7 +550,9 @@ export default class ViewTask extends Component {
         }>
         {loading && <Spinner loading />}
         {error &&
-          error.graphQLErrors && <ErrorPanel error={error} warning={!!task} />}
+          error.graphQLErrors && (
+            <ErrorPanel error={error} warning={Boolean(task)} />
+          )}
         {task && (
           <Fragment>
             <Typography variant="headline" className={classes.title}>
@@ -310,9 +589,97 @@ export default class ViewTask extends Component {
                 />
               </Grid>
             </Grid>
-            {taskActions && taskActions.length ? (
-              <SpeedDial>
-                {taskActions.map(action => (
+            <SpeedDial>
+              {!('schedule' in actionData) && (
+                <SpeedDialAction
+                  requiresAuth
+                  tooltipOpen
+                  ButtonProps={{
+                    color: 'secondary',
+                    disabled: actionLoading,
+                  }}
+                  icon={<ClockOutlineIcon />}
+                  tooltipTitle="Schedule Task"
+                  onClick={this.handleScheduleTaskClick}
+                />
+              )}
+              {!('retrigger' in actionData) && (
+                <SpeedDialAction
+                  requiresAuth
+                  tooltipOpen
+                  ButtonProps={{
+                    color: 'secondary',
+                    disabled: actionLoading,
+                  }}
+                  icon={<RestartIcon />}
+                  tooltipTitle="Retrigger Task"
+                  onClick={this.handleRetriggerTaskClick}
+                />
+              )}
+              {!('cancel' in actionData) && (
+                <SpeedDialAction
+                  requiresAuth
+                  tooltipOpen
+                  ButtonProps={{
+                    color: 'secondary',
+                    disabled: actionLoading,
+                  }}
+                  icon={<CancelIcon />}
+                  tooltipTitle="Cancel Task"
+                  onClick={this.handleCancelTaskClick}
+                />
+              )}
+              {!('purge-cache' in actionData) && (
+                <SpeedDialAction
+                  requiresAuth
+                  tooltipOpen
+                  ButtonProps={{
+                    color: 'secondary',
+                    disabled: actionLoading,
+                  }}
+                  icon={<FlashIcon />}
+                  tooltipTitle="Purge Worker Cache"
+                  onClick={this.handlePurgeClick}
+                />
+              )}
+              {!('create-interactive' in actionData) && (
+                <SpeedDialAction
+                  requiresAuth
+                  tooltipOpen
+                  ButtonProps={{
+                    color: 'secondary',
+                    disabled: actionLoading,
+                  }}
+                  icon={<ConsoleLineIcon />}
+                  tooltipTitle="Create Interactive Task"
+                  onClick={this.handleCreateInteractiveTaskClick}
+                />
+              )}
+              <SpeedDialAction
+                requiresAuth
+                tooltipOpen
+                ButtonProps={{
+                  color: 'secondary',
+                  disabled: actionLoading,
+                }}
+                icon={<PencilIcon />}
+                tooltipTitle="Edit Task"
+                onClick={this.handleEditTaskClick}
+              />
+              <SpeedDialAction
+                requiresAuth
+                tooltipOpen
+                ButtonProps={{
+                  color: 'secondary',
+                  disabled: actionLoading,
+                }}
+                icon={<ConsoleLineIcon />}
+                tooltipTitle="Edit as Interactive Task"
+                onClick={this.handleEditInteractiveTaskClick}
+              />
+              {taskActions &&
+                taskActions.length &&
+                taskActions.map(action => (
                   <SpeedDialAction
                     requiresAuth
                     tooltipOpen
@@ -327,25 +694,25 @@ export default class ViewTask extends Component {
                     onClick={this.handleActionClick}
                   />
                 ))}
-              </SpeedDial>
-            ) : null}
+            </SpeedDial>
             {dialogOpen && (
               <DialogAction
-                fullScreen={Boolean(selectedAction.schema)}
+                {...dialogActionProps || {
+                  fullScreen: Boolean(selectedAction.schema),
+                  onSubmit: this.handleActionTaskSubmit(selectedAction),
+                  onComplete: this.handleActionTaskComplete(selectedAction),
+                  title: selectedAction.title,
+                  body: (
+                    <TaskActionForm
+                      action={selectedAction}
+                      form={actionInputs[selectedAction.name]}
+                      onFormChange={this.handleFormChange}
+                    />
+                  ),
+                }}
                 open={dialogOpen}
-                onSubmit={this.handleActionTaskSubmit(selectedAction)}
-                onComplete={this.handleActionTaskComplete(selectedAction)}
                 onError={this.handleTaskActionError}
                 onClose={this.handleActionDialogClose}
-                title={selectedAction.title}
-                body={
-                  <TaskActionForm
-                    action={selectedAction}
-                    form={actionInputs[selectedAction.name]}
-                    onFormChange={this.handleFormChange}
-                  />
-                }
-                confirmText={selectedAction.title}
               />
             )}
           </Fragment>
