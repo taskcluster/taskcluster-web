@@ -31,6 +31,10 @@ import buildArtifactUrl from '../../utils/buildArtifactUrl';
   linkCell: {
     textAlign: 'right',
   },
+  logButton: {
+    float: 'left',
+    marginRight: theme.spacing.unit,
+  },
 }))
 export default class IndexedEntry extends Component {
   static propTypes = {
@@ -79,16 +83,11 @@ export default class IndexedEntry extends Component {
 
   // Handle programmatically in order to avoid
   // '<a> cannot appear as a child of <tbody>'
-  handleArtifactClick = url => {
-    if (!url) {
-      return null;
-    }
-
+  handleArtifactClick = url =>
     Object.assign(window.open(), {
       opener: null,
       location: url,
     });
-  };
 
   renderArtifactsTable() {
     const {
