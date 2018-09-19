@@ -126,8 +126,7 @@ export default class IndexedEntry extends Component {
               </Fragment>
             </TableCell>
             <TableCell className={classes.linkCell}>
-              {artifact.isPublicLog && <LinkIcon />}
-              {!artifact.isPublicLog && artifact.url && <OpenInNewIcon />}
+              <OpenInNewIcon />
             </TableCell>
           </TableRow>
         )}
@@ -158,7 +157,7 @@ export default class IndexedEntry extends Component {
           component={Link}
           to={`/tasks/${indexedTask.taskId}`}>
           <ListItemText primary="View task" />
-          <OpenInNewIcon />
+          <LinkIcon />
         </ListItem>
         <ListItem component="div">
           <ListItemText
