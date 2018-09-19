@@ -1,6 +1,6 @@
-import { Component, Fragment } from 'react';
-import { graphql, compose } from 'react-apollo';
 import { hot } from 'react-hot-loader';
+import { Component } from 'react';
+import { graphql, compose } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
@@ -24,11 +24,16 @@ import indexedTaskQuery from './indexedTask.graphql';
   }),
   graphql(artifactsQuery, {
     name: 'latestArtifactsData',
-    options: {
+    options: ({ indexedTaskData }) => ({
       variables: {
-        skip: true,
+        skip: !indexedTaskData.indexedTask,
+        taskId:
+          indexedTaskData.indexedTask && indexedTaskData.indexedTask.taskId,
+        entryConnection: {
+          limit: ARTIFACTS_PAGE_SIZE,
+        },
       },
-    },
+    }),
   })
 )
 export default class IndexedTask extends Component {
@@ -102,29 +107,27 @@ export default class IndexedTask extends Component {
 
     return (
       <Dashboard title="Index Browser">
-        <Fragment>
-          {loading && <Spinner loading />}
-          {!loading &&
-            indexedTaskError &&
-            indexedTaskError.graphQLErrors && (
-              <ErrorPanel error={indexedTaskError} />
-            )}
-          {!loading &&
-            latestArtifactsError &&
-            latestArtifactsError.graphQLErrors && (
-              <ErrorPanel error={latestArtifactsError} />
-            )}
-          {latestArtifacts &&
-            indexedTask &&
-            task && (
-              <IndexedEntry
-                onArtifactsPageChange={this.handleArtifactsPageChange}
-                latestArtifactsConnection={latestArtifacts}
-                indexedTask={indexedTask}
-                created={task.created}
-              />
-            )}
-        </Fragment>
+        {loading && <Spinner loading />}
+        {!loading &&
+          indexedTaskError &&
+          indexedTaskError.graphQLErrors && (
+            <ErrorPanel error={indexedTaskError} />
+          )}
+        {!loading &&
+          latestArtifactsError &&
+          latestArtifactsError.graphQLErrors && (
+            <ErrorPanel error={latestArtifactsError} />
+          )}
+        {latestArtifacts &&
+          indexedTask &&
+          task && (
+            <IndexedEntry
+              onArtifactsPageChange={this.handleArtifactsPageChange}
+              latestArtifactsConnection={latestArtifacts}
+              indexedTask={indexedTask}
+              created={task.created}
+            />
+          )}
       </Dashboard>
     );
   }
