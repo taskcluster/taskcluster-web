@@ -71,7 +71,6 @@ export default class IndexedEntry extends Component {
             contentType: edge.node.contentType,
             url: edge.node.url,
             namespace,
-            taskId,
           }),
         },
       })),
