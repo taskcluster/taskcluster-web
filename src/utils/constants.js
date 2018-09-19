@@ -1,4 +1,15 @@
 import { fade } from '@material-ui/core/styles/colorManipulator';
+import FileDocumentIcon from 'mdi-react/FileDocumentIcon';
+import FilePdfIcon from 'mdi-react/FilePdfIcon';
+import ArchiveIcon from 'mdi-react/ArchiveIcon';
+import FileWordIcon from 'mdi-react/FileWordIcon';
+import FileExcelIcon from 'mdi-react/FileExcelIcon';
+import FilePowerpointIcon from 'mdi-react/FilePowerpointIcon';
+import FileXmlIcon from 'mdi-react/FileXmlIcon';
+import FileVideoIcon from 'mdi-react/FileVideoIcon';
+import FileImageIcon from 'mdi-react/FileImageIcon';
+import FileMusicIcon from 'mdi-react/FileMusicIcon';
+import FileIcon from 'mdi-react/FileIcon';
 
 // eslint-disable-next-line import/prefer-default-export
 export const ARTIFACTS_PAGE_SIZE = 10;
@@ -82,42 +93,48 @@ export const TASK_STATE = {
 // export const TASK_GROUP_POLLING_INTERVAL = 30000;
 export const TASK_GROUP_POLLING_INTERVAL = 30000;
 export const INITIAL_CURSOR = '$$FIRST$$';
-export const MIMETYPE_ICONS = {
-  'file-pdf-o': ['application/pdf', 'application/postscript'],
-  'file-archive-o': [
-    'application/zip',
-    'application/gzip',
-    'application/x-tar',
-    'application/x-gzip',
-    'application/x-bzip2',
-    'application/x-lzip',
-    'application/x-lzma',
-    'application/x-lzop',
-    'application/x-xz',
-    'application/x-compress',
-    'application/x-apple-diskimage',
-    'application/vnd.ms-cab-compressed',
-    'application/vnd.android.package-archive',
-    'application/x-gtar',
-    /compressed/,
-    /tar/,
-    /zip/,
+export const MIMETYPE_ICONS = [
+  [FilePdfIcon, ['application/pdf', 'application/postscript']],
+  [
+    ArchiveIcon,
+    [
+      'application/zip',
+      'application/gzip',
+      'application/x-tar',
+      'application/x-gzip',
+      'application/x-bzip2',
+      'application/x-lzip',
+      'application/x-lzma',
+      'application/x-lzop',
+      'application/x-xz',
+      'application/x-compress',
+      'application/x-apple-diskimage',
+      'application/vnd.ms-cab-compressed',
+      'application/vnd.android.package-archive',
+      'application/x-gtar',
+      /compressed/,
+      /tar/,
+      /zip/,
+    ],
   ],
-  'file-word-o': ['text/rtf', 'text/html'],
-  'file-excel-o': ['text/csv'],
-  'file-powerpoint-o': [],
-  'file-code-o': [
-    'application/javascript',
-    'application/json',
-    'application/xml',
-    'text/css',
-    'text/javascript',
-    'text/xml',
-    'application/ecmascript',
+  [FileWordIcon, ['text/rtf', 'text/html']],
+  [FileExcelIcon, ['text/csv']],
+  [FilePowerpointIcon, []],
+  [
+    FileXmlIcon,
+    [
+      'application/javascript',
+      'application/json',
+      'application/xml',
+      'text/css',
+      'text/javascript',
+      'text/xml',
+      'application/ecmascript',
+    ],
   ],
-  'file-video-o': [/^video\//],
-  'file-image-o': [/^image\//],
-  'file-text-o': [/^text\//],
-  'file-audio-o': [/^audio\//],
-  'file-o': [/.*/],
-};
+  [FileVideoIcon, [/^video\//]],
+  [FileImageIcon, [/^image\//]],
+  [FileDocumentIcon, [/^text\//]],
+  [FileMusicIcon, [/^audio\//]],
+  [FileIcon, [/.*/]],
+];

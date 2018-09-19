@@ -1,8 +1,7 @@
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, func, shape } from 'prop-types';
 import classNames from 'classnames';
-import Label from '@mozilla-frontend-infra/components/Label';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -30,10 +29,6 @@ import buildArtifactUrl from '../../utils/buildArtifactUrl';
   },
   linkCell: {
     textAlign: 'right',
-  },
-  logButton: {
-    float: 'left',
-    marginRight: theme.spacing.unit,
   },
 }))
 export default class IndexedEntry extends Component {
@@ -114,16 +109,10 @@ export default class IndexedEntry extends Component {
             <TableCell>
               {artifact.isPublicLog && <LockOpenOutlineIcon />}
               {!artifact.isPublicLog && artifact.url && <LockIcon />}
+              {artifact.icon && <artifact.icon />}
             </TableCell>
             <TableCell>
-              <Fragment>
-                {artifact.isPublicLog && (
-                  <Label status="info" mini className={classes.logButton}>
-                    LOG
-                  </Label>
-                )}
-                <Typography>{artifact.name}</Typography>
-              </Fragment>
+              <Typography>{artifact.name}</Typography>
             </TableCell>
             <TableCell className={classes.linkCell}>
               <OpenInNewIcon />

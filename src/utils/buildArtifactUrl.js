@@ -2,7 +2,7 @@ import getIconFromMime from './getIconFromMime';
 import urls from './urls';
 
 export default ({ name, contentType, namespace, url }) => {
-  if (/^public\/logs\//.test(name)) {
+  if (/^public\//.test(name)) {
     const icon = getIconFromMime(contentType);
 
     // If we have a namespace, use a URL with that namespace to make it
