@@ -45,13 +45,13 @@ import routes from './routes';
         paddingLeft: '0 !important',
       },
     },
+    '.json-inspector__not-found': {
+      color: '#F77669 !important',
+    },
     ...(theme.palette.type === 'dark'
       ? {
           '.json-inspector__key': {
             color: '#80CBAE !important',
-          },
-          '.json-inspector__not-found': {
-            color: '#F77669 !important',
           },
           '.json-inspector__value_string': {
             color: '#C3E88D !important',
@@ -78,7 +78,7 @@ import routes from './routes';
             width: 300,
             height: 32,
             padding: '0 !important',
-            fontSize: 13,
+            fontSize: theme.typography.fontSize - 1,
             color: '#fff',
             background: 'transparent',
             borderBottom: '1px solid #b8bdc0',
@@ -95,7 +95,33 @@ import routes from './routes';
               'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
           },
         }
-      : null),
+      : {
+          '.json-inspector__search': {
+            outline: 'none',
+            display: 'block',
+            width: 300,
+            height: 32,
+            padding: '0 !important',
+            fontSize: theme.typography.fontSize - 1,
+            background: 'transparent',
+            borderBottom: `1px solid #949494`,
+            '&:hover': {
+              borderBottom: `1px solid ${theme.palette.text.primary}`,
+            },
+            '&:focus': {
+              borderBottom: `1px solid ${theme.palette.text.primary}`,
+            },
+            borderLeft: 0,
+            borderRight: 0,
+            borderTop: 0,
+            '-webkitTransition':
+              'border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s',
+            '-oTransition':
+              'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
+            transition:
+              'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
+          },
+        }),
   },
 }))
 export default class Main extends Component {
