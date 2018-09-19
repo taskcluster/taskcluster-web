@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { func, shape, arrayOf } from 'prop-types';
-import { memoizeWith, pipe, map, sort as rSort } from 'ramda';
+import { pipe, map, sort as rSort } from 'ramda';
+import memoize from 'fast-memoize';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -50,12 +51,7 @@ export default class IndexNamespacesTable extends Component {
     this.setState({ sortBy, sortDirection });
   };
 
-  createSortedNamespacesConnection = memoizeWith(
-    (connection, sortBy, sortDirection) => {
-      const ids = sorted(connection.edges);
-
-      return `${ids.join('-')}-${sortBy}-${sortDirection}`;
-    },
+  createSortedNamespacesConnection = memoize(
     (connection, sortBy, sortDirection) => {
       const sortByProperty = camelCase(sortBy);
 
@@ -78,6 +74,13 @@ export default class IndexNamespacesTable extends Component {
           return sort(firstElement, secondElement);
         }),
       };
+    },
+    {
+      serializer: ([connection, sortBy, sortDirection]) => {
+        const ids = sorted(connection.edges);
+
+        return `${ids.join('-')}-${sortBy}-${sortDirection}`;
+      },
     }
   );
 
