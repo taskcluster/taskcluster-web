@@ -20,7 +20,7 @@ import { safeDump } from 'js-yaml';
 import HammerIcon from 'mdi-react/HammerIcon';
 import PencilIcon from 'mdi-react/PencilIcon';
 import ClockOutlineIcon from 'mdi-react/ClockOutlineIcon';
-import CancelIcon from 'mdi-react/CancelIcon';
+import CloseIcon from 'mdi-react/CloseIcon';
 import FlashIcon from 'mdi-react/FlashIcon';
 import ConsoleLineIcon from 'mdi-react/ConsoleLineIcon';
 import RestartIcon from 'mdi-react/RestartIcon';
@@ -271,7 +271,7 @@ export default class ViewTask extends Component {
   };
 
   handleScheduleTaskClick = () => {
-    const title = 'Schedule Task';
+    const title = 'Schedule';
 
     this.setState({
       dialogOpen: true,
@@ -294,7 +294,7 @@ export default class ViewTask extends Component {
   };
 
   handleRetriggerTaskClick = () => {
-    const title = 'Retrigger Task';
+    const title = 'Retrigger';
 
     this.setState({
       dialogOpen: true,
@@ -331,7 +331,7 @@ export default class ViewTask extends Component {
   };
 
   handleCancelTaskClick = () => {
-    const title = 'Cancel Task';
+    const title = 'Cancel';
 
     this.setState({
       dialogOpen: true,
@@ -352,58 +352,59 @@ export default class ViewTask extends Component {
     });
   };
 
+  renderPurgeWorkerCacheDialogBody = selectedCaches => {
+    const { caches } = this.state;
+
+    return (
+      <Fragment>
+        <Typography>
+          This will purge caches used in this task across all workers of this
+          worker type.
+        </Typography>
+        <Typography>Select the caches to purge:</Typography>
+        <List>
+          {caches.map(cache => (
+            <ListItem onClick={this.handleSelectCacheClick(cache)} key={cache}>
+              <Checkbox
+                checked={selectedCaches.has(cache)}
+                tabIndex={-1}
+                disableRipple
+              />
+              <ListItemText primary={cache} />
+            </ListItem>
+          ))}
+        </List>
+      </Fragment>
+    );
+  };
+
   handleSelectCacheClick = cache => () => {
     const selectedCaches = new Set([...this.state.selectedCaches]);
 
-    console.log('cache: ', cache);
-    console.log('selectedCaches: ', selectedCaches);
-
     if (selectedCaches.has(cache)) {
-      console.log('deleting cache');
       selectedCaches.delete(cache);
     } else {
-      console.log('adding cache');
       selectedCaches.add(cache);
     }
 
-    console.log('selectedCaches is now: ', selectedCaches);
-
-    this.setState({ selectedCaches });
+    this.setState({
+      selectedCaches,
+      dialogActionProps: {
+        ...this.state.dialogActionProps,
+        body: this.renderPurgeWorkerCacheDialogBody(selectedCaches),
+      },
+    });
   };
 
-  handlePurgeClick = () => {
+  handlePurgeWorkerCacheClick = () => {
     const title = 'Purge Worker Cache';
-    const { caches, selectedCaches } = this.state;
-
-    console.log('selectedCaches: ', selectedCaches);
+    const { selectedCaches } = this.state;
 
     this.setState({
       dialogOpen: true,
       dialogActionProps: {
         fullScreen: false,
-        body: (
-          <Fragment>
-            <Typography>
-              This will purge caches used in this task across all workers of
-              this worker type.
-            </Typography>
-            <Typography>Select the caches to purge:</Typography>
-            <List>
-              {caches.map(cache => (
-                <ListItem
-                  onClick={this.handleSelectCacheClick(cache)}
-                  key={cache}>
-                  <Checkbox
-                    checked={selectedCaches.has(cache)}
-                    tabIndex={-1}
-                    disableRipple
-                  />
-                  <ListItemText primary={cache} />
-                </ListItem>
-              ))}
-            </List>
-          </Fragment>
-        ),
+        body: this.renderPurgeWorkerCacheDialogBody(selectedCaches),
         title: `${title}?`,
         onSubmit: () => console.log('onSubmit'),
         onComplete: result => console.log('onComplete: ', result),
@@ -452,7 +453,7 @@ export default class ViewTask extends Component {
   );
 
   handleCreateInteractiveTaskClick = () => {
-    const title = 'Create Interactive Task';
+    const title = 'Create Interactive';
 
     this.setState({
       dialogOpen: true,
@@ -476,7 +477,7 @@ export default class ViewTask extends Component {
   };
 
   handleEditInteractiveTaskClick = () => {
-    const title = 'Edit As Interactive Task';
+    const title = 'Edit As Interactive';
 
     this.setState({
       dialogOpen: true,
@@ -500,7 +501,7 @@ export default class ViewTask extends Component {
   };
 
   handleEditTaskClick = () => {
-    const title = 'Edit Task';
+    const title = 'Edit';
 
     this.setState({
       dialogOpen: true,
@@ -599,7 +600,7 @@ export default class ViewTask extends Component {
                     disabled: actionLoading,
                   }}
                   icon={<ClockOutlineIcon />}
-                  tooltipTitle="Schedule Task"
+                  tooltipTitle="Schedule"
                   onClick={this.handleScheduleTaskClick}
                 />
               )}
@@ -612,7 +613,7 @@ export default class ViewTask extends Component {
                     disabled: actionLoading,
                   }}
                   icon={<RestartIcon />}
-                  tooltipTitle="Retrigger Task"
+                  tooltipTitle="Retrigger"
                   onClick={this.handleRetriggerTaskClick}
                 />
               )}
@@ -624,8 +625,8 @@ export default class ViewTask extends Component {
                     color: 'secondary',
                     disabled: actionLoading,
                   }}
-                  icon={<CancelIcon />}
-                  tooltipTitle="Cancel Task"
+                  icon={<CloseIcon />}
+                  tooltipTitle="Cancel"
                   onClick={this.handleCancelTaskClick}
                 />
               )}
@@ -639,7 +640,7 @@ export default class ViewTask extends Component {
                   }}
                   icon={<FlashIcon />}
                   tooltipTitle="Purge Worker Cache"
-                  onClick={this.handlePurgeClick}
+                  onClick={this.handlePurgeWorkerCacheClick}
                 />
               )}
               {!('create-interactive' in actionData) && (
@@ -651,7 +652,7 @@ export default class ViewTask extends Component {
                     disabled: actionLoading,
                   }}
                   icon={<ConsoleLineIcon />}
-                  tooltipTitle="Create Interactive Task"
+                  tooltipTitle="Create Interactive"
                   onClick={this.handleCreateInteractiveTaskClick}
                 />
               )}
@@ -663,7 +664,7 @@ export default class ViewTask extends Component {
                   disabled: actionLoading,
                 }}
                 icon={<PencilIcon />}
-                tooltipTitle="Edit Task"
+                tooltipTitle="Edit"
                 onClick={this.handleEditTaskClick}
               />
               <SpeedDialAction
@@ -674,7 +675,7 @@ export default class ViewTask extends Component {
                   disabled: actionLoading,
                 }}
                 icon={<ConsoleLineIcon />}
-                tooltipTitle="Edit as Interactive Task"
+                tooltipTitle="Edit as Interactive"
                 onClick={this.handleEditInteractiveTaskClick}
               />
               {taskActions &&
@@ -701,7 +702,7 @@ export default class ViewTask extends Component {
                   fullScreen: Boolean(selectedAction.schema),
                   onSubmit: this.handleActionTaskSubmit(selectedAction),
                   onComplete: this.handleActionTaskComplete(selectedAction),
-                  title: selectedAction.title,
+                  title: `${selectedAction.title}?`,
                   body: (
                     <TaskActionForm
                       action={selectedAction}
@@ -709,6 +710,7 @@ export default class ViewTask extends Component {
                       onFormChange={this.handleFormChange}
                     />
                   ),
+                  confirmText: selectedAction.title,
                 }}
                 open={dialogOpen}
                 onError={this.handleTaskActionError}

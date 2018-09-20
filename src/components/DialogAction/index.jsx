@@ -114,7 +114,7 @@ export default class DialogAction extends Component {
           <DialogContentText component="div">{body}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button disabled={executing} onClick={onClose} color="secondary">
+          <Button disabled={executing} onClick={onClose}>
             Cancel
           </Button>
           <div className={classes.executingActionWrapper}>
