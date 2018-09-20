@@ -12,14 +12,15 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import dotProp from 'dot-prop-immutable';
 import jsonSchemaDefaults from 'json-schema-defaults';
 import { safeDump } from 'js-yaml';
 import HammerIcon from 'mdi-react/HammerIcon';
+import CreationIcon from 'mdi-react/CreationIcon';
 import PencilIcon from 'mdi-react/PencilIcon';
 import ClockOutlineIcon from 'mdi-react/ClockOutlineIcon';
+import ShovelIcon from 'mdi-react/ShovelIcon';
 import CloseIcon from 'mdi-react/CloseIcon';
 import FlashIcon from 'mdi-react/FlashIcon';
 import ConsoleLineIcon from 'mdi-react/ConsoleLineIcon';
@@ -70,6 +71,10 @@ const getCachesFromTask = task =>
   },
   owner: {
     marginTop: theme.spacing.unit,
+  },
+  dialogListItem: {
+    paddingTop: 0,
+    paddingBottom: 0,
   },
 }))
 @graphql(taskQuery, {
@@ -293,65 +298,6 @@ export default class ViewTask extends Component {
     });
   };
 
-  handleRetriggerTaskClick = () => {
-    const title = 'Retrigger';
-
-    this.setState({
-      dialogOpen: true,
-      dialogActionProps: {
-        fullScreen: false,
-        body: (
-          <Fragment>
-            <Typography gutterBottom>
-              This will duplicate the task and create it under a different{' '}
-              <code>taskId</code>.
-            </Typography>
-            <Typography>The new task will be altered to:</Typography>
-            <ul>
-              <li>
-                <Typography>
-                  Update deadlines and other timestamps for the current time
-                </Typography>
-              </li>
-              <li>
-                <Typography>
-                  Strip self-dependencies from the task definition
-                </Typography>
-              </li>
-            </ul>
-            <Typography>Note: this may not work with all tasks.</Typography>
-          </Fragment>
-        ),
-        title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
-        confirmText: title,
-      },
-    });
-  };
-
-  handleCancelTaskClick = () => {
-    const title = 'Cancel';
-
-    this.setState({
-      dialogOpen: true,
-      dialogActionProps: {
-        fullScreen: false,
-        body: (
-          <Typography>
-            Note that another process or person may still be able to schedule a
-            re-run. All existing runs will be aborted and any scheduling process
-            will not be able to schedule the task.
-          </Typography>
-        ),
-        title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
-        confirmText: title,
-      },
-    });
-  };
-
   renderPurgeWorkerCacheDialogBody = selectedCaches => {
     const { caches } = this.state;
 
@@ -364,13 +310,16 @@ export default class ViewTask extends Component {
         <Typography>Select the caches to purge:</Typography>
         <List>
           {caches.map(cache => (
-            <ListItem onClick={this.handleSelectCacheClick(cache)} key={cache}>
+            <ListItem
+              className={this.props.classes.dialogListItem}
+              onClick={this.handleSelectCacheClick(cache)}
+              key={cache}>
               <Checkbox
                 checked={selectedCaches.has(cache)}
                 tabIndex={-1}
                 disableRipple
               />
-              <ListItemText primary={cache} />
+              <Typography>{cache}</Typography>
             </ListItem>
           ))}
         </List>
@@ -452,30 +401,6 @@ export default class ViewTask extends Component {
     </Fragment>
   );
 
-  handleCreateInteractiveTaskClick = () => {
-    const title = 'Create Interactive';
-
-    this.setState({
-      dialogOpen: true,
-      dialogActionProps: {
-        fullScreen: false,
-        body: (
-          <Fragment>
-            <Typography>
-              This will duplicate the task and create it under a different{' '}
-              <code>taskId</code>.
-            </Typography>
-            {this.interactiveText()}
-          </Fragment>
-        ),
-        title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
-        confirmText: title,
-      },
-    });
-  };
-
   handleEditInteractiveTaskClick = () => {
     const title = 'Edit As Interactive';
 
@@ -521,6 +446,58 @@ export default class ViewTask extends Component {
         confirmText: title,
       },
     });
+  };
+
+  handleCreateInteractiveTaskClick = () => {
+    const title = 'Create Interactive';
+
+    this.setState({
+      dialogOpen: true,
+      dialogActionProps: {
+        fullScreen: false,
+        body: (
+          <Fragment>
+            <Typography>
+              This will duplicate the task and create it under a different{' '}
+              <code>taskId</code>.
+            </Typography>
+            {this.interactiveText()}
+          </Fragment>
+        ),
+        title: `${title}?`,
+        onSubmit: () => console.log('onSubmit'),
+        onComplete: result => console.log('onComplete: ', result),
+        confirmText: title,
+      },
+    });
+  };
+
+  renderActionIcon = action => {
+    switch (action.name) {
+      case 'retrigger': {
+        return <RestartIcon />;
+      }
+
+      case 'cancel': {
+        return <CloseIcon />;
+      }
+
+      case 'rerun': {
+        return <RestartIcon />;
+      }
+
+      case 'purge-caches': {
+        return <CreationIcon />;
+      }
+
+      case 'backfill': {
+        return <ShovelIcon />;
+      }
+
+      default: {
+        return <HammerIcon />;
+      }
+    }
   };
 
   render() {
@@ -604,33 +581,7 @@ export default class ViewTask extends Component {
                   onClick={this.handleScheduleTaskClick}
                 />
               )}
-              {!('retrigger' in actionData) && (
-                <SpeedDialAction
-                  requiresAuth
-                  tooltipOpen
-                  ButtonProps={{
-                    color: 'secondary',
-                    disabled: actionLoading,
-                  }}
-                  icon={<RestartIcon />}
-                  tooltipTitle="Retrigger"
-                  onClick={this.handleRetriggerTaskClick}
-                />
-              )}
-              {!('cancel' in actionData) && (
-                <SpeedDialAction
-                  requiresAuth
-                  tooltipOpen
-                  ButtonProps={{
-                    color: 'secondary',
-                    disabled: actionLoading,
-                  }}
-                  icon={<CloseIcon />}
-                  tooltipTitle="Cancel"
-                  onClick={this.handleCancelTaskClick}
-                />
-              )}
-              {!('purge-cache' in actionData) && (
+              {!('purge-caches' in actionData) && (
                 <SpeedDialAction
                   requiresAuth
                   tooltipOpen
@@ -641,19 +592,6 @@ export default class ViewTask extends Component {
                   icon={<FlashIcon />}
                   tooltipTitle="Purge Worker Cache"
                   onClick={this.handlePurgeWorkerCacheClick}
-                />
-              )}
-              {!('create-interactive' in actionData) && (
-                <SpeedDialAction
-                  requiresAuth
-                  tooltipOpen
-                  ButtonProps={{
-                    color: 'secondary',
-                    disabled: actionLoading,
-                  }}
-                  icon={<ConsoleLineIcon />}
-                  tooltipTitle="Create Interactive"
-                  onClick={this.handleCreateInteractiveTaskClick}
                 />
               )}
               <SpeedDialAction
@@ -674,10 +612,23 @@ export default class ViewTask extends Component {
                   color: 'secondary',
                   disabled: actionLoading,
                 }}
-                icon={<ConsoleLineIcon />}
+                icon={<PencilIcon />}
                 tooltipTitle="Edit as Interactive"
                 onClick={this.handleEditInteractiveTaskClick}
               />
+              {!('create-interactive' in actionData) && (
+                <SpeedDialAction
+                  requiresAuth
+                  tooltipOpen
+                  ButtonProps={{
+                    color: 'secondary',
+                    disabled: actionLoading,
+                  }}
+                  icon={<ConsoleLineIcon />}
+                  tooltipTitle="Create Interactive"
+                  onClick={this.handleCreateInteractiveTaskClick}
+                />
+              )}
               {taskActions &&
                 taskActions.length &&
                 taskActions.map(action => (
@@ -690,7 +641,7 @@ export default class ViewTask extends Component {
                       color: 'primary',
                       disabled: actionLoading,
                     }}
-                    icon={<HammerIcon />}
+                    icon={this.renderActionIcon(action)}
                     tooltipTitle={action.title}
                     onClick={this.handleActionClick}
                   />
