@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { node, string, func, bool } from 'prop-types';
+import { oneOfType, object, node, string, func, bool } from 'prop-types';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -50,23 +50,25 @@ export default class DialogAction extends Component {
     onError: func,
     /** Callback fired when the component requests to be closed. */
     onClose: func.isRequired,
+    /** Error to display. */
+    error: oneOfType([string, object]),
   };
 
   static defaultProps = {
     title: '',
     body: '',
     confirmText: '',
+    error: null,
   };
 
   state = {
     executing: false,
-    error: null,
   };
 
   handleSubmit = async () => {
     const { onSubmit, onComplete, onError } = this.props;
 
-    this.setState({ executing: true, error: null });
+    this.setState({ executing: true });
 
     try {
       const result = await onSubmit();
@@ -83,13 +85,12 @@ export default class DialogAction extends Component {
 
       this.setState({
         executing: false,
-        error,
       });
     }
   };
 
   render() {
-    const { executing, error } = this.state;
+    const { executing } = this.state;
     const {
       fullScreen,
       title,
@@ -99,6 +100,7 @@ export default class DialogAction extends Component {
       onSubmit: _,
       onClose,
       open,
+      error,
       ...props
     } = this.props;
 
@@ -111,7 +113,7 @@ export default class DialogAction extends Component {
               <ErrorPanel error={error} />
             </DialogContentText>
           )}
-          <DialogContentText component="div">{body}</DialogContentText>
+          <DialogContentText>{body}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button disabled={executing} onClick={onClose}>

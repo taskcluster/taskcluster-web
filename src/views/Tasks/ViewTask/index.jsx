@@ -2,6 +2,7 @@ import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { graphql, withApollo } from 'react-apollo';
 import { pathOr } from 'ramda';
+import cloneDeep from 'lodash.clonedeep';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Markdown from '@mozilla-frontend-infra/components/Markdown';
@@ -39,8 +40,11 @@ import {
   VALID_TASK,
 } from '../../../utils/constants';
 import taskQuery from './task.graphql';
+import scheduleTaskQuery from './scheduleTask.graphql';
+import purgeWorkerCacheQuery from './purgeWorkerCache.graphql';
 import pageArtifactsQuery from './pageArtifacts.graphql';
 import db from '../../../utils/db';
+import removeKeys from '../../../utils/removeKeys';
 import submitTaskAction from '../submitTaskAction';
 
 const updateTaskIdHistory = id => {
@@ -111,6 +115,7 @@ export default class ViewTask extends Component {
     dialogOpen: false,
     actionLoading: false,
     dialogActionProps: null,
+    dialogError: null,
     caches: null,
     selectedCaches: null,
   };
@@ -162,7 +167,11 @@ export default class ViewTask extends Component {
   handleActionClick = ({ target: { name } }) => {
     const { action } = this.state.actionData[name];
 
-    this.setState({ dialogOpen: true, selectedAction: action });
+    this.setState({
+      dialogError: null,
+      dialogOpen: true,
+      selectedAction: action,
+    });
   };
 
   handleActionDialogClose = () => {
@@ -170,6 +179,8 @@ export default class ViewTask extends Component {
       dialogOpen: false,
       selectedAction: null,
       dialogActionProps: null,
+      dialogError: null,
+      actionLoading: false,
     });
   };
 
@@ -210,8 +221,8 @@ export default class ViewTask extends Component {
     return taskId;
   };
 
-  handleTaskActionError = () => {
-    this.setState({ actionLoading: false });
+  handleTaskActionError = e => {
+    this.setState({ dialogError: e, actionLoading: false });
   };
 
   handleTaskSearchChange = e => {
@@ -275,6 +286,53 @@ export default class ViewTask extends Component {
     });
   };
 
+  scheduleTask = async () => {
+    const { taskId } = this.props.match.params;
+
+    this.setState({ dialogError: null, actionLoading: true });
+
+    try {
+      await this.props.client.mutate({
+        mutation: scheduleTaskQuery,
+        variables: {
+          taskId,
+        },
+      });
+
+      this.setState({ dialogError: null });
+    } catch (error) {
+      this.setState({ dialogError: error, actionLoading: false });
+    }
+  };
+
+  purgeWorkerCache = async () => {
+    const { provisionerId, workerType } = this.props.data.task;
+    const { selectedCaches } = this.state;
+
+    this.setState({ dialogError: null, actionLoading: true });
+
+    try {
+      await Promise.all(
+        [...selectedCaches].map(cacheName =>
+          this.props.client.mutate({
+            mutation: purgeWorkerCacheQuery,
+            variables: {
+              provisionerId,
+              workerType,
+              payload: {
+                cacheName,
+              },
+            },
+          })
+        )
+      );
+
+      this.setState({ dialogError: null });
+    } catch (error) {
+      this.setState({ dialogError: error, actionLoading: false });
+    }
+  };
+
   handleScheduleTaskClick = () => {
     const title = 'Schedule';
 
@@ -291,8 +349,8 @@ export default class ViewTask extends Component {
           </Typography>
         ),
         title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
+        onSubmit: this.scheduleTask,
+        onComplete: this.handleActionDialogClose,
         confirmText: title,
       },
     });
@@ -355,75 +413,36 @@ export default class ViewTask extends Component {
         fullScreen: false,
         body: this.renderPurgeWorkerCacheDialogBody(selectedCaches),
         title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
+        onSubmit: this.purgeWorkerCache,
+        onComplete: this.handleActionDialogClose,
         confirmText: title,
       },
     });
   };
 
-  interactiveText = () => (
-    <Fragment>
-      <Typography>The new task will be altered to:</Typography>
-      <ul>
-        <li>
-          <Typography>
-            Set <code>task.payload.features.interactive = true</code>
-          </Typography>
-        </li>
-        <li>
-          <Typography>
-            Strip <code>task.payload.caches</code> to avoid poisoning
-          </Typography>
-        </li>
-        <li>
-          <Typography>
-            Ensures <code>task.payload.maxRunTime</code> is minimum of 60
-            minutes
-          </Typography>
-        </li>
-        <li>
-          <Typography>
-            Strip <code>task.routes</code> to avoid side-effects
-          </Typography>
-        </li>
-        <li>
-          <Typography>
-            Set the environment variable{' '}
-            <code>TASKCLUSTER_INTERACTIVE=true</code>
-          </Typography>
-        </li>
-      </ul>
-      <Typography>
-        Note: this may not work with all tasks. You may not have the scopes
-        required to create the task.
-      </Typography>
-    </Fragment>
-  );
+  // copy fields from the parent task, intentionally excluding some
+  // fields which might cause confusion if left unchanged
+  handleCloneTask = () =>
+    removeKeys(cloneDeep(this.props.data.task), [
+      '__typename',
+      'taskActions',
+      'taskGroup',
+      'taskActions',
+      'taskId',
+      'status',
+      'routes',
+      'taskGroupId',
+      'schedulerId',
+      'priority',
+      'dependencies',
+      'requires',
+    ]);
 
-  handleEditInteractiveTaskClick = () => {
-    const title = 'Edit As Interactive';
-
-    this.setState({
-      dialogOpen: true,
-      dialogActionProps: {
-        fullScreen: false,
-        body: (
-          <Fragment>
-            <Typography>
-              This will duplicate and allow you to edit the new task prior to
-              creation.
-            </Typography>
-            {this.interactiveText()}
-          </Fragment>
-        ),
-        title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
-        confirmText: title,
-      },
+  handleEdit = task =>
+    this.props.history.push({
+      pathname: '/tasks/create',
+      state: { task },
     });
-  };
 
   handleEditTaskClick = () => {
     const title = 'Edit';
@@ -441,8 +460,8 @@ export default class ViewTask extends Component {
           </Typography>
         ),
         title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
+        onSubmit: this.handleCloneTask,
+        onComplete: this.handleEdit,
         confirmText: title,
       },
     });
@@ -461,7 +480,40 @@ export default class ViewTask extends Component {
               This will duplicate the task and create it under a different{' '}
               <code>taskId</code>.
             </Typography>
-            {this.interactiveText()}
+            <Typography>The new task will be altered to:</Typography>
+            <ul>
+              <li>
+                <Typography>
+                  Set <code>task.payload.features.interactive = true</code>
+                </Typography>
+              </li>
+              <li>
+                <Typography>
+                  Strip <code>task.payload.caches</code> to avoid poisoning
+                </Typography>
+              </li>
+              <li>
+                <Typography>
+                  Ensures <code>task.payload.maxRunTime</code> is minimum of 60
+                  minutes
+                </Typography>
+              </li>
+              <li>
+                <Typography>
+                  Strip <code>task.routes</code> to avoid side-effects
+                </Typography>
+              </li>
+              <li>
+                <Typography>
+                  Set the environment variable{' '}
+                  <code>TASKCLUSTER_INTERACTIVE=true</code>
+                </Typography>
+              </li>
+            </ul>
+            <Typography>
+              Note: this may not work with all tasks. You may not have the
+              scopes required to create the task.
+            </Typography>
           </Fragment>
         ),
         title: `${title}?`,
@@ -605,17 +657,6 @@ export default class ViewTask extends Component {
                 tooltipTitle="Edit"
                 onClick={this.handleEditTaskClick}
               />
-              <SpeedDialAction
-                requiresAuth
-                tooltipOpen
-                ButtonProps={{
-                  color: 'secondary',
-                  disabled: actionLoading,
-                }}
-                icon={<PencilIcon />}
-                tooltipTitle="Edit as Interactive"
-                onClick={this.handleEditInteractiveTaskClick}
-              />
               {!('create-interactive' in actionData) && (
                 <SpeedDialAction
                   requiresAuth
@@ -664,6 +705,7 @@ export default class ViewTask extends Component {
                   confirmText: selectedAction.title,
                 }}
                 open={dialogOpen}
+                error={this.state.dialogError}
                 onError={this.handleTaskActionError}
                 onClose={this.handleActionDialogClose}
               />
