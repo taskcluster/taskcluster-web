@@ -1,7 +1,7 @@
 import { hot } from 'react-hot-loader';
 import { Component, Fragment } from 'react';
 import { graphql, withApollo } from 'react-apollo';
-import { pathOr } from 'ramda';
+import { omit, pathOr } from 'ramda';
 import cloneDeep from 'lodash.clonedeep';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
@@ -39,13 +39,17 @@ import {
   ARTIFACTS_PAGE_SIZE,
   VALID_TASK,
 } from '../../../utils/constants';
+import db from '../../../utils/db';
+import removeKeys from '../../../utils/removeKeys';
+import { nice } from '../../../utils/slugid';
+import parameterizeTask from '../../../utils/parameterizeTask';
+import formatError from '../../../utils/formatError';
+import submitTaskAction from '../submitTaskAction';
 import taskQuery from './task.graphql';
 import scheduleTaskQuery from './scheduleTask.graphql';
 import purgeWorkerCacheQuery from './purgeWorkerCache.graphql';
 import pageArtifactsQuery from './pageArtifacts.graphql';
-import db from '../../../utils/db';
-import removeKeys from '../../../utils/removeKeys';
-import submitTaskAction from '../submitTaskAction';
+import createTaskQuery from '../createTask.graphql';
 
 const updateTaskIdHistory = id => {
   if (!VALID_TASK.test(id)) {
@@ -420,23 +424,52 @@ export default class ViewTask extends Component {
     });
   };
 
+  handleCreateLoaner = async () => {
+    const taskId = nice();
+    const task = parameterizeTask(
+      removeKeys(cloneDeep(this.props.data.task), ['__typename'])
+    );
+
+    this.setState({ dialogError: null, actionLoading: true });
+
+    try {
+      await this.props.client.mutate({
+        mutation: createTaskQuery,
+        variables: {
+          taskId,
+          task,
+        },
+      });
+
+      this.setState({ dialogError: null });
+
+      return taskId;
+    } catch (error) {
+      this.setState({ dialogError: formatError(error), actionLoading: false });
+    }
+  };
+
   // copy fields from the parent task, intentionally excluding some
   // fields which might cause confusion if left unchanged
-  handleCloneTask = () =>
-    removeKeys(cloneDeep(this.props.data.task), [
-      '__typename',
-      'taskActions',
-      'taskGroup',
-      'taskActions',
-      'taskId',
-      'status',
-      'routes',
-      'taskGroupId',
-      'schedulerId',
-      'priority',
-      'dependencies',
-      'requires',
-    ]);
+  handleCloneTask = () => {
+    const task = removeKeys(cloneDeep(this.props.data.task), ['__typename']);
+
+    return omit(
+      [
+        'taskActions',
+        'taskGroup',
+        'taskId',
+        'status',
+        'routes',
+        'taskGroupId',
+        'schedulerId',
+        'priority',
+        'dependencies',
+        'requires',
+      ],
+      task
+    );
+  };
 
   handleEdit = task =>
     this.props.history.push({
@@ -517,8 +550,9 @@ export default class ViewTask extends Component {
           </Fragment>
         ),
         title: `${title}?`,
-        onSubmit: () => console.log('onSubmit'),
-        onComplete: result => console.log('onComplete: ', result),
+        onSubmit: this.handleCreateLoaner,
+        onComplete: taskId =>
+          this.props.history.push(`/tasks/${taskId}/connect`),
         confirmText: title,
       },
     });

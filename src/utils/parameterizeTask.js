@@ -14,6 +14,10 @@ export default task =>
         'requires',
         'scopes',
         'payload',
+        'taskActions',
+        'taskGroup',
+        'taskId',
+        'status',
       ],
       cloneDeep(task)
     ),
