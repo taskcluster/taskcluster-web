@@ -38,6 +38,7 @@ import {
   ACTIONS_JSON_KNOWN_KINDS,
   ARTIFACTS_PAGE_SIZE,
   VALID_TASK,
+  TASK_ADDED_FIELDS,
 } from '../../../utils/constants';
 import db from '../../../utils/db';
 import removeKeys from '../../../utils/removeKeys';
@@ -459,10 +460,7 @@ export default class ViewTask extends Component {
 
     return omit(
       [
-        'taskActions',
-        'taskGroup',
-        'taskId',
-        'status',
+        ...TASK_ADDED_FIELDS,
         'routes',
         'taskGroupId',
         'schedulerId',
