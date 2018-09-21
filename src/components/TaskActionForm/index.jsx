@@ -60,7 +60,7 @@ export default class TaskActionForm extends Component {
         {action.schema && (
           <Grid container spacing={16}>
             <Grid item lg={6} md={6} sm={12}>
-              <Typography guttermBottom variant="subheading">
+              <Typography gutterBottom variant="subheading">
                 Action
               </Typography>
               <CodeEditor
@@ -72,7 +72,7 @@ export default class TaskActionForm extends Component {
               />
             </Grid>
             <Grid item lg={6} md={6} sm={12}>
-              <Typography guttermBottom variant="subheading">
+              <Typography gutterBottom variant="subheading">
                 Schema
               </Typography>
               <Code language="yaml" className={classes.code}>

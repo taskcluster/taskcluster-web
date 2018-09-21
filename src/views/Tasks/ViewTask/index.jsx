@@ -195,7 +195,7 @@ export default class ViewTask extends Component {
     });
   };
 
-  handleActionTaskComplete = action => taskId => {
+  handleActionTaskComplete = (action, taskId) => {
     switch (action.name) {
       case 'create-interactive':
         this.props.history.push(`/tasks/${taskId}/connect`);
@@ -206,7 +206,7 @@ export default class ViewTask extends Component {
   };
 
   handleActionTaskSubmit = ({ name }) => async () => {
-    this.setState({ actionLoading: true });
+    this.preRunningAction();
 
     const {
       client,
@@ -221,12 +221,6 @@ export default class ViewTask extends Component {
       form,
       action,
       apolloClient: client,
-    });
-
-    this.setState({
-      actionLoading: false,
-      dialogOpen: false,
-      selectedAction: null,
     });
 
     return taskId;
@@ -300,7 +294,7 @@ export default class ViewTask extends Component {
   scheduleTask = async () => {
     const { taskId } = this.props.match.params;
 
-    this.setState({ dialogError: null, actionLoading: true });
+    this.preRunningAction();
 
     try {
       await this.props.client.mutate({
@@ -309,18 +303,24 @@ export default class ViewTask extends Component {
           taskId,
         },
       });
-
-      this.setState({ dialogError: null });
     } catch (error) {
-      this.setState({ dialogError: error, actionLoading: false });
+      this.postRunningFailedAction(error);
     }
+  };
+
+  preRunningAction = () => {
+    this.setState({ dialogError: null, actionLoading: true });
+  };
+
+  postRunningFailedAction = error => {
+    this.setState({ dialogError: error, actionLoading: false });
   };
 
   purgeWorkerCache = async () => {
     const { provisionerId, workerType } = this.props.data.task;
     const { selectedCaches } = this.state;
 
-    this.setState({ dialogError: null, actionLoading: true });
+    this.preRunningAction();
 
     try {
       await Promise.all(
@@ -337,10 +337,8 @@ export default class ViewTask extends Component {
           })
         )
       );
-
-      this.setState({ dialogError: null });
     } catch (error) {
-      this.setState({ dialogError: error, actionLoading: false });
+      this.postRunningFailedAction(error);
     }
   };
 
@@ -437,7 +435,7 @@ export default class ViewTask extends Component {
       removeKeys(cloneDeep(this.props.data.task), ['__typename'])
     );
 
-    this.setState({ dialogError: null, actionLoading: true });
+    this.preRunningAction();
 
     try {
       await this.props.client.mutate({
@@ -448,11 +446,9 @@ export default class ViewTask extends Component {
         },
       });
 
-      this.setState({ dialogError: null });
-
       return taskId;
     } catch (error) {
-      this.setState({ dialogError: formatError(error), actionLoading: false });
+      this.postRunningFailedAction(formatError(error));
     }
   };
 
@@ -501,10 +497,25 @@ export default class ViewTask extends Component {
         ),
         title: `${title}?`,
         onSubmit: this.handleCloneTask,
-        onComplete: this.handleEdit,
+        onComplete: this.handleEditTaskComplete,
         confirmText: title,
       },
     });
+  };
+
+  handleEditTaskComplete = task => {
+    this.handleActionDialogClose();
+    this.handleEdit(task);
+  };
+
+  handleCreateInteractiveComplete = taskId => {
+    this.handleActionDialogClose();
+    this.props.history.push(`/tasks/${taskId}/connect`);
+  };
+
+  handleActionComplete = action => taskId => {
+    this.handleActionDialogClose();
+    this.handleActionTaskComplete(action, taskId);
   };
 
   handleCreateInteractiveTaskClick = () => {
@@ -558,8 +569,7 @@ export default class ViewTask extends Component {
         ),
         title: `${title}?`,
         onSubmit: this.handleCreateLoaner,
-        onComplete: taskId =>
-          this.props.history.push(`/tasks/${taskId}/connect`),
+        onComplete: this.handleCreateInteractiveComplete,
         confirmText: title,
       },
     });
@@ -608,6 +618,7 @@ export default class ViewTask extends Component {
       dialogOpen,
       actionInputs,
       actionLoading,
+      dialogError,
     } = this.state;
 
     return (
@@ -734,7 +745,7 @@ export default class ViewTask extends Component {
                 {...dialogActionProps || {
                   fullScreen: Boolean(selectedAction.schema),
                   onSubmit: this.handleActionTaskSubmit(selectedAction),
-                  onComplete: this.handleActionTaskComplete(selectedAction),
+                  onComplete: this.handleActionComplete(selectedAction),
                   title: `${selectedAction.title}?`,
                   body: (
                     <TaskActionForm
@@ -746,7 +757,7 @@ export default class ViewTask extends Component {
                   confirmText: selectedAction.title,
                 }}
                 open={dialogOpen}
-                error={this.state.dialogError}
+                error={dialogError}
                 onError={this.handleTaskActionError}
                 onClose={this.handleActionDialogClose}
               />

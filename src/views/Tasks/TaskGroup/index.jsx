@@ -83,6 +83,7 @@ export default class TaskGroup extends Component {
     actionData: {},
     dialogOpen: false,
     selectedAction: null,
+    dialogError: null,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -244,15 +245,24 @@ export default class TaskGroup extends Component {
   };
 
   handleActionDialogClose = () => {
-    this.setState({ dialogOpen: false, selectedAction: null });
+    this.setState({
+      dialogOpen: false,
+      selectedAction: null,
+      dialogError: null,
+      actionLoading: false,
+    });
   };
 
   handleActionTaskComplete = taskId => {
     this.props.history.push(`/tasks/${taskId}`);
   };
 
+  preRunningAction = () => {
+    this.setState({ dialogError: null, actionLoading: true });
+  };
+
   handleActionSubmit = ({ name }) => async () => {
-    this.setState({ actionLoading: true });
+    this.preRunningAction();
 
     const { taskActions, task } = this.props.data;
     const { actionInputs, actionData } = this.state;
@@ -266,17 +276,16 @@ export default class TaskGroup extends Component {
       apolloClient: this.props.client,
     });
 
-    this.setState({
-      actionLoading: false,
-      dialogOpen: false,
-      selectedAction: null,
-    });
-
     return taskId;
   };
 
-  handleActionError = () => {
-    this.setState({ actionLoading: false });
+  handleActionError = e => {
+    this.setState({ dialogError: e, actionLoading: false });
+  };
+
+  handleActionComplete = taskId => {
+    this.handleActionDialogClose();
+    this.handleActionTaskComplete(taskId);
   };
 
   render() {
@@ -289,6 +298,7 @@ export default class TaskGroup extends Component {
       dialogOpen,
       selectedAction,
       actionInputs,
+      dialogError,
     } = this.state;
     const {
       match: {
@@ -348,8 +358,9 @@ export default class TaskGroup extends Component {
           <DialogAction
             fullScreen={Boolean(selectedAction.schema)}
             open={dialogOpen}
+            error={dialogError}
             onSubmit={this.handleActionSubmit(selectedAction)}
-            onComplete={this.handleActionTaskComplete}
+            onComplete={this.handleActionComplete}
             onError={this.handleActionError}
             onClose={this.handleActionDialogClose}
             title={selectedAction.title}
