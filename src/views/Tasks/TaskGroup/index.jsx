@@ -100,13 +100,17 @@ export default class TaskGroup extends Component {
         .forEach(action => {
           const schema = action.schema || {};
 
-          groupActions.push(action);
-          actionInputs[action.name] = safeDump(
-            jsonSchemaDefaults(schema) || {}
-          );
-          actionData[action.name] = {
-            action,
-          };
+          // if an action with this name has already been selected,
+          // don't consider this version
+          if (!groupActions.some(({ name }) => name === action.name)) {
+            groupActions.push(action);
+            actionInputs[action.name] = safeDump(
+              jsonSchemaDefaults(schema) || {}
+            );
+            actionData[action.name] = {
+              action,
+            };
+          }
         });
 
       return {

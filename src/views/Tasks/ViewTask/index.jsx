@@ -141,7 +141,14 @@ export default class ViewTask extends Component {
       actions.actions.forEach(action => {
         const schema = action.schema || {};
 
-        if (task && task.tags && taskInContext(action.context, task.tags)) {
+        // if an action with this name has already been selected,
+        // don't consider this version
+        if (
+          task &&
+          task.tags &&
+          taskInContext(action.context, task.tags) &&
+          !taskActions.some(({ name }) => name === action.name)
+        ) {
           taskActions.push(action);
         } else {
           return;
