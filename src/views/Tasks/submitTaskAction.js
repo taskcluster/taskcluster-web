@@ -11,15 +11,6 @@ import createTaskQuery from './createTask.graphql';
 import validateActionsJson from '../../utils/validateActionsJson';
 import ajv from '../../utils/ajv';
 
-/**
- *
- * @param task -
- * @param form -
- * @param action -
- * @param apolloClient - A reference to the Apollo Client
- * @param taskActions - A list of action.json actions
- * @returns {Promise<*>} - Returns the newly created task ID
- */
 export default async ({ task, form, action, apolloClient, taskActions }) => {
   const actions = removeKeys(cloneDeep(taskActions), ['__typename']);
   const taskGroup = task.taskId === task.taskGroupId ? task : task.taskGroup;
