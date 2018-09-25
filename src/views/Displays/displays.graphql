@@ -1,0 +1,7 @@
+query Displays($url: String!) {
+  vncDisplays(url: $url) {
+    display
+    width
+    height
+  }
+}

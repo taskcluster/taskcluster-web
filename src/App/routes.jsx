@@ -99,6 +99,12 @@ export default [
   },
   {
     component: loadable(() =>
+      import(/* webpackChunkName: 'Displays' */ '../views/Displays')
+    ),
+    path: '/displays',
+  },
+  {
+    component: loadable(() =>
       import(/* webpackChunkName: 'HomeOrDashboard' */ '../views/HomeOrDashboard')
     ),
     path: '/',
