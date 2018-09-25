@@ -28,8 +28,11 @@ import routes from './routes';
     '[disabled] .mdi-icon': {
       fill: theme.palette.primary.light,
     },
-    a: {
-      color: theme.palette.text.primary,
+   a: {
+      color: #FFF,
+    },
+    a:hover {
+       color: #00F,
     },
     'html, body': {
       color: theme.palette.text.secondary,
