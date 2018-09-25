@@ -28,7 +28,7 @@ import ScopesetDiff from '../../components/ScopesetDiff';
     '& svg': {
       fill: theme.palette.text.primary,
     },
-    marginRight: -theme.spacing.triple,
+    marginRight: -theme.spacing.double,
     [theme.breakpoints.down('sm')]: {
       marginRight: -14,
     },
