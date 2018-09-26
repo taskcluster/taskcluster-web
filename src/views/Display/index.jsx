@@ -11,17 +11,14 @@ import Dashboard from '../../components/Dashboard';
 import DataTable from '../../components/DataTable';
 import { VNC_DISPLAYS_POLLING_INTERVAL } from '../../utils/constants';
 
-@withStyles(theme => ({
+@withStyles({
   vncDisplay: {
     padding: 0,
-  },
-  listItemButton: {
-    ...theme.mixins.listItemButton,
   },
   displayText: {
     width: '100%',
   },
-}))
+})
 export default class Display extends Component {
   state = {
     display: null,

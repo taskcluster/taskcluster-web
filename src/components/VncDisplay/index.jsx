@@ -1,9 +1,7 @@
 import { Component } from 'react';
 import { bool, string } from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import { VncDisplay as Vnc } from 'react-vnc-display';
 
-@withStyles({})
 export default class VncDisplay extends Component {
   static propTypes = {
     url: string.isRequired,
