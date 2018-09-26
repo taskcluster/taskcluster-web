@@ -8,3 +8,4 @@ node_modules
 /styleguide
 .coverage
 src/views/.DS_Store
+config.env
