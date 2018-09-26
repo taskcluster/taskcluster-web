@@ -28,8 +28,6 @@ export default class StatusLabel extends Component {
   render() {
     const { state, mini, className } = this.props;
 
-    // console.log('props: ', props);
-
     return (
       <Label
         mini={mini}

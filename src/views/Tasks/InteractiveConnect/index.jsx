@@ -228,6 +228,14 @@ export default class InteractiveConnect extends Component {
     return INTERACTIVE_TASK_STATUS.READY;
   };
 
+  handleShellOpen = () => {
+    window.open(this.state.shellUrl, '_blank');
+  };
+
+  handleDisplayOpen = () => {
+    window.open(this.state.displayUrl, '_blank');
+  };
+
   renderTask = () => {
     const {
       classes,
@@ -236,7 +244,6 @@ export default class InteractiveConnect extends Component {
         params: { taskId },
       },
     } = this.props;
-    const { shellUrl, displayUrl } = this.state;
     const interactiveStatus = this.getInteractiveStatus();
     const isSessionReady = interactiveStatus === INTERACTIVE_TASK_STATUS.READY;
     const isSessionResolved =
@@ -304,19 +311,15 @@ export default class InteractiveConnect extends Component {
             </Typography>
             <List>
               <ListItem
-                component={Link}
-                target="_blank"
-                to={shellUrl}
                 button
+                onClick={this.handleShellOpen}
                 className={classes.listItemButton}>
                 <ConsoleIcon />
                 <ListItemText primary="Shell" />
                 <OpenInNewIcon />
               </ListItem>
               <ListItem
-                component={Link}
-                target="_blank"
-                to={displayUrl}
+                onClick={this.handleDisplayOpen}
                 button
                 className={classes.listItemButton}>
                 <MonitorIcon />
