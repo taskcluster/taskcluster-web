@@ -79,6 +79,10 @@ export default class SidebarList extends Component {
           Pulse Messages
         </SidebarListItem>
 
+        <SidebarListItem to="/purge-caches" icon={<PulseIcon />}>
+          Purge Caches
+        </SidebarListItem>
+
         <SidebarListItem to="/expansions" icon={<ArrowExpandVerticalIcon />}>
           Expand Scopesets
         </SidebarListItem>
