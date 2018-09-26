@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   uniq,
   flatten,
-  memoizeWith,
+  memoize,
   filter,
   pipe,
   path,
@@ -69,7 +69,7 @@ export default class ClientScopesTable extends Component {
   // Else, clients will be a list of scopes.
   clients = null;
 
-  createSortedClientsConnection = memoizeWith(
+  createSortedClientsConnection = memoize(
     (clientsConnection, searchMode, selectedScope, searchProperty) => {
       const ids = sorted(clientsConnection.edges);
 

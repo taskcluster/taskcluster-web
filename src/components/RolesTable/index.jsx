@@ -2,7 +2,7 @@ import { Fragment, Component } from 'react';
 import { Link } from 'react-router-dom';
 import { string, arrayOf } from 'prop-types';
 import {
-  memoizeWith,
+  memoize,
   pipe,
   map,
   ifElse,
@@ -56,7 +56,7 @@ export default class RolesTable extends Component {
     this.setState({ sortBy, sortDirection });
   };
 
-  createSortedRoles = memoizeWith(
+  createSortedRoles = memoize(
     (roles, sortBy, sortDirection, searchTerm) => {
       const ids = sorted(roles);
 

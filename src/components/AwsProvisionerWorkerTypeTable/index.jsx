@@ -1,7 +1,7 @@
 import { Fragment, Component } from 'react';
 import { Link } from 'react-router-dom';
 import { string, arrayOf } from 'prop-types';
-import { memoizeWith, pipe, map, isEmpty, sort as rSort } from 'ramda';
+import { memoize, pipe, map, isEmpty, sort as rSort } from 'ramda';
 import { camelCase } from 'change-case/change-case';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -42,7 +42,7 @@ export default class AwsProvisionerWorkerTypeTable extends Component {
     this.setState({ sortBy, sortDirection });
   };
 
-  createSortedWorkerTypes = memoizeWith(
+  createSortedWorkerTypes = memoize(
     (workerTypes, sortBy, sortDirection, searchTerm) => {
       const ids = sorted(workerTypes);
 

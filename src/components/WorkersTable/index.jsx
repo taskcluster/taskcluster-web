@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { func, string } from 'prop-types';
 import { formatDistanceStrict } from 'date-fns';
-import { memoizeWith, pipe, filter, map, sort as rSort } from 'ramda';
+import { memoize, pipe, filter, map, sort as rSort } from 'ramda';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import TableCell from '@material-ui/core/TableCell';
@@ -50,7 +50,7 @@ export default class WorkersTable extends Component {
     sortDirection: null,
   };
 
-  createSortedWorkersConnection = memoizeWith(
+  createSortedWorkersConnection = memoize(
     (workersConnections, sortBy, sortDirection) => {
       const ids = sorted(workersConnections.edges);
 

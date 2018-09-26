@@ -4,7 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import {
   uniq,
   flatten,
-  memoizeWith,
+  memoize,
   filter,
   pipe,
   map,
@@ -61,7 +61,7 @@ export default class RoleScopesTable extends Component {
     searchProperty: 'expandedScopes',
   };
 
-  createSortedRolesScopes = memoizeWith(
+  createSortedRolesScopes = memoize(
     (roles, searchMode, selectedScope, searchProperty) =>
       `${sorted(roles).join(
         '-'

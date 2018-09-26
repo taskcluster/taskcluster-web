@@ -12,7 +12,7 @@ import Drawer from '@material-ui/core/Drawer';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
 import { string, func, array, shape, arrayOf } from 'prop-types';
-import { memoizeWith, pipe, map, sort as rSort } from 'ramda';
+import { memoize, pipe, map, sort as rSort } from 'ramda';
 import { camelCase } from 'change-case';
 import LinkIcon from 'mdi-react/LinkIcon';
 import Button from '../Button';
@@ -93,7 +93,7 @@ export default class WorkerTypesTable extends Component {
   };
 
   handleDrawerOpen = ({ target: { name } }) =>
-    memoizeWith(
+    memoize(
       name => name,
       name =>
         this.setState({
@@ -111,7 +111,7 @@ export default class WorkerTypesTable extends Component {
     this.setState({ sortBy, sortDirection });
   };
 
-  createSortedWorkerTypesConnection = memoizeWith(
+  createSortedWorkerTypesConnection = memoize(
     (
       workerTypesConnection,
       awsProvisionerWorkerTypeSummaries,

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { func, shape, arrayOf } from 'prop-types';
-import { memoizeWith, pipe, map, sort as rSort } from 'ramda';
+import { memoize, pipe, map, sort as rSort } from 'ramda';
 import { camelCase } from 'change-case/change-case';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -41,7 +41,7 @@ export default class CachePurgesTable extends Component {
     this.setState({ sortBy, sortDirection });
   };
 
-  createSortedCachePurgesConnection = memoizeWith(
+  createSortedCachePurgesConnection = memoize(
     (cachePurgesConnection, sortBy, sortDirection) => {
       const ids = sorted(cachePurgesConnection.edges);
 
