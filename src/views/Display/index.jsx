@@ -1,8 +1,6 @@
 import { Component } from 'react';
-import { graphql } from 'react-apollo';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,7 +9,7 @@ import VncDisplay from '../../components/VncDisplay';
 import TableCellListItem from '../../components/TableCellListItem';
 import Dashboard from '../../components/Dashboard';
 import DataTable from '../../components/DataTable';
-import displaysQuery from './displays.graphql';
+import { VNC_DISPLAYS_POLLING_INTERVAL } from '../../utils/constants';
 
 @withStyles(theme => ({
   vncDisplay: {
@@ -24,28 +22,44 @@ import displaysQuery from './displays.graphql';
     width: '100%',
   },
 }))
-@graphql(displaysQuery, {
-  options: props => ({
-    variables: {
-      url: new URLSearchParams(props.location.search).get('displaysUrl'),
-    },
-  }),
-})
-export default class Displays extends Component {
+export default class Display extends Component {
   state = {
     display: null,
+    displays: null,
+    error: null,
   };
+
+  loadDisplays = async () => {
+    const displaysUrl = new URLSearchParams(this.props.location.search).get(
+      'displaysUrl'
+    );
+
+    this.setState({ error: false });
+
+    try {
+      const displays = await (await fetch(displaysUrl)).json();
+
+      if (!displays || !displays.length) {
+        window.setTimeout(this.loadDisplays, VNC_DISPLAYS_POLLING_INTERVAL);
+      }
+
+      this.setState({ displays });
+    } catch (error) {
+      this.setState({ error });
+    }
+  };
+
+  componentDidMount() {
+    this.loadDisplays();
+  }
 
   handleDisplayClick = display => {
     this.setState({ display });
   };
 
   render() {
-    const {
-      classes,
-      data: { error, loading, vncDisplays },
-    } = this.props;
-    const { display } = this.state;
+    const { classes } = this.props;
+    const { display, displays, error } = this.state;
     const search = new URLSearchParams(this.props.location.search);
     const iconSize = 16;
     const props = [
@@ -70,16 +84,17 @@ export default class Displays extends Component {
         })}
         title={display ? 'VNC Display' : 'Displays'}>
         {error && <ErrorPanel error={error} />}
-        {loading && <Spinner loading />}
         {display && (
           <VncDisplay url={`${props.socketUrl}?display=${display}`} shared />
         )}
         {!display &&
-          vncDisplays && (
+          displays && (
             <DataTable
-              items={vncDisplays}
+              items={displays}
               headers={['Display']}
-              noItemsMessage="No VNC displays available"
+              noItemsMessage={
+                error ? 'No displays available.' : 'No displays yet. Loading...'
+              }
               renderRow={({ display }) => (
                 <TableRow key={display}>
                   <TableCell>

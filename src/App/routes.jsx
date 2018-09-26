@@ -99,9 +99,9 @@ export default [
   },
   {
     component: loadable(() =>
-      import(/* webpackChunkName: 'Displays' */ '../views/Displays')
+      import(/* webpackChunkName: 'Displays' */ '../views/Display')
     ),
-    path: '/displays',
+    path: '/display',
   },
   {
     component: loadable(() =>
