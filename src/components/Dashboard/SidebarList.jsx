@@ -81,10 +81,7 @@ export default class SidebarList extends Component {
           Pulse Messages
         </SidebarListItem>
 
-        <SidebarListGroup
-          to="/scopesets"
-          title="Scopesets"
-          icon={<JsonIcon />}>
+        <SidebarListGroup to="/scopesets" title="Scopesets" icon={<JsonIcon />}>
           <SidebarListItem to="/scopesets/compare" icon={<ScaleBalanceIcon />}>
             Compare
           </SidebarListItem>
