@@ -96,9 +96,14 @@ export const taskPriority = oneOf([
   'LOWEST',
 ]);
 
+export const taskActions = shape({
+  actions: arrayOf(object),
+  variables: object,
+  version: number,
+});
+
 export const task = shape({
   metadata: taskMetadata,
-  status,
   retries: number,
   created: date,
   deadline: date,
@@ -108,12 +113,17 @@ export const task = shape({
   workerType: string,
   schedulerId: string,
   dependencies: arrayOf(string),
-  tags: object, // eslint-disable-line
+  tags: object,
   scopes: arrayOf(string),
   routes: arrayOf(string),
-  payload: object, // eslint-disable-line
-  extra: object, // eslint-disable-line
+  payload: object,
+  extra: object,
+  status,
+  taskActions,
+  latestArtifacts: artifacts,
 });
+
+Object.assign(task, { taskGroup: task });
 
 export const worker = shape({
   provisionerId: string,
@@ -299,10 +309,8 @@ export const awsProvisionerHealth = shape({
   ),
 });
 
-export const awsProvisionerRecentErrors = shape({
-  region: string,
-  az: string,
-  instanceType: string,
+export const awsProvisionerErrors = shape({
+  ...aws,
   code: string,
   type: oneOf(['INSTANCE_REQUEST', 'TERMINATION']),
   workerType: string,
@@ -319,6 +327,20 @@ export const secrets = arrayOf(
     name: string,
   })
 );
+
+export const namespace = shape({
+  name: string,
+  namespace: string,
+  expires: date,
+});
+
+export const indexedTask = shape({
+  namespace: string,
+  taskId: string,
+  rank: number,
+  data: object,
+  expires: date,
+});
 
 export const cachePurge = shape({
   provisionerId: string,

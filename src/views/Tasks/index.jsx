@@ -26,10 +26,13 @@ const TaskGroup = loadable(() =>
   import(/* webpackChunkName: 'Tasks.TaskGroup' */ './TaskGroup')
 );
 const TaskIndex = loadable(() =>
-  import(/* webpackChunkName: 'Tasks.TaskGroup' */ './TaskGroup')
+  import(/* webpackChunkName: 'Tasks.TaskIndex' */ './TaskIndex')
 );
 const TaskRedirect = loadable(() =>
   import(/* webpackChunkName: 'Tasks.TaskRedirect' */ './TaskRedirect')
+);
+const InteractiveConnect = loadable(() =>
+  import(/* webpackChunkName: 'Tasks.InteractiveConnect' */ './InteractiveConnect')
 );
 
 @hot(module)
@@ -81,6 +84,10 @@ export default class Task extends Component {
           path={`${path}/:taskId/runs/:runId`}
           {...props}
           component={ViewTask}
+        />
+        <RouteWithProps
+          path={`${path}/:taskId/connect`}
+          component={InteractiveConnect}
         />
         <RouteWithProps
           path={`${path}/:taskId/:action`}

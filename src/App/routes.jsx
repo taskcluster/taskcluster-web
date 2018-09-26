@@ -99,6 +99,18 @@ export default [
   },
   {
     component: loadable(() =>
+      import(/* webpackChunkName: 'Shell' */ '../views/Shell')
+    ),
+    path: '/shell',
+  },
+  {
+    component: loadable(() =>
+      import(/* webpackChunkName: 'Displays' */ '../views/Display')
+    ),
+    path: '/display',
+  },
+  {
+    component: loadable(() =>
       import(/* webpackChunkName: 'HomeOrDashboard' */ '../views/HomeOrDashboard')
     ),
     path: '/',
