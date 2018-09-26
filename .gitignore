@@ -7,3 +7,4 @@ node_modules
 .env
 /styleguide
 .coverage
+src/views/.DS_Store
