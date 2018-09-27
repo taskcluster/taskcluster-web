@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import {
   uniq,
   flatten,
-  memoize,
   filter,
   pipe,
   path,
@@ -14,6 +13,7 @@ import {
   contains,
   sort as rSort,
 } from 'ramda';
+import memoize from 'fast-memoize';
 import { withStyles } from '@material-ui/core/styles';
 import ListItemText from '@material-ui/core/ListItemText';
 import TableRow from '@material-ui/core/TableRow';
@@ -71,13 +71,6 @@ export default class ClientScopesTable extends Component {
 
   createSortedClientsConnection = memoize(
     (clientsConnection, searchMode, selectedScope, searchProperty) => {
-      const ids = sorted(clientsConnection.edges);
-
-      return `${ids.join(
-        '-'
-      )}-${searchMode}-${selectedScope}-${searchProperty}`;
-    },
-    (clientsConnection, searchMode, selectedScope, searchProperty) => {
       const match = scopeMatch(searchMode, selectedScope);
       const extractExpandedScopes = pipe(
         map(path(['node', 'expandedScopes'])),
@@ -104,6 +97,20 @@ export default class ClientScopesTable extends Component {
       }
 
       return clientsConnection;
+    },
+    {
+      serializer: ([
+        clientsConnection,
+        searchMode,
+        selectedScope,
+        searchProperty,
+      ]) => {
+        const ids = sorted(clientsConnection.edges);
+
+        return `${ids.join(
+          '-'
+        )}-${searchMode}-${selectedScope}-${searchProperty}`;
+      },
     }
   );
 

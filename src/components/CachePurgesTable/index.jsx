@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { func, shape, arrayOf } from 'prop-types';
-import { memoize, pipe, map, sort as rSort } from 'ramda';
+import { pipe, map, sort as rSort } from 'ramda';
+import memoize from 'fast-memoize';
 import { camelCase } from 'change-case/change-case';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -43,11 +44,6 @@ export default class CachePurgesTable extends Component {
 
   createSortedCachePurgesConnection = memoize(
     (cachePurgesConnection, sortBy, sortDirection) => {
-      const ids = sorted(cachePurgesConnection.edges);
-
-      return `${ids.join('-')}-${sortBy}-${sortDirection}`;
-    },
-    (cachePurgesConnection, sortBy, sortDirection) => {
       const sortByProperty = camelCase(sortBy);
 
       if (!sortBy) {
@@ -69,6 +65,13 @@ export default class CachePurgesTable extends Component {
           return sort(firstElement, secondElement);
         }),
       };
+    },
+    {
+      serializer: (cachePurgesConnection, sortBy, sortDirection) => {
+        const ids = sorted(cachePurgesConnection.edges);
+
+        return `${ids.join('-')}-${sortBy}-${sortDirection}`;
+      },
     }
   );
 

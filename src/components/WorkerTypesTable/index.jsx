@@ -12,7 +12,8 @@ import Drawer from '@material-ui/core/Drawer';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
 import { string, func, array, shape, arrayOf } from 'prop-types';
-import { memoize, pipe, map, sort as rSort } from 'ramda';
+import { pipe, map, sort as rSort } from 'ramda';
+import memoize from 'fast-memoize';
 import { camelCase } from 'change-case';
 import LinkIcon from 'mdi-react/LinkIcon';
 import Button from '../Button';
@@ -94,14 +95,16 @@ export default class WorkerTypesTable extends Component {
 
   handleDrawerOpen = ({ target: { name } }) =>
     memoize(
-      name => name,
       name =>
         this.setState({
           drawerOpen: true,
           drawerWorkerType: this.workerTypes.edges.find(
             ({ node }) => node.workerType === name
           ).node,
-        })
+        }),
+      {
+        serializer: name => name,
+      }
     )(name);
 
   handleHeaderClick = sortBy => {
@@ -112,16 +115,6 @@ export default class WorkerTypesTable extends Component {
   };
 
   createSortedWorkerTypesConnection = memoize(
-    (
-      workerTypesConnection,
-      awsProvisionerWorkerTypeSummaries,
-      sortBy,
-      sortDirection
-    ) => {
-      const ids = sorted(workerTypesConnection.edges);
-
-      return `${ids.join('-')}-${sortBy}-${sortDirection}`;
-    },
     (
       workerTypesConnection,
       awsProvisionerWorkerTypeSummaries,
@@ -154,6 +147,18 @@ export default class WorkerTypesTable extends Component {
           return sort(firstElement, secondElement);
         }),
       };
+    },
+    {
+      serializer: (
+        workerTypesConnection,
+        awsProvisionerWorkerTypeSummaries,
+        sortBy,
+        sortDirection
+      ) => {
+        const ids = sorted(workerTypesConnection.edges);
+
+        return `${ids.join('-')}-${sortBy}-${sortDirection}`;
+      },
     }
   );
 
