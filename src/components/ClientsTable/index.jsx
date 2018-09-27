@@ -60,7 +60,7 @@ export default class ClientsTable extends Component {
       };
     },
     {
-      serializer: (clientsConnection, sortBy, sortDirection) => {
+      serializer: ([clientsConnection, sortBy, sortDirection]) => {
         const ids = sorted(clientsConnection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;

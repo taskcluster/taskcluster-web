@@ -70,7 +70,7 @@ export default class RolesTable extends Component {
       )(filteredRoles);
     },
     {
-      serializer: (roles, sortBy, sortDirection, searchTerm) => {
+      serializer: ([roles, sortBy, sortDirection, searchTerm]) => {
         const ids = sorted(roles);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}-${searchTerm}`;

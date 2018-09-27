@@ -67,7 +67,7 @@ export default class CachePurgesTable extends Component {
       };
     },
     {
-      serializer: (cachePurgesConnection, sortBy, sortDirection) => {
+      serializer: ([cachePurgesConnection, sortBy, sortDirection]) => {
         const ids = sorted(cachePurgesConnection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;

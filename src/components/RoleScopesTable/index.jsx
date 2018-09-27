@@ -85,7 +85,7 @@ export default class RoleScopesTable extends Component {
       return selectedScope ? extractRoles(roles) : extractExpandedScopes(roles);
     },
     {
-      serializer: (roles, searchMode, selectedScope, searchProperty) =>
+      serializer: ([roles, searchMode, selectedScope, searchProperty]) =>
         `${sorted(roles).join(
           '-'
         )}-${searchMode}-${selectedScope}-${searchProperty}`,

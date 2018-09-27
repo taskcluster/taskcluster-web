@@ -83,7 +83,7 @@ export default class IndexTaskNamespaceTable extends Component {
       };
     },
     {
-      serializer: (connection, sortBy, sortDirection) => {
+      serializer: ([connection, sortBy, sortDirection]) => {
         const ids = sorted(connection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;

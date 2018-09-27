@@ -149,12 +149,7 @@ export default class WorkerTypesTable extends Component {
       };
     },
     {
-      serializer: (
-        workerTypesConnection,
-        awsProvisionerWorkerTypeSummaries,
-        sortBy,
-        sortDirection
-      ) => {
+      serializer: ([workerTypesConnection, sortBy, sortDirection]) => {
         const ids = sorted(workerTypesConnection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;

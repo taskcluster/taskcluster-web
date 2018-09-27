@@ -81,7 +81,7 @@ export default class WorkersTable extends Component {
       };
     },
     {
-      serializer: (workersConnections, sortBy, sortDirection) => {
+      serializer: ([workersConnections, sortBy, sortDirection]) => {
         const ids = sorted(workersConnections.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;

@@ -82,7 +82,7 @@ export default class SecretsTable extends Component {
       };
     },
     {
-      serializer: (secretsConnection, sortBy, sortDirection) => {
+      serializer: ([secretsConnection, sortBy, sortDirection]) => {
         const ids = sorted(secretsConnection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;
