@@ -149,7 +149,13 @@ export default class WorkerTypesTable extends Component {
       };
     },
     {
-      serializer: ([workerTypesConnection, sortBy, sortDirection]) => {
+      serializer: ([
+        workerTypesConnection,
+        // eslint-disable-next-line no-unused-vars
+        awsProvisionerWorkerTypeSummaries,
+        sortBy,
+        sortDirection,
+      ]) => {
         const ids = sorted(workerTypesConnection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;
