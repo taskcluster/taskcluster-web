@@ -20,7 +20,6 @@ import FileTreeIcon from 'mdi-react/FileTreeIcon';
 import WebhookIcon from 'mdi-react/WebhookIcon';
 import KeyIcon from 'mdi-react/KeyIcon';
 import PulseIcon from 'mdi-react/PulseIcon';
-import AnimationOutlineIcon from 'mdi-react/AnimationOutlineIcon';
 import SidebarListGroup from './SidebarListGroup';
 import SidebarListItem from './SidebarListItem';
 
@@ -64,8 +63,8 @@ export default class SidebarList extends Component {
           Provisioners
         </SidebarListItem>
 
-        <SidebarListItem to="/caches" icon={<BackupRestoreIcon />}>
-          Caches
+        <SidebarListItem to="/purge-caches" icon={<BackupRestoreIcon />}>
+          Purge Cache
         </SidebarListItem>
 
         <SidebarListItem to="/hooks" icon={<WebhookIcon />}>
@@ -78,10 +77,6 @@ export default class SidebarList extends Component {
 
         <SidebarListItem to="/pulse-messages" icon={<PulseIcon />}>
           Pulse Messages
-        </SidebarListItem>
-
-        <SidebarListItem to="/purge-caches" icon={<AnimationOutlineIcon />}>
-          Purge Cache
         </SidebarListItem>
 
         <SidebarListItem to="/expansions" icon={<ArrowExpandVerticalIcon />}>
