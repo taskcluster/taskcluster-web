@@ -7,7 +7,8 @@ import classNames from 'classnames';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';
 import Tooltip from '@material-ui/core/Tooltip';
 import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -36,16 +37,12 @@ import splitLines from '../../utils/splitLines';
   yellowCell: {
     backgroundColor: 'rgba(255, 255, 0, 0.25)',
   },
-  inputWrapper: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'left',
-  },
-  inputList: {
-    flex: 1,
-  },
   tableCell: {
     width: '50%',
+    padding: 0,
+  },
+  editorGrid: {
+    marginBottom: theme.spacing.unit,
   },
 }))
 export default class ScopesetComparison extends Component {
@@ -69,9 +66,9 @@ export default class ScopesetComparison extends Component {
       const scopesA = splitLines(scopeTextA);
       const scopesB = splitLines(scopeTextB);
       const scopesetDiff = this.getScopesetDiff(scopesA, scopesB);
-      const cellColor = this.getCellColors(scopesetDiff);
+      const cellColors = this.getCellColors(scopesetDiff);
 
-      this.setState({ scopesetDiff, cellColor });
+      this.setState({ scopesetDiff, cellColors });
     }
   };
 
@@ -90,69 +87,70 @@ export default class ScopesetComparison extends Component {
   };
 
   getCellColors = scopesetDiff => {
-    const cellColor = [];
+    const cellColors = [];
+    const CELLS = {
+      G: 'green',
+      R: 'red',
+      Y: 'yellow',
+    };
 
     scopesetDiff.forEach(scope => {
       if (scope[0].length === 0 && scope[1].length) {
-        cellColor.push(['', 'greenCell']);
+        cellColors.push(['', `${CELLS.G}Cell`]);
       } else if (scope[0].length && scope[1].length === 0) {
-        cellColor.push(['redCell', '']);
+        cellColors.push([`${CELLS.R}Cell`, '']);
       } else if (!equals(scope[0], scope[1])) {
-        cellColor.push(['yellowCell', 'yellowCell']);
+        cellColors.push([`${CELLS.Y}Cell`, `${CELLS.Y}Cell`]);
       } else {
-        cellColor.push(['', '']);
+        cellColors.push(['', '']);
       }
     });
 
-    return cellColor;
+    return cellColors;
   };
 
   render() {
     const { classes } = this.props;
-    const { scopeTextA, scopeTextB, scopesetDiff, cellColor } = this.state;
+    const { scopeTextA, scopeTextB, scopesetDiff, cellColors } = this.state;
 
     return (
       <Dashboard title="Compare Scopesets">
         <Fragment>
-          <div className={classes.inputWrapper}>
-            <List className={classes.inputList}>
-              <ListItem>
-                <ListItemText primary="A:" />
-                <CodeEditor
-                  className={classes.editor}
-                  onChange={this.handleScopesAChange}
-                  placeholder="new-scope:for-something:*"
-                  mode="scopemode"
-                  value={scopeTextA}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="B:" />
-                <CodeEditor
-                  className={classes.editor}
-                  onChange={this.handleScopesBChange}
-                  placeholder="new-scope:for-something:*"
-                  mode="scopemode"
-                  value={scopeTextB}
-                />
-              </ListItem>
-            </List>
-          </div>
+          <Grid className={classes.editorGrid} container spacing={16}>
+            <Grid item xs={12} md={6}>
+              <Typography gutterBottom align="center" variant="subheading">
+                Scope A
+              </Typography>
+              <CodeEditor
+                className={classes.editor}
+                onChange={this.handleScopesAChange}
+                placeholder="new-scope:for-something:*"
+                mode="scopemode"
+                value={scopeTextA}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography gutterBottom align="center" variant="subheading">
+                Scope B
+              </Typography>
+              <CodeEditor
+                className={classes.editor}
+                onChange={this.handleScopesBChange}
+                placeholder="new-scope:for-something:*"
+                mode="scopemode"
+                value={scopeTextB}
+              />
+            </Grid>
+          </Grid>
           {scopesetDiff &&
-            cellColor && (
+            cellColors && (
               <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>A</TableCell>
-                    <TableCell>B</TableCell>
-                  </TableRow>
-                </TableHead>
                 <TableBody>
                   {scopesetDiff.map((scopes, index) => (
                     <TableRow key={scopes}>
                       <TableCell
                         className={classNames(
-                          classes[cellColor[index][0]],
+                          classes[cellColors[index][0]],
                           classes.tableCell
                         )}>
                         <List dense>
@@ -168,7 +166,7 @@ export default class ScopesetComparison extends Component {
                       </TableCell>
                       <TableCell
                         className={classNames(
-                          classes[cellColor[index][1]],
+                          classes[cellColors[index][1]],
                           classes.tableCell
                         )}>
                         <List dense>
