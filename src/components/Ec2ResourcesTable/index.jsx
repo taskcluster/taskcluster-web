@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import Snackbar from '@material-ui/core/Snackbar';
 import DeleteIcon from 'mdi-react/DeleteIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import { awsProvisionerWorkerType } from '../../utils/prop-types';
@@ -156,6 +157,14 @@ export default class Ec2ResourcesTable extends Component {
                   onClick={() => onTerminateInstance(instance)}>
                   <DeleteIcon size={18} />
                 </IconButton>
+                <Snackbar
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                  open={this.state.open}
+                  autoHideDuration={6000}
+                  onClose={this.handleClose}
+                  ContentProps={{ 'aria-describedby': 'message-id' }}
+                  message={<span id="message-id">Instance Terminated</span>}
+                />
               </Tooltip>
             </TableCell>
           </TableRow>
