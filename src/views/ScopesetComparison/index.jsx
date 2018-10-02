@@ -3,18 +3,10 @@ import { Component, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { equals } from 'ramda';
 import { scopeUnion, scopeIntersection } from 'taskcluster-lib-scopes';
-import classNames from 'classnames';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';
 import Tooltip from '@material-ui/core/Tooltip';
-import Table from '@material-ui/core/Table';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import TableRow from '@material-ui/core/TableRow';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import ScaleBalanceIcon from 'mdi-react/ScaleBalanceIcon';
 import Dashboard from '../../components/Dashboard/index';
 import Button from '../../components/Button';
@@ -37,12 +29,11 @@ import splitLines from '../../utils/splitLines';
   yellowCell: {
     backgroundColor: 'rgba(255, 255, 0, 0.25)',
   },
-  tableCell: {
-    width: '50%',
-    padding: 0,
-  },
   editorGrid: {
     marginBottom: theme.spacing.unit,
+  },
+  cellGrid: {
+    padding: theme.spacing.unit,
   },
 }))
 export default class ScopesetComparison extends Component {
@@ -118,7 +109,7 @@ export default class ScopesetComparison extends Component {
         <Fragment>
           <Grid className={classes.editorGrid} container spacing={16}>
             <Grid item xs={12} md={6}>
-              <Typography gutterBottom align="center" variant="subheading">
+              <Typography gutterBottom variant="subheading">
                 Scope A
               </Typography>
               <CodeEditor
@@ -130,7 +121,7 @@ export default class ScopesetComparison extends Component {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography gutterBottom align="center" variant="subheading">
+              <Typography gutterBottom variant="subheading">
                 Scope B
               </Typography>
               <CodeEditor
@@ -144,46 +135,34 @@ export default class ScopesetComparison extends Component {
           </Grid>
           {scopesetDiff &&
             cellColors && (
-              <Table>
-                <TableBody>
-                  {scopesetDiff.map((scopes, index) => (
-                    <TableRow key={scopes}>
-                      <TableCell
-                        className={classNames(
-                          classes[cellColors[index][0]],
-                          classes.tableCell
-                        )}>
-                        <List dense>
-                          {scopes[0].length > 0 &&
-                            scopes[0].map(scope => (
-                              <ListItem key={scope}>
-                                <ListItemText
-                                  secondary={<code>{scope}</code>}
-                                />
-                              </ListItem>
-                            ))}
-                        </List>
-                      </TableCell>
-                      <TableCell
-                        className={classNames(
-                          classes[cellColors[index][1]],
-                          classes.tableCell
-                        )}>
-                        <List dense>
-                          {scopes[1].length > 0 &&
-                            scopes[1].map(scope => (
-                              <ListItem key={scope}>
-                                <ListItemText
-                                  secondary={<code>{scope}</code>}
-                                />
-                              </ListItem>
-                            ))}
-                        </List>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <Grid container>
+                {scopesetDiff.map((scopes, index) => (
+                  <Grid key={scopes} container item xs={12}>
+                    <Grid item xs={6} className={classes[cellColors[index][0]]}>
+                      {scopes[0].length > 0 &&
+                        scopes[0].map(scope => (
+                          <Typography
+                            key={scope}
+                            variant="body2"
+                            className={classes.cellGrid}>
+                            {scope}
+                          </Typography>
+                        ))}
+                    </Grid>
+                    <Grid item xs={6} className={classes[cellColors[index][1]]}>
+                      {scopes[1].length > 0 &&
+                        scopes[1].map(scope => (
+                          <Typography
+                            key={scope}
+                            variant="body2"
+                            className={classes.cellGrid}>
+                            {scope}
+                          </Typography>
+                        ))}
+                    </Grid>
+                  </Grid>
+                ))}
+              </Grid>
             )}
 
           <Tooltip title="Compare Scopes">
