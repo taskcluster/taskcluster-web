@@ -67,6 +67,8 @@ export default class ClientForm extends Component {
     onDisableClient: func,
     /** Callback function fired when a client is enabled. */
     onEnableClient: func,
+    /** Callback function fired when a client resets its access token. */
+    onResetAccessToken: func,
     /** If true, form actions will be disabled. */
     loading: bool,
   };
@@ -78,6 +80,7 @@ export default class ClientForm extends Component {
     onDeleteClient: null,
     onDisableClient: null,
     onEnableClient: null,
+    onResetAccessToken: null,
   };
 
   state = {
@@ -131,8 +134,9 @@ export default class ClientForm extends Component {
     this.setState({ deleteOnExpiration: !this.state.deleteOnExpiration });
   };
 
-  // TODO: Reset accessToken
-  handleResetAccessToken = () => {};
+  handleResetAccessToken = () => {
+    this.props.onResetAccessToken(this.state.clientId);
+  };
 
   handleSaveClient = () => {
     const {
