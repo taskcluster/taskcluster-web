@@ -135,9 +135,9 @@ export default class ScopesetComparison extends Component {
           </Grid>
           {scopesetDiff &&
             cellColors && (
-              <Grid container>
+              <Fragment>
                 {scopesetDiff.map((scopes, index) => (
-                  <Grid key={scopes} container item xs={12}>
+                  <Grid key={scopes} container>
                     <Grid item xs={6} className={classes[cellColors[index][0]]}>
                       {scopes[0].length > 0 &&
                         scopes[0].map(scope => (
@@ -162,18 +162,17 @@ export default class ScopesetComparison extends Component {
                     </Grid>
                   </Grid>
                 ))}
-              </Grid>
+              </Fragment>
             )}
 
           <Tooltip title="Compare Scopes">
-            <div className={classes.actionButton}>
-              <Button
-                color="secondary"
-                variant="fab"
-                onClick={this.handleCompareScopesClick}>
-                <ScaleBalanceIcon />
-              </Button>
-            </div>
+            <Button
+              color="secondary"
+              variant="fab"
+              onClick={this.handleCompareScopesClick}
+              className={classes.actionButton}>
+              <ScaleBalanceIcon />
+            </Button>
           </Tooltip>
         </Fragment>
       </Dashboard>
