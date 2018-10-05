@@ -156,7 +156,7 @@ export default class Dashboard extends Component {
 
   state = {
     mobileOpen: false,
-    showHelp: false,
+    showHelpView: false,
     error: null,
   };
 
@@ -169,7 +169,7 @@ export default class Dashboard extends Component {
   };
 
   handleHelpViewToggle = () => {
-    this.setState({ showHelp: !this.state.showHelp });
+    this.setState({ showHelpView: !this.state.showHelpView });
   };
 
   render() {
@@ -185,7 +185,7 @@ export default class Dashboard extends Component {
       onToggleTheme,
       ...props
     } = this.props;
-    const { error, mobileOpen, showHelp } = this.state;
+    const { error, mobileOpen, showHelpView } = this.state;
     const drawer = (
       <div>
         <div className={classes.toolbar}>
@@ -281,7 +281,7 @@ export default class Dashboard extends Component {
         <Drawer
           variant="temporary"
           anchor={theme.direction === 'rtl' ? 'left' : 'right'}
-          open={showHelp}
+          open={showHelpView}
           onClose={this.handleHelpViewToggle}
           classes={{
             paper: classes.helpDrawerPaper,
