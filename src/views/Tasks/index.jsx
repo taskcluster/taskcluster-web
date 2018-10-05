@@ -42,6 +42,10 @@ export default class Task extends Component {
       match: { path },
       ...props
     } = this.props;
+    const taskGroupDescription = `Inspect task groups, monitor progress, view dependencies and states, and inspect the individual tasks
+      that make up a task group.`;
+    const taskDescription = `Inspect the state, runs, public and private artifacts, definition, and logs of
+      of a task.`;
 
     return (
       <Switch>
@@ -49,16 +53,20 @@ export default class Task extends Component {
           path={`${path}/groups/:taskGroupId`}
           {...props}
           component={TaskGroup}
+          description={taskGroupDescription}
         />
         <RouteWithProps
           path={`${path}/groups`}
           {...props}
           component={NoTaskGroup}
+          description={taskGroupDescription}
         />
         <RouteWithProps
           path={`${path}/index`}
           {...props}
           component={TaskIndex}
+          description="The generic index browser lets you browse through the hierarchy of namespaces in
+      the index, and discover indexed tasks."
         />
         <RouteWithProps
           path={`${path}/create/interactive`}
@@ -84,6 +92,7 @@ export default class Task extends Component {
           path={`${path}/:taskId/runs/:runId`}
           {...props}
           component={ViewTask}
+          description={taskDescription}
         />
         <RouteWithProps
           path={`${path}/:taskId/connect`}
@@ -97,8 +106,14 @@ export default class Task extends Component {
           path={`${path}/:taskId`}
           {...props}
           component={ViewTask}
+          description={taskDescription}
         />
-        <RouteWithProps path={path} {...props} component={NoTask} />
+        <RouteWithProps
+          path={path}
+          {...props}
+          component={NoTask}
+          description={taskDescription}
+        />
       </Switch>
     );
   }

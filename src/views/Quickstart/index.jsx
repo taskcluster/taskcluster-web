@@ -24,6 +24,7 @@ import { safeDump } from 'js-yaml';
 import debounce from 'lodash.debounce';
 import Dashboard from '../../components/Dashboard';
 import Button from '../../components/Button';
+import HelpView from '../../components/HelpView';
 import githubQuery from './github.graphql';
 
 const initialYaml = {
@@ -255,9 +256,13 @@ export default class QuickStart extends Component {
       commandSelection,
       access,
     } = this.state;
+    const description =
+      'Create a `.taskcluster.yml` configuration file and plug the CI into your repository.';
 
     return (
-      <Dashboard title="GitHub Quickstart">
+      <Dashboard
+        title="GitHub Quickstart"
+        helpView={<HelpView description={description} />}>
         <Fragment>
           <div className={classes.orgRepo}>
             <TextField

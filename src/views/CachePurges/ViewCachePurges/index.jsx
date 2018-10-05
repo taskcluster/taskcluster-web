@@ -11,6 +11,7 @@ import PlusIcon from 'mdi-react/PlusIcon';
 import Dashboard from '../../../components/Dashboard';
 import Button from '../../../components/Button';
 import CachePurgesTable from '../../../components/CachePurgesTable';
+import HelpView from '../../../components/HelpView';
 import { VIEW_CACHE_PURGES_PAGE_SIZE } from '../../../utils/constants';
 import cachePurgesQuery from './cachePurges.graphql';
 
@@ -73,11 +74,14 @@ export default class ViewCachePurges extends Component {
   render() {
     const {
       classes,
+      description,
       data: { loading, error, cachePurges },
     } = this.props;
 
     return (
-      <Dashboard title="Cache Purges">
+      <Dashboard
+        helpView={<HelpView description={description} />}
+        title="Cache Purges">
         <Fragment>
           <Typography className={classes.description}>
             All currently active cache purges are displayed below. 24 hours
