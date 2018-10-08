@@ -54,12 +54,14 @@ export default class UserMenu extends Component {
   };
 
   handleSignInDialogClose = () => {
+    window.location.reload();
     this.setState({ signInDialogOpen: false });
   };
 
   handleClickSignOut = () => {
     this.handleMenuClose();
     this.props.onUnauthorize();
+    window.location.reload();
   };
 
   render() {
