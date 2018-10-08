@@ -148,7 +148,6 @@ export default class ViewWorkerType extends Component {
           )}
         {!error &&
           !loading &&
-          awsProvisionerWorkerTypeState.instances !== 0 &&
           currentTab === 3 && (
             <Tooltip title="Terminate All">
               <div className={classes.fab}>
