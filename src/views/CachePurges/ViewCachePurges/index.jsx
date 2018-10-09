@@ -29,10 +29,6 @@ import cachePurgesQuery from './cachePurges.graphql';
   plusIcon: {
     ...theme.mixins.fab,
   },
-  description: {
-    width: '80ch',
-    marginBottom: theme.spacing.double,
-  },
 }))
 export default class ViewCachePurges extends Component {
   handleCreate = () => {
@@ -80,16 +76,19 @@ export default class ViewCachePurges extends Component {
 
     return (
       <Dashboard
-        helpView={<HelpView description={description} />}
+        helpView={
+          <HelpView description={description}>
+            <Typography>
+              All currently active cache purges are displayed below. 24 hours
+              after creation, requests expire and are no longer displayed here.
+              The <strong>before</strong> column is the time at which any caches
+              that match the previous three classifiers are considered invalid.
+              Any caches created after that time are fine.
+            </Typography>
+          </HelpView>
+        }
         title="Cache Purges">
         <Fragment>
-          <Typography className={classes.description}>
-            All currently active cache purges are displayed below. 24 hours
-            after creation, requests expire and are no longer displayed here.
-            The <strong>before</strong> column is the time at which any caches
-            that match the previous three classifiers are considered invalid.
-            Any caches created after that time are fine.
-          </Typography>
           {!cachePurges && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
           {cachePurges && (

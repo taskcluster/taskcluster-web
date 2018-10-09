@@ -46,6 +46,9 @@ export default class Task extends Component {
       that make up a task group.`;
     const taskDescription = `Inspect the state, runs, public and private artifacts, definition, and logs of
       of a task.`;
+    const createTaskDescription = `Write and submit a task to ${
+      process.env.APPLICATION_NAME
+    }.`;
 
     return (
       <Switch>
@@ -71,11 +74,13 @@ export default class Task extends Component {
         <RouteWithProps
           path={`${path}/create/interactive`}
           component={CreateTask}
+          description={createTaskDescription}
           interactive
         />
         <RouteWithProps
           path={`${path}/create`}
           {...props}
+          description={createTaskDescription}
           component={CreateTask}
         />
         <RouteWithProps
