@@ -60,6 +60,7 @@ export default class UserMenu extends Component {
   handleClickSignOut = () => {
     this.handleMenuClose();
     this.props.onUnauthorize();
+    window.location.reload();
   };
 
   render() {
