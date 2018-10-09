@@ -152,9 +152,7 @@ export default class ViewWorkerType extends Component {
             <Tooltip title="Terminate All">
               <div className={classes.fab}>
                 <Button
-                  disabled={
-                    actionLoading || awsProvisionerWorkerType.instances === 0
-                  }
+                  disabled={actionLoading}
                   requiresAuth
                   onClick={this.handleTerminateAllInstances}
                   variant="fab"
