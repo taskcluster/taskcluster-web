@@ -54,7 +54,6 @@ export default class UserMenu extends Component {
   };
 
   handleSignInDialogClose = () => {
-    window.location.reload();
     this.setState({ signInDialogOpen: false });
   };
 

@@ -55,6 +55,7 @@ export default class SignInDialog extends Component {
         displayName: credentials.clientId,
       },
     });
+    window.location.reload();
     this.props.onClose();
   };
 
