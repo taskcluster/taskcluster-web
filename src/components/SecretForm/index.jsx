@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { bool, func } from 'prop-types';
 import { addYears } from 'date-fns';
 import { safeDump, safeLoad } from 'js-yaml';

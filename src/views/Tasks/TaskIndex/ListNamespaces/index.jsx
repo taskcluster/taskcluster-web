@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql, compose, withApollo } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import { defaultTo } from 'ramda';

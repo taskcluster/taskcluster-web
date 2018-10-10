@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { bool, node, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';

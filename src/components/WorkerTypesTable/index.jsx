@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Markdown from '@mozilla-frontend-infra/components/Markdown';
 import { withStyles } from '@material-ui/core/styles';

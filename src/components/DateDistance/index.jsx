@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { formatDistance, formatDistanceStrict } from 'date-fns';
 import { date } from '../../utils/prop-types';
 

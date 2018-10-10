@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react'
 
 export default class Emoticon extends PureComponent {
   render() {

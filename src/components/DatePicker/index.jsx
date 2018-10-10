@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { func } from 'prop-types';
 import { DatePicker as MuiDatePicker } from 'material-ui-pickers';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';

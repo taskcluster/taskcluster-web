@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { arrayOf, func, shape } from 'prop-types';
 import classNames from 'classnames';

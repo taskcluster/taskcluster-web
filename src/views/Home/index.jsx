@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Hidden from '@material-ui/core/Hidden';
@@ -74,7 +74,7 @@ export default class Home extends Component {
         <Divider className={classes.divider} />
         <div className={classes.actions}>
           <Button
-            variant="raised"
+            variant="contained"
             color="default"
             onClick={this.handleOpenSignInDialog}>
             <AccountCircleIcon className={classes.icon} />

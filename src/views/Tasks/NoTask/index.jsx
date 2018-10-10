@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

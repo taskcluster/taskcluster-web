@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { func, object, bool } from 'prop-types';
 import { upper } from 'change-case';
 import { pipe, map, sort as rSort } from 'ramda';

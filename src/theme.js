@@ -65,6 +65,7 @@ const createTheme = isDarkTheme => ({
     },
   },
   typography: {
+    useNextVariants: true,
     ...Roboto400,
     display4: Roboto300,
     display3: Roboto400,
@@ -210,32 +211,4 @@ const theme = createMuiTheme(createTheme(true));
 export default {
   lightTheme: createMuiTheme(createTheme(false)),
   darkTheme: theme,
-  styleguide: {
-    StyleGuide: {
-      root: {
-        overflowY: 'scroll',
-        minHeight: '100vh',
-        backgroundColor: THEME.DARK_THEME_BACKGROUND,
-      },
-    },
-    fontFamily: {
-      base: theme.typography.fontFamily,
-    },
-    fontSize: {
-      base: theme.typography.fontSize - 1,
-      text: theme.typography.fontSize,
-      small: theme.typography.fontSize - 2,
-    },
-    color: {
-      base: theme.palette.text.primary,
-      link: theme.palette.text.primary,
-      linkHover: theme.palette.text.primary,
-      border: theme.palette.divider,
-      baseBackground: THEME.DARK_THEME_BACKGROUND,
-      sidebarBackground: theme.palette.primary.main,
-      codeBackground: theme.palette.primary.main,
-    },
-    sidebarWidth: theme.drawerWidth,
-    maxWidth: '100vw',
-  },
 };

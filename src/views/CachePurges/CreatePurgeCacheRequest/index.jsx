@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withApollo } from 'react-apollo';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import { withStyles } from '@material-ui/core/styles';

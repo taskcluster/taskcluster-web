@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { node, string } from 'prop-types';
 import classNames from 'classnames';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';

@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { string, bool, func, oneOfType, object } from 'prop-types';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';

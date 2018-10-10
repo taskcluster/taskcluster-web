@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import Code from '@mozilla-frontend-infra/components/Code';

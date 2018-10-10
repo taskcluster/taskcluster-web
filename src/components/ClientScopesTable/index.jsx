@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { arrayOf, func, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import {

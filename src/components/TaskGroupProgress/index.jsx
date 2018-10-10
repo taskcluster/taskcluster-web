@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { bool, func, shape, arrayOf, string } from 'prop-types';
 import dotProp from 'dot-prop-immutable';
 import memoize from 'fast-memoize';

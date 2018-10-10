@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql, withApollo } from 'react-apollo';
 import { omit, pathOr } from 'ramda';
 import cloneDeep from 'lodash.clonedeep';

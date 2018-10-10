@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import List from '@material-ui/core/List';
 import LibraryIcon from 'mdi-react/LibraryIcon';
 import HexagonMultipleIcon from 'mdi-react/HexagonMultipleIcon';

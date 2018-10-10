@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { graphql, withApollo } from 'react-apollo';
 import { bool } from 'prop-types';
 import cloneDeep from 'lodash.clonedeep';

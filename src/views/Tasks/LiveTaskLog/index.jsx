@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';

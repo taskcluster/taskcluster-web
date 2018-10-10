@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { array, arrayOf, func, number, shape, string, oneOf } from 'prop-types';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';

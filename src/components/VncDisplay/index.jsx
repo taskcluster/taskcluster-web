@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { bool, string } from 'prop-types';
 import { VncDisplay as Vnc } from 'react-vnc-display';
 

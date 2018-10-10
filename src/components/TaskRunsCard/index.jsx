@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { func, number, string } from 'prop-types';

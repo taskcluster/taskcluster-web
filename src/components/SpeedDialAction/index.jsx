@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import MuiSpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import { bool } from 'prop-types';
 import { withAuth } from '../../utils/Auth';

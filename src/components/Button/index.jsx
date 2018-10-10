@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import MuiButton from '@material-ui/core/Button';
 import { node, bool } from 'prop-types';
 import { withAuth } from '../../utils/Auth';

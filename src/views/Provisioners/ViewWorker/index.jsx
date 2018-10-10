@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql, withApollo } from 'react-apollo';
 import { format, addYears, isAfter } from 'date-fns';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';

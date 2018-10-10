@@ -1,4 +1,4 @@
-import { Fragment, Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { pipe, map, isEmpty, defaultTo, sort as rSort } from 'ramda';
 import memoize from 'fast-memoize';
 import { camelCase } from 'change-case/change-case';

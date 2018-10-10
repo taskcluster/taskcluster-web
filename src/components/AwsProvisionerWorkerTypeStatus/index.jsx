@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { object } from 'prop-types';
 import { pipe, map, sort as rSort } from 'ramda';
 import memoize from 'fast-memoize';

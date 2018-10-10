@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
 import { withApollo } from 'react-apollo';
 import storage from 'localforage';

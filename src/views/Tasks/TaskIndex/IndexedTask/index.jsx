@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import dotProp from 'dot-prop-immutable';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';

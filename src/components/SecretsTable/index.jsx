@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { func, shape } from 'prop-types';
 import { pipe, map, sort as rSort } from 'ramda';

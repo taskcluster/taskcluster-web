@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { oneOfType, object, node, string, func, bool } from 'prop-types';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import { withStyles } from '@material-ui/core/styles';

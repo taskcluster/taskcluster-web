@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react'
 import { string } from 'prop-types';
 import Helmet, { title } from 'react-helmet';
 

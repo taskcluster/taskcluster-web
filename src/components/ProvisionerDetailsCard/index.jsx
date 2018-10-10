@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { bool } from 'prop-types';
 import Markdown from '@mozilla-frontend-infra/components/Markdown';
@@ -147,7 +147,7 @@ export default class ProvisionerDetailsCard extends Component {
               className={classes.actionButton}
               disabled={actionLoading}
               size="small"
-              variant="raised">
+              variant="contained">
               {action.title}
             </Button>
           </Tooltip>

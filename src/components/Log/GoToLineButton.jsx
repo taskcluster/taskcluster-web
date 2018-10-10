@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { func } from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -85,7 +85,7 @@ export default class GoToLineButton extends Component {
             <Button
               onClick={this.handleSubmit}
               disabled={!isValid}
-              variant="raised"
+              variant="contained"
               color="secondary">
               Go to line
             </Button>

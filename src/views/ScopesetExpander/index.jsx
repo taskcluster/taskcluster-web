@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';

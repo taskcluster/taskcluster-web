@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import storage from 'localforage';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
