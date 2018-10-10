@@ -33,7 +33,7 @@ import splitLines from '../../utils/splitLines';
     marginBottom: theme.spacing.unit,
   },
   cellGrid: {
-    padding: theme.spacing.unit,
+    padding: `0 ${theme.spacing.unit}px`,
   },
 }))
 export default class ScopesetComparison extends Component {
@@ -79,19 +79,14 @@ export default class ScopesetComparison extends Component {
 
   getCellColors = scopesetDiff => {
     const cellColors = [];
-    const CELLS = {
-      G: 'green',
-      R: 'red',
-      Y: 'yellow',
-    };
 
-    scopesetDiff.forEach(scope => {
-      if (scope[0].length === 0 && scope[1].length) {
-        cellColors.push(['', `${CELLS.G}Cell`]);
-      } else if (scope[0].length && scope[1].length === 0) {
-        cellColors.push([`${CELLS.R}Cell`, '']);
-      } else if (!equals(scope[0], scope[1])) {
-        cellColors.push([`${CELLS.Y}Cell`, `${CELLS.Y}Cell`]);
+    scopesetDiff.forEach(([s1, s2]) => {
+      if (s1.length === 0 && s2.length) {
+        cellColors.push(['', 'greenCell']);
+      } else if (s1.length && s2.length === 0) {
+        cellColors.push(['redCell', '']);
+      } else if (!equals(s1, s2)) {
+        cellColors.push(['yellowCell', 'yellowCell']);
       } else {
         cellColors.push(['', '']);
       }
@@ -107,7 +102,7 @@ export default class ScopesetComparison extends Component {
     return (
       <Dashboard title="Compare Scopesets">
         <Fragment>
-          <Grid className={classes.editorGrid} container spacing={16}>
+          <Grid className={classes.editorGrid} container spacing={8}>
             <Grid item xs={12} md={6}>
               <Typography gutterBottom variant="subheading">
                 Scope A
