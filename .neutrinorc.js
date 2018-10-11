@@ -1,6 +1,4 @@
-const { join } = require('path');
 const merge = require('deepmerge');
-const MODULES = join(__dirname, 'node_modules');
 
 module.exports = {
   use: [
@@ -122,6 +120,7 @@ module.exports = {
       },
     }],
     ['@neutrinojs/react', {
+      publicPath: '/',
       html: {
         title: process.env.APPLICATION_NAME
       },
@@ -169,11 +168,6 @@ module.exports = {
           bindings: 'bindings'
         }));
 
-      // TODO: Why is this needed?
-      neutrino.config.resolve.modules.add(MODULES);
-      // neutrino.config.resolveLoader.modules.add(MODULES);
-
-      neutrino.config.output.publicPath('/');
       neutrino.config.module
         .rule('graphql')
           .test(/\.graphql$/)
@@ -190,8 +184,6 @@ module.exports = {
           .test(/JSONStream/)
           .use('shebang')
             .loader('shebang-loader');
-
-      console.log(JSON.stringify(neutrino.config.toConfig(), null, 2));
     },
     '@neutrinojs/karma',
   ],
