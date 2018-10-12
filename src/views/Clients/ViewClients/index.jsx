@@ -13,8 +13,10 @@ import Button from '../../../components/Button';
 import ClientsTable from '../../../components/ClientsTable';
 import { VIEW_CLIENTS_PAGE_SIZE } from '../../../utils/constants';
 import clientsQuery from './clients.graphql';
+import { withAuth } from '../../../utils/Auth';
 
 @hot(module)
+@withAuth
 @graphql(clientsQuery, {
   options: () => ({
     variables: {
@@ -30,8 +32,11 @@ import clientsQuery from './clients.graphql';
   },
 }))
 export default class ViewWorker extends PureComponent {
+  componentDidMount() {
+    this.handleClientSearchSubmit();
+  }
   state = {
-    clientSearch: '',
+    clientSearch: this.props.user.credentials.clientId,
   };
 
   handlePageChange = ({ cursor, previousCursor }) => {
@@ -78,7 +83,9 @@ export default class ViewWorker extends PureComponent {
   };
 
   handleClientSearchSubmit = e => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
 
     const {
       data: { refetch },
