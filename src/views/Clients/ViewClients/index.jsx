@@ -90,7 +90,6 @@ export default class ViewWorker extends PureComponent {
     await this.setState({
       clientSearch: this.state.clientSearch.replace(/\s/g, ''),
     });
-    console.log(`${this.state.clientSearch}test`)
 
     const {
       data: { refetch },
