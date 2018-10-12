@@ -156,10 +156,6 @@ module.exports = {
       },
     }],
     (neutrino) => {
-      if (process.env.NODE_ENV === 'development') {
-        neutrino.config.devtool('cheap-module-source-map');
-      }
-
       neutrino.config.node.set('Buffer', true);
 
       // The shell view requires this

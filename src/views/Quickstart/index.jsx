@@ -126,7 +126,7 @@ const cmdDirectory = (type, org = '<YOUR_ORG>', repo = '<YOUR_REPO>') =>
   },
 }))
 export default class QuickStart extends Component {
-  static initialState = {
+  initialState = {
     events: new Set([
       'pull_request.opened',
       'pull_request.reopened',
@@ -137,7 +137,7 @@ export default class QuickStart extends Component {
   };
 
   state = {
-    ...QuickStart.initialState,
+    ...this.initialState,
     owner: '',
     repo: '',
     access: 'collaborators',
@@ -242,7 +242,7 @@ export default class QuickStart extends Component {
   }
 
   handleReset = () => {
-    this.setState(QuickStart.initialState);
+    this.setState(this.initialState);
   };
 
   render() {
