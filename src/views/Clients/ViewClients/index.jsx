@@ -82,14 +82,10 @@ export default class ViewWorker extends PureComponent {
     this.setState({ clientSearch: target.value });
   };
 
-  handleClientSearchSubmit = async e => {
+  handleClientSearchSubmit = e => {
     if (e) {
       e.preventDefault();
     }
-
-    await this.setState({
-      clientSearch: this.state.clientSearch.replace(/\s/g, ''),
-    });
 
     const {
       data: { refetch },
@@ -98,7 +94,7 @@ export default class ViewWorker extends PureComponent {
 
     refetch({
       clientOptions: {
-        ...(clientSearch ? { prefix: clientSearch } : null),
+        ...(clientSearch ? { prefix: clientSearch.trim() } : null),
       },
       clientsConnection: {
         limit: VIEW_CLIENTS_PAGE_SIZE,
