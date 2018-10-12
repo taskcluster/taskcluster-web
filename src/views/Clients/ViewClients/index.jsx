@@ -82,10 +82,15 @@ export default class ViewWorker extends PureComponent {
     this.setState({ clientSearch: target.value });
   };
 
-  handleClientSearchSubmit = e => {
+  handleClientSearchSubmit = async e => {
     if (e) {
       e.preventDefault();
     }
+
+    await this.setState({
+      clientSearch: this.state.clientSearch.replace(/\s/g, ''),
+    });
+    console.log(`${this.state.clientSearch}test`)
 
     const {
       data: { refetch },
