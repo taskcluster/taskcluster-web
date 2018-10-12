@@ -105,7 +105,7 @@ export default class ClientsTable extends Component {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="body1">{client.clientId}</Typography>
+                      <Typography>{client.clientId}</Typography>
                     }
                   />
                   <LinkIcon size={iconSize} />

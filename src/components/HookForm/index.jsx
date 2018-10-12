@@ -651,7 +651,7 @@ export default class HookForm extends Component {
                 </Typography>
                 <Grid container spacing={16}>
                   <Grid item lg={6} md={6} sm={12}>
-                    <Typography gutterBottom variant="subheading">
+                    <Typography gutterBottom variant="subtitle1">
                       Context
                     </Typography>
                     <CodeEditor
@@ -663,7 +663,7 @@ export default class HookForm extends Component {
                     />
                   </Grid>
                   <Grid item lg={6} md={6} sm={12}>
-                    <Typography gutterBottom variant="subheading">
+                    <Typography gutterBottom variant="subtitle1">
                       Schema
                     </Typography>
                     <Code language="json" className={classes.code}>

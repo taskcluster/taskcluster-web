@@ -97,7 +97,7 @@ export default class TaskDetailsCard extends Component {
       <Card raised>
         <div>
           <CardContent classes={{ root: classes.cardContent }}>
-            <Typography variant="headline" className={classes.headline}>
+            <Typography variant="h5" className={classes.headline}>
               Task Details
             </Typography>
 
@@ -279,7 +279,7 @@ export default class TaskDetailsCard extends Component {
               <ListItem>
                 <ListItemText
                   disableTypography
-                  primary={<Typography variant="subheading">Scopes</Typography>}
+                  primary={<Typography variant="subtitle1">Scopes</Typography>}
                   secondary={
                     task.scopes.length ? (
                       <pre className={classes.pre}>
@@ -294,7 +294,7 @@ export default class TaskDetailsCard extends Component {
               <ListItem>
                 <ListItemText
                   disableTypography
-                  primary={<Typography variant="subheading">Routes</Typography>}
+                  primary={<Typography variant="subtitle1">Routes</Typography>}
                   secondary={
                     task.routes.length ? (
                       <pre className={classes.pre}>

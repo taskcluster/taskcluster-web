@@ -312,7 +312,7 @@ export default class PulseMessages extends Component {
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body2">
+                    <Typography variant="body1">
                       <code>{binding.exchange}</code> with{' '}
                       <code>{binding.pattern}</code>
                     </Typography>
@@ -332,7 +332,7 @@ export default class PulseMessages extends Component {
               </ListItem>
             ))}
             <Toolbar>
-              <Typography variant="body2" id="tableTitle">
+              <Typography variant="body1" id="tableTitle">
                 Messages
               </Typography>
             </Toolbar>

@@ -8,7 +8,7 @@ export default class Documentation extends Component {
   render() {
     return (
       <Dashboard title="Documentation">
-        <Typography variant="display1">Documentation</Typography>
+        <Typography variant="h4">Documentation</Typography>
       </Dashboard>
     );
   }

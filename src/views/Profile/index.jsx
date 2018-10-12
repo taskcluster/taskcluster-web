@@ -30,7 +30,7 @@ export default class Profile extends Component {
         {user &&
           currentScopes && (
             <Fragment>
-              <Typography variant="subheading">
+              <Typography variant="subtitle1">
                 Credential Information
               </Typography>
               <List>

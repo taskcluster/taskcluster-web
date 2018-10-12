@@ -39,7 +39,7 @@ export default class HelpView extends PureComponent {
       <Fragment>
         {description && (
           <Fragment>
-            <Typography variant="subheading">Description</Typography>
+            <Typography variant="subtitle1">Description</Typography>
             {typeof description === 'string' ? (
               <Typography paragraph>{description}</Typography>
             ) : (

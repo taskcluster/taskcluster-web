@@ -326,7 +326,7 @@ export default class QuickStart extends Component {
               onChange={this.handleOrgRepoChange}
               value={owner}
             />
-            <Typography className={classes.separator} variant="headline">
+            <Typography className={classes.separator} variant="h5">
               /
             </Typography>
             <TextField

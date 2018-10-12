@@ -304,7 +304,7 @@ export default class InteractiveConnect extends Component {
         {isSessionReady && (
           <Fragment>
             <Divider className={classes.divider} />
-            <Typography variant="headline">Select a Session</Typography>
+            <Typography variant="h5">Select a Session</Typography>
             <Typography>
               You have approximately <strong>5 minutes</strong> to connect,
               after that the task will shutdown when all connections are closed.

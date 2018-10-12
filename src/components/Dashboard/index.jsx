@@ -199,7 +199,7 @@ export default class Dashboard extends Component {
           <Typography
             component={Link}
             to="/"
-            variant="title"
+            variant="h6"
             noWrap
             className={classes.title}>
             {process.env.APPLICATION_NAME}
@@ -224,7 +224,7 @@ export default class Dashboard extends Component {
               className={classes.navIconHide}>
               <MenuIcon className={classes.appIcon} />
             </IconButton>
-            <Typography variant="title" noWrap className={classes.appBarTitle}>
+            <Typography variant="h6" noWrap className={classes.appBarTitle}>
               {title}
             </Typography>
             {search}

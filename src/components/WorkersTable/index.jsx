@@ -152,7 +152,7 @@ export default class WorkersTable extends Component {
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body1">
+                    <Typography>
                       {latestTask.run.workerId}
                     </Typography>
                   }
@@ -170,7 +170,7 @@ export default class WorkersTable extends Component {
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body1">
+                    <Typography>
                       {latestTask.run.taskId}
                     </Typography>
                   }
@@ -186,7 +186,7 @@ export default class WorkersTable extends Component {
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body1">
+                    <Typography>
                       <DateDistance from={latestTask.run.started} />
                     </Typography>
                   }
@@ -200,7 +200,7 @@ export default class WorkersTable extends Component {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="body1">
+                      <Typography>
                         <DateDistance from={latestTask.run.resolved} />
                       </Typography>
                     }
@@ -208,7 +208,7 @@ export default class WorkersTable extends Component {
                   <ContentCopyIcon size={iconSize} />
                 </TableCellListItem>
               ) : (
-                <Typography variant="body1">n/a</Typography>
+                <Typography>n/a</Typography>
               )}
             </TableCell>
             <TableCell>
@@ -216,7 +216,7 @@ export default class WorkersTable extends Component {
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body1">
+                    <Typography>
                       <DateDistance from={firstClaim} />
                     </Typography>
                   }

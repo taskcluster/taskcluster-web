@@ -120,7 +120,7 @@ export default class WorkerTable extends Component {
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body1">
+                    <Typography>
                       <DateDistance from={task.started} />
                     </Typography>
                   }
@@ -134,7 +134,7 @@ export default class WorkerTable extends Component {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="body1">
+                      <Typography>
                         <DateDistance from={task.resolved} />
                       </Typography>
                     }
@@ -142,7 +142,7 @@ export default class WorkerTable extends Component {
                   <ContentCopyIcon size={iconSize} />
                 </TableCellListItem>
               ) : (
-                <Typography variant="body1">n/a</Typography>
+                <Typography>n/a</Typography>
               )}
             </TableCell>
           </TableRow>

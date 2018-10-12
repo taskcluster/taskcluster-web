@@ -106,7 +106,7 @@ export default class AwsProvisionerWorkerTypeTable extends Component {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="body1">
+                      <Typography>
                         {workerType.workerType}
                       </Typography>
                     }

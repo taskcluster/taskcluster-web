@@ -226,7 +226,7 @@ export default class TaskRunsCard extends Component {
       <Card raised>
         <div>
           <CardContent classes={{ root: classes.cardContent }}>
-            <Typography variant="headline" className={classes.headline}>
+            <Typography variant="h5" className={classes.headline}>
               Task Runs
             </Typography>
             <List>

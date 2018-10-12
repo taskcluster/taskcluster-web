@@ -225,7 +225,7 @@ export default class WorkerTypesTable extends Component {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="body1">
+                      <Typography>
                         {workerType.workerType}
                       </Typography>
                     }
@@ -241,7 +241,7 @@ export default class WorkerTypesTable extends Component {
                   <ListItemText
                     disableTypography
                     primary={
-                      <Typography variant="body1">
+                      <Typography>
                         <DateDistance from={workerType.lastDateActive} />
                       </Typography>
                     }
@@ -264,7 +264,7 @@ export default class WorkerTypesTable extends Component {
           open={drawerOpen}
           onClose={this.handleDrawerClose}>
           <div className={classes.metadataContainer}>
-            <Typography variant="headline" className={classes.headline}>
+            <Typography variant="h5" className={classes.headline}>
               {drawerWorkerType && drawerWorkerType.workerType}
             </Typography>
             <List>

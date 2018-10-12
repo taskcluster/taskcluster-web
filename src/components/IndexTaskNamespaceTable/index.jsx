@@ -127,7 +127,7 @@ export default class IndexTaskNamespaceTable extends Component {
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body1">
+                    <Typography>
                       {this.taskFromNamespace(namespace)}
                     </Typography>
                   }

@@ -58,16 +58,16 @@ export default class Home extends Component {
     return (
       <Landing className={classes.root}>
         <Hidden xsDown implementation="css">
-          <Typography variant="display4" className={classes.headline}>
+          <Typography variant="h1" className={classes.headline}>
             {process.env.APPLICATION_NAME}
           </Typography>
         </Hidden>
         <Hidden smUp implementation="css">
-          <Typography variant="display3" className={classes.headline}>
+          <Typography variant="h2" className={classes.headline}>
             {process.env.APPLICATION_NAME}
           </Typography>
         </Hidden>
-        <Typography variant="headline">
+        <Typography variant="h5">
           Gather insight and intelligence for the build systems and pipelines
           that create your software.
         </Typography>

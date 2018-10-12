@@ -120,7 +120,7 @@ export default class SecretsTable extends Component {
                 to={`/secrets/${encodeURIComponent(name)}`}>
                 <ListItemText
                   disableTypography
-                  primary={<Typography variant="body1">{name}</Typography>}
+                  primary={<Typography>{name}</Typography>}
                 />
                 <LinkIcon size={iconSize} />
               </TableCellListItem>

@@ -108,7 +108,7 @@ export default class RolesTable extends Component {
                   to={`/auth/roles/${encodeURIComponent(roleId)}`}>
                   <ListItemText
                     disableTypography
-                    primary={<Typography variant="body1">{roleId}</Typography>}
+                    primary={<Typography>{roleId}</Typography>}
                   />
                   <LinkIcon size={iconSize} />
                 </TableCellListItem>

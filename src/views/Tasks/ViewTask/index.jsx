@@ -645,10 +645,10 @@ export default class ViewTask extends Component {
           )}
         {task && (
           <Fragment>
-            <Typography variant="headline" className={classes.title}>
+            <Typography variant="h5" className={classes.title}>
               {task.metadata.name}
             </Typography>
-            <Typography variant="subheading">
+            <Typography variant="subtitle1">
               <Markdown>{task.metadata.description}</Markdown>
             </Typography>
             <Chip

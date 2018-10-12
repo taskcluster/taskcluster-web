@@ -377,7 +377,7 @@ export default class TaskGroupProgress extends Component {
                     [classes.statusButtonTypography]: !disabled,
                     [classes.statusButtonTypographyDisabled]: disabled,
                   })}
-                  variant="display1">
+                  variant="h4">
                   {count}
                 </Typography>
                 <Typography

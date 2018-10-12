@@ -844,12 +844,12 @@
     "@babel/runtime" "7.0.0"
     recompose "^0.29.0"
 
-"@material-ui/lab@3.0.0-alpha.17":
-  version "3.0.0-alpha.17"
-  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.17.tgz#9ed16896535ad3c8a03127aedc2b9e6efbb21035"
-  integrity sha512-fvI4srLa6z+uSkbVAMCax4qEx9oitzmea2cOMe0XR2xfOhhwoIUWAutIxVb0FkmqMPfBvBZU3knZ3/MF3M7R0Q==
+"@material-ui/lab@3.0.0-alpha.19":
+  version "3.0.0-alpha.19"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-3.0.0-alpha.19.tgz#542e2284cc05b1ff00b91ad74a3603d2a653b2c6"
+  integrity sha512-1exeIZrioVvdwyp8KI8IuqWRUj/RwdCoGlRVeLvJtuOfY5Ho2FcCgBzGP6sAp6l/oI3Wl5ByQfBvUadNmFCdlw==
   dependencies:
-    "@babel/runtime" "7.0.0"
+    "@babel/runtime" "7.1.2"
     classnames "^2.2.5"
     keycode "^2.1.9"
 
@@ -5488,13 +5488,14 @@ material-ui-pickers@^1.0.0-rc.9:
     react-text-mask "=5.4.1"
     react-transition-group "^2.5.0"
 
-material-ui-treeview@^1.1.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/material-ui-treeview/-/material-ui-treeview-1.2.0.tgz#272f0c59c9c9ae75a926c0c44303879b2960404d"
-  integrity sha512-SuaSVtCFlKoOGzUEtauSy8NrprrQmnuCXzLNS+TLcchGU1fxyAfnbta7j6ZgHjJlRBLBMZDlbDjZ91BwbHxOfg==
+material-ui-treeview@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/material-ui-treeview/-/material-ui-treeview-2.0.1.tgz#517b986500e1aee99a133949b7d0ccb35b2395e2"
+  integrity sha512-qdy1db0FJ5l2Ny3oGG8EMz+7w/iHIBIAb8pzXMOAjwMRcOel0iy6WHe+Ste11Ws7RhaPKnBivxueOGWOPPy74A==
   dependencies:
     "@material-ui/icons" "^1.1.0"
     classnames "^2.2.6"
+    fast-memoize "^2.5.1"
     ramda "^0.25.0"
 
 md5-o-matic@^0.1.1:

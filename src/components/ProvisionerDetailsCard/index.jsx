@@ -168,7 +168,7 @@ export default class ProvisionerDetailsCard extends Component {
       <Fragment>
         <Card raised>
           <CardContent classes={{ root: classes.cardContent }}>
-            <Typography variant="headline" className={classes.headline}>
+            <Typography variant="h5" className={classes.headline}>
               {provisioner.provisionerId}
             </Typography>
             <List dense={dense}>

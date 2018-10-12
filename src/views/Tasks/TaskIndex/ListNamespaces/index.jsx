@@ -157,7 +157,7 @@ export default class ListNamespaces extends Component {
           {!loading &&
             hasNamespaces && (
               <Fragment>
-                <Typography variant="subheading">Namespaces</Typography>
+                <Typography variant="subtitle1">Namespaces</Typography>
                 <IndexNamespacesTable
                   onPageChange={this.handleNamespacesPageChange}
                   connection={namespaces}
@@ -167,7 +167,7 @@ export default class ListNamespaces extends Component {
           {!loading &&
             hasIndexedTasks && (
               <Fragment>
-                <Typography variant="subheading">Indexed Tasks</Typography>
+                <Typography variant="subtitle1">Indexed Tasks</Typography>
                 <IndexTaskNamespaceTable
                   onTaskNamespaceClick={this.handleTaskNamespaceClick}
                   onPageChange={this.handleTaskNamespacePageChange}

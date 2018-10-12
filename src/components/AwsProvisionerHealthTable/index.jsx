@@ -204,7 +204,7 @@ export default class AwsProvisionerHealthTable extends Component {
           open={drawerOpen}
           onClose={this.handleDrawerClose}>
           <div className={classes.drawerContainer}>
-            <Typography variant="headline" className={classes.headline}>
+            <Typography variant="h5" className={classes.headline}>
               {drawerItem && drawerItem.columnName}
             </Typography>
             {drawerItem &&
