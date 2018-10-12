@@ -36,7 +36,7 @@ export default class ViewWorker extends PureComponent {
     this.handleClientSearchSubmit();
   }
   state = {
-    clientSearch: this.props.user.credentials.clientId,
+    clientSearch: this.props.user ? this.props.user.credentials.clientId : '',
   };
 
   handlePageChange = ({ cursor, previousCursor }) => {
@@ -93,13 +93,9 @@ export default class ViewWorker extends PureComponent {
     const { clientSearch } = this.state;
 
     refetch({
-      ...(clientSearch
-        ? {
-            clientOptions: {
-              prefix: clientSearch,
-            },
-          }
-        : null),
+      clientOptions: {
+        ...(clientSearch ? { prefix: clientSearch } : null),
+      },
       clientsConnection: {
         limit: VIEW_CLIENTS_PAGE_SIZE,
       },
