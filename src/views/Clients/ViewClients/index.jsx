@@ -35,19 +35,6 @@ import { withAuth } from '../../../utils/Auth';
   },
 }))
 export default class ViewWorker extends PureComponent {
-  // Update default search query for when user logs in or out
-  componentDidUpdate(prevProps) {
-    if (this.props.user && !prevProps.user) {
-      this.setState({
-        clientSearch: this.props.user.credentials.clientId,
-      });
-    } else if (!this.props.user && prevProps.user) {
-      this.setState({
-        clientSearch: '',
-      });
-    }
-  }
-
   state = {
     clientSearch: this.props.user ? this.props.user.credentials.clientId : '',
   };
@@ -123,7 +110,6 @@ export default class ViewWorker extends PureComponent {
       description,
       data: { loading, error, clients },
     } = this.props;
-    const { clientSearch } = this.state;
 
     return (
       <Dashboard
@@ -132,7 +118,7 @@ export default class ViewWorker extends PureComponent {
         search={
           <Search
             disabled={loading}
-            value={clientSearch}
+            value={this.props.user ? this.props.user.credentials.clientId : ''}
             onChange={this.handleClientSearchChange}
             onSubmit={this.handleClientSearchSubmit}
             placeholder="Client starts with"
