@@ -18,8 +18,11 @@ import { withAuth } from '../../../utils/Auth';
 @hot(module)
 @withAuth
 @graphql(clientsQuery, {
-  options: () => ({
+  options: props => ({
     variables: {
+      clientOptions: {
+        ...(props.user ? { prefix: props.user.credentials.clientId } : null),
+      },
       clientsConnection: {
         limit: VIEW_CLIENTS_PAGE_SIZE,
       },
@@ -32,9 +35,19 @@ import { withAuth } from '../../../utils/Auth';
   },
 }))
 export default class ViewWorker extends PureComponent {
-  componentDidMount() {
-    this.handleClientSearchSubmit();
+  // Update default search query for when user logs in or out
+  componentDidUpdate(prevProps) {
+    if (this.props.user && !prevProps.user) {
+      this.setState({
+        clientSearch: this.props.user.credentials.clientId,
+      });
+    } else if (!this.props.user && prevProps.user) {
+      this.setState({
+        clientSearch: '',
+      });
+    }
   }
+
   state = {
     clientSearch: this.props.user ? this.props.user.credentials.clientId : '',
   };
@@ -83,9 +96,7 @@ export default class ViewWorker extends PureComponent {
   };
 
   handleClientSearchSubmit = e => {
-    if (e) {
-      e.preventDefault();
-    }
+    e.preventDefault();
 
     const {
       data: { refetch },
