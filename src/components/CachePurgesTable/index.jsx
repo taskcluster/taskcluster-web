@@ -35,13 +35,6 @@ export default class CachePurgesTable extends Component {
     sortDirection: null,
   };
 
-  handleHeaderClick = sortBy => {
-    const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
-    const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
-
-    this.setState({ sortBy, sortDirection });
-  };
-
   createSortedCachePurgesConnection = memoize(
     (cachePurgesConnection, sortBy, sortDirection) => {
       const sortByProperty = camelCase(sortBy);
@@ -74,6 +67,13 @@ export default class CachePurgesTable extends Component {
       },
     }
   );
+
+  handleHeaderClick = sortBy => {
+    const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
+    const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
+
+    this.setState({ sortBy, sortDirection });
+  };
 
   render() {
     const { onPageChange, cachePurgesConnection } = this.props;

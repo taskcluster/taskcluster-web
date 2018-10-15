@@ -23,6 +23,10 @@ import { safeDump } from 'js-yaml';
   },
 }))
 export default class TaskActionForm extends Component {
+  static defaultProps = {
+    error: null,
+  };
+
   static propTypes = {
     // TODO: Replace with taskAction
     action: object.isRequired,
@@ -31,10 +35,6 @@ export default class TaskActionForm extends Component {
     onFormChange: func.isRequired,
     /** An error object to display. */
     error: object,
-  };
-
-  static defaultProps = {
-    error: null,
   };
 
   render() {
@@ -53,7 +53,8 @@ export default class TaskActionForm extends Component {
               This action trigers hook{' '}
               <code>
                 {action.hookGroupId}/{action.hookId}
-              </code>.
+              </code>
+              .
             </Typography>
           )}
         </div>

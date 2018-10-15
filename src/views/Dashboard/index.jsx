@@ -24,28 +24,29 @@ export default class DashboardView extends Component {
     return (
       <Dashboard>
         <Typography variant="h4">
-          Hello, {user.profile.displayName}!
+          Hello,
+          {user.profile.displayName}!
         </Typography>
         <br />
         <br />
 
         <Button component={Link} to="/tasks/groups">
-          <HexagonMultipleIcon className={classes.buttonIcon} />
-          I want to look at a task or group of tasks.
+          <HexagonMultipleIcon className={classes.buttonIcon} />I want to look
+          at a task or group of tasks.
         </Button>
         <br />
         <br />
 
         <Button component={Link} to="/tasks/create">
-          <PlusCircleIcon className={classes.buttonIcon} />
-          I want to create a task or build.
+          <PlusCircleIcon className={classes.buttonIcon} />I want to create a
+          task or build.
         </Button>
         <br />
         <br />
 
         <Button component={Link} to="/docs">
-          <LibraryIcon className={classes.buttonIcon} />
-          I want to see documentation.
+          <LibraryIcon className={classes.buttonIcon} />I want to see
+          documentation.
         </Button>
       </Dashboard>
     );

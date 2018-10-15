@@ -87,7 +87,8 @@ export default class ViewCachePurges extends Component {
             </Typography>
           </HelpView>
         }
-        title="Cache Purges">
+        title="Cache Purges"
+      >
         <Fragment>
           {!cachePurges && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
@@ -100,12 +101,14 @@ export default class ViewCachePurges extends Component {
           <Tooltip
             enterDelay={300}
             id="create-purge-cache-tooltip"
-            title="Create Purge Cache Request">
+            title="Create Purge Cache Request"
+          >
             <Button
               onClick={this.handleCreate}
               variant="fab"
               color="secondary"
-              className={classes.plusIcon}>
+              className={classes.plusIcon}
+            >
               <PlusIcon />
             </Button>
           </Tooltip>

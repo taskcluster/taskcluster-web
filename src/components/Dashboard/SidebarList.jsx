@@ -45,7 +45,8 @@ export default class SidebarList extends Component {
         <SidebarListGroup
           to="/auth"
           title="Authorization"
-          icon={<AccountKeyIcon />}>
+          icon={<AccountKeyIcon />}
+        >
           <SidebarListItem to="/auth/clients" icon={<AccountMultipleIcon />}>
             Clients
           </SidebarListItem>
@@ -99,18 +100,21 @@ export default class SidebarList extends Component {
         <SidebarListGroup
           to="/docs"
           title="Documentation"
-          icon={<LibraryIcon />}>
+          icon={<LibraryIcon />}
+        >
           <SidebarListItem to="/docs/tutorial" icon={<HumanIcon />}>
             Tutorial
           </SidebarListItem>
           <SidebarListItem
             to="/docs/references"
-            icon={<BookOpenPageVariantIcon />}>
+            icon={<BookOpenPageVariantIcon />}
+          >
             References
           </SidebarListItem>
           <SidebarListItem
             to="/docs/resources"
-            icon={<HelpCircleOutlineIcon />}>
+            icon={<HelpCircleOutlineIcon />}
+          >
             Resources
           </SidebarListItem>
           <SidebarListItem to="/docs/people" icon={<AccountMultipleIcon />}>

@@ -11,12 +11,19 @@ module.exports = {
         },
         emitWarning: process.env.NODE_ENV === 'development',
         baseConfig: {
-          extends: ['eslint-config-prettier', 'plugin:react/recommended'],
+          extends: ['plugin:react/recommended', 'eslint-config-prettier'],
         },
         envs: ['worker', 'serviceworker'],
         plugins: ['prettier'],
         rules: {
-          'no-nested-ternaries': '0',
+          'react/jsx-wrap-multilines': 'off',
+          'react/prop-types': 'off',
+          'react/jsx-one-expression-per-line': 'off',
+          'react/forbid-prop-types': 'off',
+          'react/prefer-stateless-function': 'off',
+          'react/no-access-state-in-setstate': 'off',
+          'react/destructuring-assignment': 'off',
+          'babel/no-unused-expressions': 'off',
           'import/no-extraneous-dependencies': 'off',
           // Specify the maximum length of a line in your program
           'max-len': [
@@ -36,80 +43,14 @@ module.exports = {
           'class-methods-use-this': 'off',
           // Allow console during development, otherwise throw an error
           'no-console': process.env.NODE_ENV === 'development' ? 'off' : 'error',
-          // Allow extra parentheses since multiline JSX being wrapped in parens
-          // is considered idiomatic
-          'no-extra-parens': 'off',
-          // Our frontend strives to adopt functional programming practices,
-          // so we prefer const over let
-          'prefer-const': 'error',
           'prettier/prettier': [
             'error',
             {
               singleQuote: true,
               trailingComma: 'es5',
               bracketSpacing: true,
-              jsxBracketSameLine: true,
+              jsxBracketSameLine: false,
             },
-          ],
-          'padding-line-between-statements': [
-            'error',
-            {
-              blankLine: 'always',
-              prev: ['const', 'let', 'var'],
-              next: '*',
-            },
-            {
-              blankLine: 'never',
-              prev: ['const', 'let', 'var'],
-              next: ['const', 'let', 'var'],
-            },
-            {
-              blankLine: 'always',
-              prev: ['cjs-import'],
-              next: '*',
-            },
-            {
-              blankLine: 'always',
-              prev: ['import'],
-              next: '*',
-            },
-            {
-              blankLine: 'always',
-              prev: '*',
-              next: ['cjs-export'],
-            },
-            {
-              blankLine: 'always',
-              prev: '*',
-              next: ['export'],
-            },
-            {
-              blankLine: 'never',
-              prev: ['import'],
-              next: ['import'],
-            },
-            {
-              blankLine: 'never',
-              prev: ['cjs-import'],
-              next: ['cjs-import'],
-            },
-            {
-              blankLine: 'any',
-              prev: ['export'],
-              next: ['export'],
-            },
-            {
-              blankLine: 'any',
-              prev: ['cjs-export'],
-              next: ['cjs-export'],
-            },
-            { blankLine: 'always', prev: 'multiline-block-like', next: '*' },
-            {
-              blankLine: 'always',
-              prev: '*',
-              next: ['if', 'do', 'for', 'switch', 'try', 'while'],
-            },
-            { blankLine: 'always', prev: '*', next: 'return' },
           ],
           'consistent-return': 'off',
           'no-shadow': 'off',

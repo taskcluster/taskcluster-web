@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
-import { string, func, array, shape, arrayOf } from 'prop-types';
+import { func, array, shape, arrayOf } from 'prop-types';
 import { pipe, map, sort as rSort } from 'ramda';
 import memoize from 'fast-memoize';
 import { camelCase } from 'change-case';
@@ -56,11 +56,11 @@ const sorted = pipe(
  * Display relevant information about worker types in a table.
  */
 export default class WorkerTypesTable extends Component {
-  workerTypes = null;
+  static defaultProps = {
+    awsProvisionerWorkerTypeSummaries: null,
+  };
 
   static propTypes = {
-    /** Provisioner identifier */
-    provisionerId: string.isRequired,
     /** Callback function fired when a page is changed. */
     onPageChange: func.isRequired,
     /** Worker Types GraphQL PageConnection instance. */
@@ -75,43 +75,11 @@ export default class WorkerTypesTable extends Component {
     awsProvisionerWorkerTypeSummaries: arrayOf(awsProvisionerWorkerTypeSummary),
   };
 
-  static defaultProps = {
-    awsProvisionerWorkerTypeSummaries: null,
-  };
-
   state = {
     sortBy: null,
     sortDirection: null,
     drawerOpen: false,
     drawerWorkerType: null,
-  };
-
-  handleDrawerClose = () => {
-    this.setState({
-      drawerOpen: false,
-      drawerWorkerType: null,
-    });
-  };
-
-  handleDrawerOpen = ({ target: { name } }) =>
-    memoize(
-      name =>
-        this.setState({
-          drawerOpen: true,
-          drawerWorkerType: this.workerTypes.edges.find(
-            ({ node }) => node.workerType === name
-          ).node,
-        }),
-      {
-        serializer: name => name,
-      }
-    )(name);
-
-  handleHeaderClick = sortBy => {
-    const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
-    const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
-
-    this.setState({ sortBy, sortDirection });
   };
 
   createSortedWorkerTypesConnection = memoize(
@@ -163,6 +131,36 @@ export default class WorkerTypesTable extends Component {
     }
   );
 
+  workerTypes = null;
+
+  handleDrawerClose = () => {
+    this.setState({
+      drawerOpen: false,
+      drawerWorkerType: null,
+    });
+  };
+
+  handleDrawerOpen = ({ target: { name } }) =>
+    memoize(
+      name =>
+        this.setState({
+          drawerOpen: true,
+          drawerWorkerType: this.workerTypes.edges.find(
+            ({ node }) => node.workerType === name
+          ).node,
+        }),
+      {
+        serializer: name => name,
+      }
+    )(name);
+
+  handleHeaderClick = sortBy => {
+    const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
+    const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
+
+    this.setState({ sortBy, sortDirection });
+  };
+
   render() {
     const {
       onPageChange,
@@ -213,7 +211,8 @@ export default class WorkerTypesTable extends Component {
                   className={classes.infoButton}
                   size="small"
                   name={workerType.workerType}
-                  onClick={this.handleDrawerOpen}>
+                  onClick={this.handleDrawerOpen}
+                >
                   <InformationVariantIcon size={iconSize} />
                 </Button>
                 <TableCellListItem
@@ -221,14 +220,11 @@ export default class WorkerTypesTable extends Component {
                   component={Link}
                   to={`/provisioners/${workerType.provisionerId}/worker-types/${
                     workerType.workerType
-                  }`}>
+                  }`}
+                >
                   <ListItemText
                     disableTypography
-                    primary={
-                      <Typography>
-                        {workerType.workerType}
-                      </Typography>
-                    }
+                    primary={<Typography>{workerType.workerType}</Typography>}
                   />
                   <LinkIcon size={iconSize} />
                 </TableCellListItem>
@@ -262,7 +258,8 @@ export default class WorkerTypesTable extends Component {
         <Drawer
           anchor="right"
           open={drawerOpen}
-          onClose={this.handleDrawerClose}>
+          onClose={this.handleDrawerClose}
+        >
           <div className={classes.metadataContainer}>
             <Typography variant="h5" className={classes.headline}>
               {drawerWorkerType && drawerWorkerType.workerType}

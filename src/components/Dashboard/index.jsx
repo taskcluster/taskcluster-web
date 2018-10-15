@@ -121,6 +121,13 @@ import { withThemeToggler } from '../../utils/ToggleTheme';
  * Render the layout for application-based views.
  */
 export default class Dashboard extends Component {
+  static defaultProps = {
+    title: '',
+    disablePadding: false,
+    search: null,
+    helpView: null,
+  };
+
   static propTypes = {
     /**
      * The content to render within the main view body.
@@ -147,22 +154,11 @@ export default class Dashboard extends Component {
     helpView: node,
   };
 
-  static defaultProps = {
-    title: '',
-    disablePadding: false,
-    search: null,
-    helpView: null,
-  };
-
   state = {
     mobileOpen: false,
     showHelpView: false,
     error: null,
   };
-
-  componentDidCatch(error) {
-    this.setState({ error });
-  }
 
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
@@ -171,6 +167,10 @@ export default class Dashboard extends Component {
   handleHelpViewToggle = () => {
     this.setState({ showHelpView: !this.state.showHelpView });
   };
+
+  componentDidCatch(error) {
+    this.setState({ error });
+  }
 
   render() {
     const {
@@ -193,7 +193,8 @@ export default class Dashboard extends Component {
             color="inherit"
             aria-label="close drawer"
             onClick={this.handleDrawerToggle}
-            className={classes.navIconHide}>
+            className={classes.navIconHide}
+          >
             <MenuIcon />
           </IconButton>
           <Typography
@@ -201,7 +202,8 @@ export default class Dashboard extends Component {
             to="/"
             variant="h6"
             noWrap
-            className={classes.title}>
+            className={classes.title}
+          >
             {process.env.APPLICATION_NAME}
           </Typography>
         </div>
@@ -221,7 +223,8 @@ export default class Dashboard extends Component {
               color="inherit"
               aria-label="open drawer"
               onClick={this.handleDrawerToggle}
-              className={classes.navIconHide}>
+              className={classes.navIconHide}
+            >
               <MenuIcon className={classes.appIcon} />
             </IconButton>
             <Typography variant="h6" noWrap className={classes.appBarTitle}>
@@ -231,7 +234,8 @@ export default class Dashboard extends Component {
             <Tooltip placement="bottom" title="Toggle light/dark theme">
               <IconButton
                 className={classes.appBarButton}
-                onClick={onToggleTheme}>
+                onClick={onToggleTheme}
+              >
                 {theme.palette.type === 'dark' ? (
                   <LightBulbOn className={classes.appIcon} />
                 ) : (
@@ -261,7 +265,8 @@ export default class Dashboard extends Component {
             }}
             ModalProps={{
               keepMounted: true,
-            }}>
+            }}
+          >
             {drawer}
           </Drawer>
         </Hidden>
@@ -274,7 +279,8 @@ export default class Dashboard extends Component {
             }}
             classes={{
               paper: classes.drawerPaper,
-            }}>
+            }}
+          >
             {drawer}
           </Drawer>
         </Hidden>
@@ -288,11 +294,13 @@ export default class Dashboard extends Component {
           }}
           ModalProps={{
             keepMounted: true,
-          }}>
+          }}
+        >
           <Fragment>
             <IconButton
               onClick={this.handleHelpViewToggle}
-              className={classes.helpCloseIcon}>
+              className={classes.helpCloseIcon}
+            >
               <CloseIcon />
             </IconButton>
             {helpView}
@@ -306,7 +314,8 @@ export default class Dashboard extends Component {
             },
             className
           )}
-          {...props}>
+          {...props}
+        >
           {error ? <ErrorPanel error={error} /> : children}
         </main>
       </div>

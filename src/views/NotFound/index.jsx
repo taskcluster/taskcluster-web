@@ -36,7 +36,8 @@ export default class NotFound extends Component {
           404
         </Typography>
         <Typography variant="h4" className={classes.typography}>
-          We couldn&apos;t find a page at that address.<br />
+          We couldn&apos;t find a page at that address.
+          <br />
           <br />
           <br />
         </Typography>

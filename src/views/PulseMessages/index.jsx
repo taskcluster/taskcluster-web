@@ -106,6 +106,12 @@ const getBindingsFromProps = props => {
   },
 }))
 export default class PulseMessages extends Component {
+  static getDerivedStateFromProps(props) {
+    return {
+      bindings: getBindingsFromProps(props),
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -177,6 +183,10 @@ export default class PulseMessages extends Component {
     );
 
     this.props.history.replace(`/pulse-messages?${stringify({ bindings })}`);
+  };
+
+  handleInputChange = ({ target: { name, value } }) => {
+    this.setState({ [name]: value });
   };
 
   handleStartListening = () => {
@@ -255,12 +265,15 @@ export default class PulseMessages extends Component {
               <a
                 href={urls.docs('/')}
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 {urls.docs('/')}
-              </a>.
+              </a>
+              .
             </Typography>
           </HelpView>
-        }>
+        }
+      >
         <Fragment>
           {error && <ErrorPanel error={error} />}
           <div className={classes.inputWrapper}>
@@ -299,7 +312,8 @@ export default class PulseMessages extends Component {
             <Tooltip title="Add Binding">
               <IconButton
                 className={classNames(classes.iconButton, classes.plusIcon)}
-                onClick={this.handleAddBinding}>
+                onClick={this.handleAddBinding}
+              >
                 <PlusIcon />
               </IconButton>
             </Tooltip>
@@ -308,11 +322,12 @@ export default class PulseMessages extends Component {
             {bindings.map(binding => (
               <ListItem
                 className={classes.bindingListItem}
-                key={`${binding.exchange}-${binding.pattern}`}>
+                key={`${binding.exchange}-${binding.routingKeyPattern}`}
+              >
                 <ListItemText
                   disableTypography
                   primary={
-                    <Typography variant="body1">
+                    <Typography variant="body2">
                       <code>{binding.exchange}</code> with{' '}
                       <code>{binding.pattern}</code>
                     </Typography>
@@ -325,14 +340,15 @@ export default class PulseMessages extends Component {
                       classes.deleteIcon
                     )}
                     name={binding}
-                    onClick={() => this.handleDeleteBinding(binding)}>
+                    onClick={() => this.handleDeleteBinding(binding)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
               </ListItem>
             ))}
             <Toolbar>
-              <Typography variant="body1" id="tableTitle">
+              <Typography variant="body2" id="tableTitle">
                 Messages
               </Typography>
             </Toolbar>
@@ -399,7 +415,7 @@ export default class PulseMessages extends Component {
               </IconButton>
               <div className={classes.drawerContainer}>
                 <Typography
-                  variant="headline"
+                  variant="h5"
                   className={classes.drawerHeadline}>
                   Message
                 </Typography>

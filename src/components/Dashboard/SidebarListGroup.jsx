@@ -16,14 +16,14 @@ import SidebarListItem from './SidebarListItem';
   },
 }))
 export default class SidebarListGroup extends Component {
+  static defaultProps = {
+    icon: null,
+  };
+
   static propTypes = {
     children: arrayOf(node).isRequired,
     title: string.isRequired,
     icon: node,
-  };
-
-  static defaultProps = {
-    icon: null,
   };
 
   state = {
@@ -45,7 +45,8 @@ export default class SidebarListGroup extends Component {
           to={to}
           onClick={this.handleClick}
           icon={icon}
-          rightIcon={open ? <ChevronUpIcon /> : <ChevronDownIcon />}>
+          rightIcon={open ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        >
           {title}
         </SidebarListItem>
         <Collapse in={open} timeout="auto" unmountOnExit>

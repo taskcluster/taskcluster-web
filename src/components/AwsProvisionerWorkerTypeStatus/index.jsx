@@ -39,41 +39,6 @@ export default class AwsProvisionerWorkerTypeStatus extends Component {
     sortDirection: null,
   };
 
-  handleHeaderClick = sortBy => {
-    const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
-    const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
-
-    this.setState({ sortBy, sortDirection });
-  };
-
-  createSortedStatuses = memoize(
-    (statuses, sortBy, sortDirection) => {
-      if (!statuses) {
-        return null;
-      }
-
-      return [...statuses].sort((a, b) => {
-        const firstElement =
-          sortDirection === 'desc'
-            ? this.valueFromNode(b)
-            : this.valueFromNode(a);
-        const secondElement =
-          sortDirection === 'desc'
-            ? this.valueFromNode(a)
-            : this.valueFromNode(b);
-
-        return sort(firstElement, secondElement);
-      });
-    },
-    {
-      serializer: ([statuses, sortBy, sortDirection]) => {
-        const ids = sorted(statuses);
-
-        return `${ids.join('-')}-${sortBy}-${sortDirection}`;
-      },
-    }
-  );
-
   createItems = memoize(
     (workerType, awsState, availabilityZones) => {
       if (!availabilityZones.length) {
@@ -118,6 +83,41 @@ export default class AwsProvisionerWorkerTypeStatus extends Component {
       },
     }
   );
+
+  createSortedStatuses = memoize(
+    (statuses, sortBy, sortDirection) => {
+      if (!statuses) {
+        return null;
+      }
+
+      return [...statuses].sort((a, b) => {
+        const firstElement =
+          sortDirection === 'desc'
+            ? this.valueFromNode(b)
+            : this.valueFromNode(a);
+        const secondElement =
+          sortDirection === 'desc'
+            ? this.valueFromNode(a)
+            : this.valueFromNode(b);
+
+        return sort(firstElement, secondElement);
+      });
+    },
+    {
+      serializer: ([statuses, sortBy, sortDirection]) => {
+        const ids = sorted(statuses);
+
+        return `${ids.join('-')}-${sortBy}-${sortDirection}`;
+      },
+    }
+  );
+
+  handleHeaderClick = sortBy => {
+    const toggled = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
+    const sortDirection = this.state.sortBy === sortBy ? toggled : 'desc';
+
+    this.setState({ sortBy, sortDirection });
+  };
 
   valueFromNode(item) {
     const mapping = {

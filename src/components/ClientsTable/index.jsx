@@ -101,12 +101,11 @@ export default class ClientsTable extends Component {
                   dense
                   button
                   component={Link}
-                  to={`/auth/clients/${encodeURIComponent(client.clientId)}`}>
+                  to={`/auth/clients/${encodeURIComponent(client.clientId)}`}
+                >
                   <ListItemText
                     disableTypography
-                    primary={
-                      <Typography>{client.clientId}</Typography>
-                    }
+                    primary={<Typography>{client.clientId}</Typography>}
                   />
                   <LinkIcon size={iconSize} />
                 </TableCellListItem>

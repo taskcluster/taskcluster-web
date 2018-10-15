@@ -30,30 +30,8 @@ export default class ViewClient extends Component {
     accessToken: null,
   };
 
-  handleSaveClient = async (client, clientId) => {
-    const { isNewClient } = this.props;
-
-    this.setState({ error: null, loading: true });
-
-    try {
-      await this.props.client.mutate({
-        mutation: isNewClient ? createClientQuery : updateClientQuery,
-        variables: {
-          clientId,
-          client,
-        },
-      });
-
-      this.setState({ error: null, loading: false });
-
-      if (isNewClient) {
-        this.props.history.push(
-          `/auth/clients/${encodeURIComponent(clientId)}`
-        );
-      }
-    } catch (error) {
-      this.setState({ error, loading: false });
-    }
+  handleAccessTokenWarningClose = () => {
+    this.setState({ accessToken: null });
   };
 
   handleDeleteClient = async clientId => {
@@ -132,8 +110,30 @@ export default class ViewClient extends Component {
     }
   };
 
-  handleAccessTokenWarningClose = () => {
-    this.setState({ accessToken: null });
+  handleSaveClient = async (client, clientId) => {
+    const { isNewClient } = this.props;
+
+    this.setState({ error: null, loading: true });
+
+    try {
+      await this.props.client.mutate({
+        mutation: isNewClient ? createClientQuery : updateClientQuery,
+        variables: {
+          clientId,
+          client,
+        },
+      });
+
+      this.setState({ error: null, loading: false });
+
+      if (isNewClient) {
+        this.props.history.push(
+          `/auth/clients/${encodeURIComponent(clientId)}`
+        );
+      }
+    } catch (error) {
+      this.setState({ error, loading: false });
+    }
   };
 
   render() {

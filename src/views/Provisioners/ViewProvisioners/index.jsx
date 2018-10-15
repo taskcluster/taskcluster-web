@@ -28,7 +28,8 @@ export default class ViewProvisioners extends Component {
     return (
       <Dashboard
         title="Provisioners"
-        helpView={<HelpView description={description} />}>
+        helpView={<HelpView description={description} />}
+      >
         {loading && <Spinner loading />}
         {error &&
           error.graphQLErrors && (
@@ -43,7 +44,8 @@ export default class ViewProvisioners extends Component {
                 item
                 xs={12}
                 sm={6}
-                md={4}>
+                md={4}
+              >
                 <ProvisionerDetailsCard dense provisioner={provisioner} />
               </Grid>
             ))}

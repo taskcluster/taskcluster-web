@@ -62,6 +62,36 @@ export default class ViewClients extends PureComponent {
     return null;
   }
 
+  handleClientSearchChange = ({ target }) => {
+    this.setState({ clientSearch: target.value });
+  };
+
+  handleClientSearchSubmit = e => {
+    e.preventDefault();
+
+    const {
+      data: { refetch },
+    } = this.props;
+    const { clientSearch } = this.state;
+
+    refetch({
+      ...(clientSearch
+        ? {
+            clientOptions: {
+              prefix: clientSearch,
+            },
+          }
+        : null),
+      clientsConnection: {
+        limit: VIEW_CLIENTS_PAGE_SIZE,
+      },
+    });
+  };
+
+  handleCreate = () => {
+    this.props.history.push('/auth/clients/create');
+  };
+
   handlePageChange = ({ cursor, previousCursor }) => {
     const {
       data: { fetchMore },
@@ -147,7 +177,8 @@ export default class ViewClients extends PureComponent {
             onSubmit={this.handleClientSearchSubmit}
             placeholder="Client starts with"
           />
-        }>
+        }
+      >
         <Fragment>
           {!clients && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
@@ -161,7 +192,8 @@ export default class ViewClients extends PureComponent {
             onClick={this.handleCreate}
             variant="fab"
             color="secondary"
-            className={classes.plusIcon}>
+            className={classes.plusIcon}
+          >
             <PlusIcon />
           </Button>
         </Fragment>

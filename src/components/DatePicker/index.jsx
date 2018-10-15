@@ -12,11 +12,15 @@ import { date } from '../../utils/prop-types';
  * Display a date picker modal to select a date.
  */
 export default class DatePicker extends Component {
+  static defaultProps = {
+    value: null,
+  };
+
   static propTypes = {
     /** Picker value */
     value: date,
     /** Callback function fired when the calendar date is changed. */
-    onChange: func,
+    onChange: func.isRequired,
   };
 
   render() {

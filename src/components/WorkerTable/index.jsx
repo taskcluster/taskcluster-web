@@ -39,6 +39,10 @@ import sort from '../../utils/sort';
  * Display relevant information about a worker in a table.
  */
 export default class WorkerTable extends Component {
+  static defaultProps = {
+    worker: null,
+  };
+
   static propTypes = {
     /** A GraphQL worker response. */
     worker,
@@ -109,7 +113,8 @@ export default class WorkerTable extends Component {
               <TableCellListItem
                 button
                 component={Link}
-                to={`/tasks/${task.taskId}/runs/${task.runId}`}>
+                to={`/tasks/${task.taskId}/runs/${task.runId}`}
+              >
                 <div className={classes.taskName}>{task.name}</div>
                 <LinkIcon size={iconSize} />
               </TableCellListItem>

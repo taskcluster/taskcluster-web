@@ -56,7 +56,8 @@ export default class NoTask extends Component {
             onChange={this.handleTaskSearchChange}
             onSubmit={this.handleTaskSearchSubmit}
           />
-        }>
+        }
+      >
         <Typography className={classes.infoText}>
           Enter a task ID in the search box
         </Typography>
@@ -66,14 +67,16 @@ export default class NoTask extends Component {
               dense
               subheader={
                 <ListSubheader component="div">Recent Tasks</ListSubheader>
-              }>
+              }
+            >
               {recentTasks.map(({ taskId }) => (
                 <ListItem
                   button
                   className={classes.listItemButton}
                   component={Link}
                   to={`/tasks/${taskId}`}
-                  key={taskId}>
+                  key={taskId}
+                >
                   <ListItemText primary={taskId} />
                   <LinkIcon />
                 </ListItem>
