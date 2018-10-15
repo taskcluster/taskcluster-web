@@ -118,7 +118,6 @@ export default class TaskDetailsCard extends Component {
                 />
                 {isExternal ? <OpenInNewIcon /> : <LinkIcon />}
               </ListItem>
-
               <ListItem
                 button
                 className={classes.listItemButton}
@@ -131,7 +130,6 @@ export default class TaskDetailsCard extends Component {
                 <ListItemText primary="View task definition" />
                 <OpenInNewIcon />
               </ListItem>
-              
               <ListItem>
                 <ListItemText
                   primary="State"
