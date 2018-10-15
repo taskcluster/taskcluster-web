@@ -88,7 +88,8 @@ export default class SidebarList extends Component {
           </SidebarListItem>
           <SidebarListItem
             to="/scopesets/expand"
-            icon={<ArrowExpandVerticalIcon />}>
+            icon={<ArrowExpandVerticalIcon />}
+          >
             Expand
           </SidebarListItem>
         </SidebarListGroup>

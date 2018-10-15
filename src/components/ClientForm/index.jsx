@@ -248,7 +248,7 @@ export default class ClientForm extends Component {
             <ListItemText
               disableTypography
               primary={
-                <Typography component="h3" variant="subheading">
+                <Typography component="h3" variant="subtitle1">
                   Expires
                 </Typography>
               }
