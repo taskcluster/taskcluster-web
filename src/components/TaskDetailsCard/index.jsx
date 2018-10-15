@@ -116,7 +116,7 @@ export default class TaskDetailsCard extends Component {
                   primary="Source"
                   secondary={task.metadata.source}
                 />
-                {isExternal ? <OpenInNewIcon /> : <LinkIcon />}
+                <OpenInNewIcon />
               </ListItem>
               <ListItem
                 button
