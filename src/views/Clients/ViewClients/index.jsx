@@ -37,7 +37,26 @@ import { withAuth } from '../../../utils/Auth';
 export default class ViewWorker extends PureComponent {
   state = {
     clientSearch: this.props.user ? this.props.user.credentials.clientId : '',
+    clientId: this.props.user ? this.props.user.credentials.clientId : '',
   };
+
+  static getDerivedStateFromProps(props, state) {
+    // Any time the current user changes,
+    // Reset state to reflect new user / log out and default clientSearch query
+    if (props.user && props.user.credentials.clientId !== state.clientId) {
+      return {
+        clientSearch: props.user.credentials.clientId,
+        clientId: props.user.credentials.clientId,
+      };
+    } else if (!props.user && state.clientId !== '') {
+      return {
+        clientSearch: '',
+        clientId: '',
+      };
+    }
+
+    return null;
+  }
 
   handlePageChange = ({ cursor, previousCursor }) => {
     const {
@@ -110,6 +129,7 @@ export default class ViewWorker extends PureComponent {
       description,
       data: { loading, error, clients },
     } = this.props;
+    const { clientSearch } = this.state;
 
     return (
       <Dashboard
@@ -118,7 +138,7 @@ export default class ViewWorker extends PureComponent {
         search={
           <Search
             disabled={loading}
-            value={this.props.user ? this.props.user.credentials.clientId : ''}
+            value={clientSearch}
             onChange={this.handleClientSearchChange}
             onSubmit={this.handleClientSearchSubmit}
             placeholder="Client starts with"
