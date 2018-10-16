@@ -71,7 +71,7 @@ GA_TRACKING_ID=XXXXXXXX
 
 Once the tracking code is identified, the client will send a page event on each page view.
 Moreover, the `Button` component is able to send an event when clicked by setting
-the Button's `trackEvent` property to `true`.
+the Button's `track` property.
 
 ## Icons
 
