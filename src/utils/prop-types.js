@@ -356,3 +356,41 @@ export const pulseMessage = shape({
   redelivered: bool,
   cc: string,
 });
+
+// https://developers.google.com/analytics/devguides/collection/analyticsjs/events
+export const gaEvent = shape({
+  /**
+   * A description of the behaviour.
+   * E.g. 'Clicked Delete', 'Added a component', 'Deleted account', etc.
+   * */
+  label: string,
+  /**
+   * Defaults to 'Click'.
+   * A description of the behaviour.
+   * E.g. 'Clicked Delete', 'Added a component', 'Deleted account', etc.
+   * */
+  action: string,
+  /**
+   * Defaults to 'Uncategorized'.
+   * A top level category for the event.
+   * E.g. 'User', 'Navigation', 'App Editing', etc.
+   * */
+  category: string,
+  /**
+   * A means of recording a numerical value against an event.
+   * E.g. a rating, a score, etc.
+   */
+  value: number,
+  /**
+   * If an event is not triggered by a user interaction, but instead by the
+   * code (e.g. on page load),
+   * it should be flagged as a nonInteraction event to avoid
+   * skewing bounce rate data.
+   */
+  nonInteraction: bool,
+  /**
+   * This specifies the transport mechanism with which hits will be sent.
+   * Valid values include 'beacon', 'xhr', or 'image'.
+   */
+  transport: string,
+});
