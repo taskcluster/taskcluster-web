@@ -34,24 +34,27 @@ import { withAuth } from '../../../utils/Auth';
     ...theme.mixins.fab,
   },
 }))
-export default class ViewWorker extends PureComponent {
+export default class ViewClients extends PureComponent {
   state = {
-    clientSearch: this.props.user ? this.props.user.credentials.clientId : '',
-    clientId: this.props.user ? this.props.user.credentials.clientId : '',
+    clientSearch: '',
+    previousClientId: '',
   };
 
   static getDerivedStateFromProps(props, state) {
     // Any time the current user changes,
     // Reset state to reflect new user / log out and default clientSearch query
-    if (props.user && props.user.credentials.clientId !== state.clientId) {
+    if (
+      props.user &&
+      props.user.credentials.clientId !== state.previousClientId
+    ) {
       return {
         clientSearch: props.user.credentials.clientId,
-        clientId: props.user.credentials.clientId,
+        previousClientId: props.user.credentials.clientId,
       };
-    } else if (!props.user && state.clientId !== '') {
+    } else if (!props.user && state.previousClientId !== '') {
       return {
         clientSearch: '',
-        clientId: '',
+        previousClientId: '',
       };
     }
 
