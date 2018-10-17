@@ -52,7 +52,8 @@ export default class ViewClients extends PureComponent {
         clientSearch: props.user.credentials.clientId,
         previousClientId: props.user.credentials.clientId,
       };
-    } else if (!props.user && state.previousClientId !== '') {
+    }
+    if (!props.user && state.previousClientId !== '') {
       return {
         clientSearch: '',
         previousClientId: '',

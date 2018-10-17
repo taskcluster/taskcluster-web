@@ -112,6 +112,8 @@ export default class PulseMessages extends Component {
     };
   }
 
+  subscriptionObserver = null;
+
   constructor(props) {
     super(props);
 
@@ -130,39 +132,13 @@ export default class PulseMessages extends Component {
     };
   }
 
-  subscriptionObserver = null;
-
-  unsubscribe() {
-    if (this.subscriptionObserver) {
-      this.subscriptionObserver.unsubscribe();
-    }
-  }
-
   componentWillUnmount() {
     this.unsubscribe();
-  }
-
-  addMessage(message) {
-    const messages = removeKeys(this.state.messages.concat(message), [
-      '__typename',
-    ]);
-    const params = btoa(JSON.stringify(messages, null, 2));
-
-    this.setState({
-      messages,
-      downloadLink: `data:application/json;base64,${params}`,
-    });
   }
 
   handleInputChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
   };
-
-  static getDerivedStateFromProps(props) {
-    return {
-      bindings: getBindingsFromProps(props),
-    };
-  }
 
   handleAddBinding = () => {
     const { pulseExchange, pattern } = this.state;
@@ -234,6 +210,24 @@ export default class PulseMessages extends Component {
     // a.click() doesn't work on all browsers
     a.dispatchEvent(new MouseEvent('click'));
   };
+
+  addMessage(message) {
+    const messages = removeKeys(this.state.messages.concat(message), [
+      '__typename',
+    ]);
+    const params = btoa(JSON.stringify(messages, null, 2));
+
+    this.setState({
+      messages,
+      downloadLink: `data:application/json;base64,${params}`,
+    });
+  }
+
+  unsubscribe() {
+    if (this.subscriptionObserver) {
+      this.subscriptionObserver.unsubscribe();
+    }
+  }
 
   render() {
     const { classes } = this.props;
@@ -357,12 +351,14 @@ export default class PulseMessages extends Component {
               noItemsMessage="No messages received."
               renderRow={message => (
                 <TableRow
-                  key={`message-${message.routingKey}-${message.exchange}`}>
+                  key={`message-${message.routingKey}-${message.exchange}`}
+                >
                   <TableCell>
                     <Button
                       className={classes.infoButton}
                       size="small"
-                      onClick={() => this.handleMessageDrawerOpen(message)}>
+                      onClick={() => this.handleMessageDrawerOpen(message)}
+                    >
                       <InformationVariantIcon size={iconSize} />
                     </Button>
                     {message.exchange}
@@ -406,17 +402,17 @@ export default class PulseMessages extends Component {
             classes={{
               paper: classes.drawerPaper,
             }}
-            onClose={this.handleMessageDrawerClose}>
+            onClose={this.handleMessageDrawerClose}
+          >
             <Fragment>
               <IconButton
                 onClick={this.handleMessageDrawerClose}
-                className={classes.drawerCloseIcon}>
+                className={classes.drawerCloseIcon}
+              >
                 <CloseIcon />
               </IconButton>
               <div className={classes.drawerContainer}>
-                <Typography
-                  variant="h5"
-                  className={classes.drawerHeadline}>
+                <Typography variant="h5" className={classes.drawerHeadline}>
                   Message
                 </Typography>
                 <List>
