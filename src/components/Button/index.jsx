@@ -17,6 +17,7 @@ const defaultTrack = {
 export default class Button extends Component {
   static defaultProps = {
     requiresAuth: false,
+    track: null,
   };
 
   static propTypes = {
@@ -28,11 +29,6 @@ export default class Button extends Component {
      * If defined, the button will send an analytic event to Google
      * */
     track: gaEvent,
-  };
-
-  static defaultProps = {
-    requiresAuth: false,
-    track: null,
   };
 
   handleButtonClick = () => {
@@ -65,7 +61,8 @@ export default class Button extends Component {
       <MuiButton
         onClick={this.handleButtonClick}
         disabled={isDisabled}
-        {...props}>
+        {...props}
+      >
         {children}
       </MuiButton>
     );

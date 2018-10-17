@@ -360,16 +360,17 @@ export const pulseMessage = shape({
 // https://developers.google.com/analytics/devguides/collection/analyticsjs/events
 export const gaEvent = shape({
   /**
-   * A description of the behaviour.
-   * E.g. 'Clicked Delete', 'Added a component', 'Deleted account', etc.
-   * */
-  label: string,
-  /**
    * Defaults to 'Click'.
    * A description of the behaviour.
    * E.g. 'Clicked Delete', 'Added a component', 'Deleted account', etc.
    * */
   action: string,
+  /**
+   * More precise labelling of the related action.
+   * E.g. alongside the 'Added a component' action, we could add the name
+   * of a component as the label. E.g. 'Survey', 'Heading', 'Button', etc.
+   * */
+  label: string,
   /**
    * Defaults to 'Uncategorized'.
    * A top level category for the event.

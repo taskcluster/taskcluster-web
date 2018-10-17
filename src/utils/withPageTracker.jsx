@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 import ReactGA from 'react-ga';
 
-let currentPage = null;
-
 export default WrappedComponent =>
   class WithPageTracker extends Component {
-    trackPage(page) {
-      if (process.env.GA_TRACKING_ID && currentPage !== page) {
-        currentPage = page;
-        ReactGA.pageview(page);
-      }
-    }
+    currentPage = null;
 
     componentDidMount() {
       this.trackPage(window.location.pathname);
@@ -18,6 +11,13 @@ export default WrappedComponent =>
 
     componentDidUpdate() {
       this.trackPage(window.location.pathname);
+    }
+
+    trackPage(page) {
+      if (process.env.GA_TRACKING_ID && this.currentPage !== page) {
+        this.currentPage = page;
+        ReactGA.pageview(page);
+      }
     }
 
     render() {
