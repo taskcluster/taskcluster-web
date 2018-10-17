@@ -82,7 +82,7 @@ export default class App extends Component {
           return kind === 'OperationDefinition' && operation === 'subscription';
         },
         new WebSocketLink({
-          uri: 'ws://localhost:5080/subscription',
+          uri: process.env.GRAPHQL_SUBSCRIPTION_ENDPOINT,
           options: {
             reconnect: true,
           },
