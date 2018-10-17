@@ -37,6 +37,7 @@ import { withAuth } from '../../../utils/Auth';
 export default class ViewClients extends PureComponent {
   state = {
     clientSearch: '',
+    // eslint-disable-next-line react/no-unused-state
     previousClientId: '',
   };
 
