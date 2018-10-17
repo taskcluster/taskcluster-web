@@ -17,6 +17,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { parse, stringify } from 'qs';
 import PlayIcon from 'mdi-react/PlayIcon';
+import DownloadIcon from 'mdi-react/DownloadIcon';
 import CloseIcon from 'mdi-react/CloseIcon';
 import StopIcon from 'mdi-react/StopIcon';
 import PlusIcon from 'mdi-react/PlusIcon';
@@ -26,6 +27,8 @@ import urls from '../../utils/urls';
 import Dashboard from '../../components/Dashboard';
 import HelpView from '../../components/HelpView';
 import Button from '../../components/Button';
+import SpeedDial from '../../components/SpeedDial';
+import SpeedDialAction from '../../components/SpeedDialAction';
 import DataTable from '../../components/DataTable';
 import JsonInspector from '../../components/JsonInspector';
 import pulseMessagesQuery from './pulseMessages.graphql';
@@ -53,9 +56,6 @@ const getBindingsFromProps = props => {
     [theme.breakpoints.down('sm')]: {
       marginRight: -14,
     },
-  },
-  fab: {
-    ...theme.mixins.fab,
   },
   playIcon: {
     ...theme.mixins.successIcon,
@@ -103,14 +103,6 @@ const getBindingsFromProps = props => {
   },
   ccRoute: {
     whiteSpace: 'nowrap',
-  },
-  downloadBtn: {
-    position: 'absolute',
-    top: 12,
-    right: 0,
-  },
-  tableContainer: {
-    position: 'relative',
   },
 }))
 export default class PulseMessages extends Component {
@@ -211,6 +203,16 @@ export default class PulseMessages extends Component {
 
   handleMessageDrawerClose = () => {
     this.setState({ drawerOpen: false, drawerMessage: null });
+  };
+
+  handleDownloadMessagesClick = () => {
+    const a = Object.assign(document.createElement('a'), {
+      href: this.state.downloadLink,
+      download: 'pulse-messages.json',
+    });
+
+    // a.click() doesn't work on all browsers
+    a.dispatchEvent(new MouseEvent('click'));
   };
 
   render() {
@@ -324,63 +326,54 @@ export default class PulseMessages extends Component {
                 Messages
               </Typography>
             </Toolbar>
-            <div className={classes.tableContainer}>
-              <DataTable
-                items={messages}
-                noItemsMessage="No messages received."
-                renderRow={message => (
-                  <TableRow
-                    key={`message-${message.routingKey}-${message.exchange}`}>
-                    <TableCell>
-                      <Button
-                        className={classes.infoButton}
-                        size="small"
-                        onClick={() => this.handleMessageDrawerOpen(message)}>
-                        <InformationVariantIcon size={iconSize} />
-                      </Button>
-                      {message.exchange}
-                    </TableCell>
-                    <TableCell>{message.routingKey}</TableCell>
-                  </TableRow>
-                )}
-                headers={['Exchange', 'Routing Key']}
-              />
-              <Button
-                component="a"
-                href={this.state.downloadLink}
-                download="pulse-messages.json"
-                variant="outlined"
-                color="secondary"
-                disabled={!messages[0]}
-                className={classes.downloadBtn}>
-                Download
-              </Button>
-            </div>
+            <DataTable
+              items={messages}
+              noItemsMessage="No messages received."
+              renderRow={message => (
+                <TableRow
+                  key={`message-${message.routingKey}-${message.exchange}`}>
+                  <TableCell>
+                    <Button
+                      className={classes.infoButton}
+                      size="small"
+                      onClick={() => this.handleMessageDrawerOpen(message)}>
+                      <InformationVariantIcon size={iconSize} />
+                    </Button>
+                    {message.exchange}
+                  </TableCell>
+                  <TableCell>{message.routingKey}</TableCell>
+                </TableRow>
+              )}
+              headers={['Exchange', 'Routing Key']}
+            />
           </List>
-          {listening ? (
-            <Tooltip title="Stop Listening">
-              <div className={classes.fab}>
-                <Button
-                  classes={{ root: classes.stopIcon }}
-                  variant="fab"
-                  onClick={this.handleStopListening}>
-                  <StopIcon />
-                </Button>
-              </div>
-            </Tooltip>
-          ) : (
-            <Tooltip title="Start Listening">
-              <div className={classes.fab}>
-                <Button
-                  disabled={!bindings.length}
-                  classes={{ root: classes.playIcon }}
-                  variant="fab"
-                  onClick={this.handleStartListening}>
-                  <PlayIcon />
-                </Button>
-              </div>
-            </Tooltip>
-          )}
+          <SpeedDial>
+            {listening ? (
+              <SpeedDialAction
+                tooltipOpen
+                icon={<StopIcon />}
+                onClick={this.handleStopListening}
+                classes={{ button: classes.stopIcon }}
+                tooltipTitle="Stop Listening"
+              />
+            ) : (
+              <SpeedDialAction
+                tooltipOpen
+                icon={<PlayIcon />}
+                onClick={this.handleStartListening}
+                classes={{ button: classes.playIcon }}
+                tooltipTitle="Start Listening"
+                ButtonProps={{ disabled: !bindings.length }}
+              />
+            )}
+            <SpeedDialAction
+              tooltipOpen
+              icon={<DownloadIcon />}
+              tooltipTitle="Download Messages"
+              onClick={this.handleDownloadMessagesClick}
+              ButtonProps={{ color: 'secondary', disabled: !messages[0] }}
+            />
+          </SpeedDial>
           <Drawer
             anchor="right"
             open={drawerOpen}
