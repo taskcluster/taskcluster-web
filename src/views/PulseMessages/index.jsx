@@ -126,6 +126,16 @@ export default class PulseMessages extends Component {
 
   subscriptionObserver = null;
 
+  unsubscribe() {
+    if (this.subscriptionObserver) {
+      this.subscriptionObserver.unsubscribe();
+    }
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   addMessage(message) {
     const messages = removeKeys(this.state.messages.concat(message), [
       '__typename',
@@ -194,7 +204,7 @@ export default class PulseMessages extends Component {
   handleStopListening = () => {
     this.setState({ listening: false });
 
-    this.subscriptionObserver && this.subscriptionObserver.unsubscribe();
+    this.unsubscribe();
   };
 
   handleMessageDrawerOpen = message => {
