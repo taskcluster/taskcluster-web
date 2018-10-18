@@ -1,6 +1,7 @@
 import { Component, Fragment } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Code from '@mozilla-frontend-infra/components/Code';
 import Label from '@mozilla-frontend-infra/components/Label';
 import { withStyles } from '@material-ui/core/styles';
@@ -143,7 +144,9 @@ export default class TaskDetailsCard extends Component {
                   primary="Created"
                   secondary={<DateDistance from={task.created} />}
                 />
-                <ContentCopyIcon />
+                <CopyToClipboard text={task.created}>
+                  <ContentCopyIcon />
+                </CopyToClipboard>
               </ListItem>
               <ListItem button className={classes.listItemButton}>
                 <ListItemText
