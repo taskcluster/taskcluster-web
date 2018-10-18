@@ -11,8 +11,8 @@
     "build": "yarn create:fragment-matcher && dotenv webpack -- --mode production",
     "start": "dotenv webpack-dev-server -- --mode development",
     "test": "karma start --single-run",
-    "styleguide": "styleguidist server --config styleguide.config.js",
-    "styleguide:build": "styleguidist build --config styleguide.config.js",
+    "styleguide": "styleguidist server",
+    "styleguide:build": "styleguidist build",
     "lint": "eslint --cache --format codeframe --ext mjs,js,jsx src test",
     "create:fragment-matcher": "node src/scripts/queryServer"
   },

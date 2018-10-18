@@ -1,5 +1,4 @@
 const merge = require('deepmerge');
-const styleguidist = require('./styleguidist');
 const { join } = require('path');
 
 require('@babel/register')({
@@ -106,20 +105,29 @@ module.exports = {
         ],
       },
     }],
-    [styleguidist, {
-      theme: theme.styleguide,
-      styles: {
-        StyleGuide: theme.styleguide.StyleGuide,
-      },
-      editorConfig: {
-        theme: 'material',
-      },
-      usageMode: 'expand',
-      styleguideComponents: {
-        Wrapper: join(__dirname, 'src/styleguide/ThemeWrapper.jsx'),
-        StyleGuideRenderer: join(__dirname, 'src/styleguide/StyleGuideRenderer.jsx'),
-      },
-    }],
+    (neutrino) => {
+      neutrino.register('styleguide', () => ({
+        webpackConfig: neutrino.config.toConfig(),
+        components: join(
+          neutrino.options.source,
+          'components/**',
+          `*.{${neutrino.options.extensions.join(',')}}`
+        ),
+        skipComponentsWithoutExample: true,
+        theme: theme.styleguide,
+        styles: {
+          StyleGuide: theme.styleguide.StyleGuide,
+        },
+        editorConfig: {
+          theme: 'material',
+        },
+        usageMode: 'expand',
+        styleguideComponents: {
+          Wrapper: join(__dirname, 'src/styleguide/ThemeWrapper.jsx'),
+          StyleGuideRenderer: join(__dirname, 'src/styleguide/StyleGuideRenderer.jsx'),
+        },
+      }));
+    },
     (neutrino) => {
       neutrino.config.node.set('Buffer', true);
 
