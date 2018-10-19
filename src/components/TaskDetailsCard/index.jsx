@@ -122,7 +122,7 @@ export default class TaskDetailsCard extends Component {
                   primary="Source"
                   secondary={task.metadata.source}
                 />
-                <OpenInNewIcon />
+                {isExternal ? <OpenInNewIcon /> : <LinkIcon />}
               </ListItem>
               <ListItem
                 button
@@ -149,31 +149,38 @@ export default class TaskDetailsCard extends Component {
                   secondary={`${task.status.retriesLeft} of ${task.retries}`}
                 />
               </ListItem>
-              <ListItem button className={classes.listItemButton}>
-                <ListItemText
-                  primary="Created"
-                  secondary={<DateDistance from={task.created} />}
-                />
-                <CopyToClipboard text={task.created}>
+              <CopyToClipboard text={task.created}>
+                <ListItem button className={classes.listItemButton}>
+                  <ListItemText
+                    primary="Created"
+                    secondary={<DateDistance from={task.created} />}
+                  />
                   <ContentCopyIcon />
-                </CopyToClipboard>
-              </ListItem>
-              <ListItem button className={classes.listItemButton}>
-                <ListItemText
-                  primary="Deadline"
-                  secondary={
-                    <DateDistance from={task.deadline} offset={task.created} />
-                  }
-                />
-                <ContentCopyIcon />
-              </ListItem>
-              <ListItem button className={classes.listItemButton}>
-                <ListItemText
-                  primary="Expires"
-                  secondary={<DateDistance from={task.expires} />}
-                />
-                <ContentCopyIcon />
-              </ListItem>
+                </ListItem>
+              </CopyToClipboard>
+              <CopyToClipboard text={task.deadline}>
+                <ListItem button className={classes.listItemButton}>
+                  <ListItemText
+                    primary="Deadline"
+                    secondary={
+                      <DateDistance
+                        from={task.deadline}
+                        offset={task.created}
+                      />
+                    }
+                  />
+                  <ContentCopyIcon />
+                </ListItem>
+              </CopyToClipboard>
+              <CopyToClipboard text={task.expires}>
+                <ListItem button className={classes.listItemButton}>
+                  <ListItemText
+                    primary="Expires"
+                    secondary={<DateDistance from={task.expires} />}
+                  />
+                  <ContentCopyIcon />
+                </ListItem>
+              </CopyToClipboard>
               <ListItem>
                 <ListItemText
                   primary="Priority"
