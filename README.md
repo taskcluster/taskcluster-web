@@ -22,11 +22,14 @@ http://localhost:3050.
 ## Environment
 
 To get started local development, create a file in the root of the repo named
-`.env` with the following content, or whatever content you wish:
+`.env` with the following content:
 
 ```bash
 APPLICATION_NAME="Taskcluster"
+GRAPHQL_SUBSCRIPTION_ENDPOINT="ws://localhost:5080/subscription"
 ```
+
+_Note: The `APPLICATION_NAME` can be whatever you wish it to be._
 
 You can optionally specify the port on which the development server serves with
 
@@ -44,6 +47,7 @@ file and they will be picked up automatically when starting this web app:
 
 ```bash
 APPLICATION_NAME="Taskcluster"
+GRAPHQL_SUBSCRIPTION_ENDPOINT="ws://localhost:5080/subscription"
 AUTH0_DOMAIN="auth.mozilla.auth0.com"
 AUTH0_CLIENT_ID="29t2n3LKKnyTbGtWmfTkQpau0mp7QmMH"
 AUTH0_REDIRECT_URI="http://localhost:5080/login"
@@ -55,6 +59,19 @@ PORT="5080"
 This Auth0 client is real, but can only be used locally on `localhost:5080`, so
 the development server must be run with `PORT=5080`, and accessed at
 http://localhost:5080 in the browser.
+
+### Tracking Events
+
+Google Analytics can be leveraged to track page views and click events.
+Set up Analytics by including a the tracking ID (a string like UA-XXXXXXXX) environment variable.
+
+```bash
+GA_TRACKING_ID=XXXXXXXX
+```
+
+Once the tracking code is identified, the client will send a page event on each page view.
+Moreover, the `Button` component is able to send an event when clicked by setting
+the Button's `track` property.
 
 ## Icons
 

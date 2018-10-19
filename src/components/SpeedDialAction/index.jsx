@@ -1,20 +1,20 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import MuiSpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import { bool } from 'prop-types';
 import { withAuth } from '../../utils/Auth';
 
 @withAuth
 /**
- * A Material UI button augmented with application specific props.
+ * A Material UI SpeedDialAction augmented with application specific props.
  */
-export default class Button extends Component {
+export default class SpeedDialAction extends Component {
+  static defaultProps = {
+    requiresAuth: false,
+  };
+
   static propTypes = {
     /** If true, the button will be disabled if the user is not authenticated */
     requiresAuth: bool,
-  };
-
-  static defaultProps = {
-    requiresAuth: false,
   };
 
   render() {

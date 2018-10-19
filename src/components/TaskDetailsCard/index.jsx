@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import Code from '@mozilla-frontend-infra/components/Code';
@@ -38,6 +38,9 @@ import { task } from '../../utils/prop-types';
     textOverflow: 'ellipsis',
     overflowX: 'hidden',
   },
+  sourceHeadlineText: {
+    flex: 1,
+  },
   listItemButton: {
     ...theme.mixins.listItemButton,
   },
@@ -50,6 +53,10 @@ import { task } from '../../utils/prop-types';
  * Render information in a card layout about a task.
  */
 export default class TaskDetailsCard extends Component {
+  static defaultProps = {
+    dependentTasks: null,
+  };
+
   static propTypes = {
     /**
      * A GraphQL task response.
@@ -76,12 +83,12 @@ export default class TaskDetailsCard extends Component {
     showExtra: false,
   };
 
-  handleTogglePayload = () => {
-    this.setState({ showPayload: !this.state.showPayload });
-  };
-
   handleToggleExtra = () => {
     this.setState({ showExtra: !this.state.showExtra });
+  };
+
+  handleTogglePayload = () => {
+    this.setState({ showPayload: !this.state.showPayload });
   };
 
   render() {
@@ -94,7 +101,7 @@ export default class TaskDetailsCard extends Component {
       <Card raised>
         <div>
           <CardContent classes={{ root: classes.cardContent }}>
-            <Typography variant="headline" className={classes.headline}>
+            <Typography variant="h5" className={classes.headline}>
               Task Details
             </Typography>
 
@@ -106,8 +113,10 @@ export default class TaskDetailsCard extends Component {
                 to={isExternal ? null : task.metadata.source}
                 href={isExternal ? task.metadata.source : null}
                 target={isExternal ? '_blank' : null}
-                rel={isExternal ? 'noopener noreferrer' : null}>
+                rel={isExternal ? 'noopener noreferrer' : null}
+              >
                 <ListItemText
+                  className={classes.sourceHeadlineText}
                   classes={{ secondary: classes.sourceHeadline }}
                   primary="Source"
                   secondary={task.metadata.source}
@@ -122,7 +131,8 @@ export default class TaskDetailsCard extends Component {
                   process.env.TASKCLUSTER_ROOT_URL
                 }/queue/v1/task/${task.taskId}`}
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 <ListItemText primary="View task definition" />
                 <OpenInNewIcon />
               </ListItem>
@@ -183,7 +193,8 @@ export default class TaskDetailsCard extends Component {
                 component={Link}
                 to={`/provisioners/${task.provisionerId}/worker-types/${
                   task.workerType
-                }`}>
+                }`}
+              >
                 <ListItemText
                   primary="Worker Type"
                   secondary={task.workerType}
@@ -210,7 +221,8 @@ export default class TaskDetailsCard extends Component {
                         className={classes.listItemButton}
                         component={Link}
                         to={`/tasks/${task.taskId}`}
-                        key={task.taskId}>
+                        key={task.taskId}
+                      >
                         <StatusLabel state={task.status.state} />
                         <ListItemText primary={task.metadata.name} />
                         <LinkIcon />
@@ -261,11 +273,13 @@ export default class TaskDetailsCard extends Component {
                       are
                       {task.requires === 'ALL_COMPLETED' ? (
                         <Fragment>
-                          &nbsp;<code>all-completed</code> successfully.
+                          &nbsp;
+                          <code>all-completed</code> successfully.
                         </Fragment>
                       ) : (
                         <Fragment>
-                          &nbsp;<code>all-resolved</code> with any resolution.
+                          &nbsp;
+                          <code>all-resolved</code> with any resolution.
                         </Fragment>
                       )}
                     </Fragment>
@@ -275,7 +289,7 @@ export default class TaskDetailsCard extends Component {
               <ListItem>
                 <ListItemText
                   disableTypography
-                  primary={<Typography variant="subheading">Scopes</Typography>}
+                  primary={<Typography variant="subtitle1">Scopes</Typography>}
                   secondary={
                     task.scopes.length ? (
                       <pre className={classes.pre}>
@@ -290,7 +304,7 @@ export default class TaskDetailsCard extends Component {
               <ListItem>
                 <ListItemText
                   disableTypography
-                  primary={<Typography variant="subheading">Routes</Typography>}
+                  primary={<Typography variant="subtitle1">Routes</Typography>}
                   secondary={
                     task.routes.length ? (
                       <pre className={classes.pre}>
@@ -306,7 +320,8 @@ export default class TaskDetailsCard extends Component {
               <ListItem
                 button
                 className={classes.listItemButton}
-                onClick={this.handleTogglePayload}>
+                onClick={this.handleTogglePayload}
+              >
                 <ListItemText primary="Payload" />
                 {showPayload ? <ChevronUpIcon /> : <ChevronDownIcon />}
               </ListItem>
@@ -330,7 +345,8 @@ export default class TaskDetailsCard extends Component {
                   <ListItem
                     button
                     className={classes.listItemButton}
-                    onClick={this.handleToggleExtra}>
+                    onClick={this.handleToggleExtra}
+                  >
                     <ListItemText primary="Extra" />
                     {showExtra ? <ChevronUpIcon /> : <ChevronDownIcon />}
                   </ListItem>

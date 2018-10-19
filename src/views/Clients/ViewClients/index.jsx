@@ -1,4 +1,4 @@
-import { PureComponent, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { hot } from 'react-hot-loader';
 import { graphql } from 'react-apollo';
 import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
@@ -13,11 +13,16 @@ import Button from '../../../components/Button';
 import ClientsTable from '../../../components/ClientsTable';
 import { VIEW_CLIENTS_PAGE_SIZE } from '../../../utils/constants';
 import clientsQuery from './clients.graphql';
+import { withAuth } from '../../../utils/Auth';
 
 @hot(module)
+@withAuth
 @graphql(clientsQuery, {
-  options: () => ({
+  options: props => ({
     variables: {
+      clientOptions: {
+        ...(props.user ? { prefix: props.user.credentials.clientId } : null),
+      },
       clientsConnection: {
         limit: VIEW_CLIENTS_PAGE_SIZE,
       },
@@ -29,9 +34,63 @@ import clientsQuery from './clients.graphql';
     ...theme.mixins.fab,
   },
 }))
-export default class ViewWorker extends PureComponent {
+export default class ViewClients extends PureComponent {
   state = {
     clientSearch: '',
+    // eslint-disable-next-line react/no-unused-state
+    previousClientId: '',
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    // Any time the current user changes,
+    // Reset state to reflect new user / log out and default clientSearch query
+    if (
+      props.user &&
+      props.user.credentials.clientId !== state.previousClientId
+    ) {
+      return {
+        clientSearch: props.user.credentials.clientId,
+        previousClientId: props.user.credentials.clientId,
+      };
+    }
+    if (!props.user && state.previousClientId !== '') {
+      return {
+        clientSearch: '',
+        previousClientId: '',
+      };
+    }
+
+    return null;
+  }
+
+  handleClientSearchChange = ({ target }) => {
+    this.setState({ clientSearch: target.value });
+  };
+
+  handleClientSearchSubmit = e => {
+    e.preventDefault();
+
+    const {
+      data: { refetch },
+    } = this.props;
+    const { clientSearch } = this.state;
+
+    refetch({
+      ...(clientSearch
+        ? {
+            clientOptions: {
+              prefix: clientSearch,
+            },
+          }
+        : null),
+      clientsConnection: {
+        limit: VIEW_CLIENTS_PAGE_SIZE,
+      },
+    });
+  };
+
+  handleCreate = () => {
+    this.props.history.push('/auth/clients/create');
   };
 
   handlePageChange = ({ cursor, previousCursor }) => {
@@ -86,13 +145,9 @@ export default class ViewWorker extends PureComponent {
     const { clientSearch } = this.state;
 
     refetch({
-      ...(clientSearch
-        ? {
-            clientOptions: {
-              prefix: clientSearch,
-            },
-          }
-        : null),
+      clientOptions: {
+        ...(clientSearch ? { prefix: clientSearch.trim() } : null),
+      },
       clientsConnection: {
         limit: VIEW_CLIENTS_PAGE_SIZE,
       },
@@ -123,7 +178,8 @@ export default class ViewWorker extends PureComponent {
             onSubmit={this.handleClientSearchSubmit}
             placeholder="Client starts with"
           />
-        }>
+        }
+      >
         <Fragment>
           {!clients && loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
@@ -137,7 +193,8 @@ export default class ViewWorker extends PureComponent {
             onClick={this.handleCreate}
             variant="fab"
             color="secondary"
-            className={classes.plusIcon}>
+            className={classes.plusIcon}
+          >
             <PlusIcon />
           </Button>
         </Fragment>

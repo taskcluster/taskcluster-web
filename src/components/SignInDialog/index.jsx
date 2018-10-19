@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { withApollo } from 'react-apollo';
 import { bool, func } from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
@@ -44,11 +44,22 @@ export default class SignInDialog extends Component {
     );
   }
 
-  handleCredentialsSignIn = credentials => {
+  handleCredentialsDialogClose = () => {
+    this.setState({ credentialsDialogOpen: false });
+  };
+
+  handleCredentialsDialogOpen = () => {
+    this.setState({ credentialsDialogOpen: true });
+  };
+
+  handleCredentialsSignIn = async credentials => {
     const inOneWeek = new Date();
 
     inOneWeek.setDate(inOneWeek.getDate() + 7);
 
+    // Since Apollo caches query results, it’s important to get rid of them
+    // when the login state changes.
+    await this.props.client.resetStore();
     this.props.onAuthorize({
       credentials,
       expires: inOneWeek.toISOString(),
@@ -57,18 +68,7 @@ export default class SignInDialog extends Component {
         displayName: credentials.clientId,
       },
     });
-    // Since Apollo caches query results, it’s important to get rid of them
-    // when the login state changes.
-    this.props.client.resetStore();
     this.props.onClose();
-  };
-
-  handleCredentialsDialogOpen = () => {
-    this.setState({ credentialsDialogOpen: true });
-  };
-
-  handleCredentialsDialogClose = () => {
-    this.setState({ credentialsDialogOpen: false });
   };
 
   render() {
@@ -79,7 +79,8 @@ export default class SignInDialog extends Component {
       <Dialog
         open={open}
         onClose={onClose}
-        aria-labelledby="sign-in-dialog-title">
+        aria-labelledby="sign-in-dialog-title"
+      >
         <DialogTitle id="sign-in-dialog-title">Sign In</DialogTitle>
         <DialogContent>
           <List>
@@ -88,7 +89,8 @@ export default class SignInDialog extends Component {
                 button
                 component="a"
                 href="/login/github"
-                target="_blank">
+                target="_blank"
+              >
                 <ListItemAvatar>
                   <Avatar>
                     <GithubCircleIcon />

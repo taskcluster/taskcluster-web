@@ -1,9 +1,11 @@
 import { hot } from 'react-hot-loader';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import storage from 'localforage';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
-import { from } from 'apollo-link';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition } from 'apollo-utilities';
+import { from, split } from 'apollo-link';
 import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import {
@@ -11,6 +13,7 @@ import {
   IntrospectionFragmentMatcher,
 } from 'apollo-cache-inmemory';
 import { CachePersistor } from 'apollo-cache-persist';
+import ReactGA from 'react-ga';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FontStager from '../components/FontStager';
@@ -24,37 +27,17 @@ const AUTH_STORE = '@@TASKCLUSTER_WEB_AUTH';
 
 @hot(module)
 export default class App extends Component {
-  authorize = async (user, persist = true) => {
-    if (persist) {
-      localStorage.setItem(AUTH_STORE, JSON.stringify(user));
-    }
-
-    this.setState({
-      auth: {
-        ...this.state.auth,
-        user,
-      },
-    });
-  };
-
-  unauthorize = () => {
-    localStorage.removeItem(AUTH_STORE);
-    this.setState({
-      auth: {
-        ...this.state.auth,
-        user: null,
-      },
-    });
-  };
-
   fragmentMatcher = new IntrospectionFragmentMatcher({
     introspectionQueryResultData,
   });
+
   cache = new InMemoryCache({ fragmentMatcher: this.fragmentMatcher });
+
   persistence = new CachePersistor({
     cache: this.cache,
     storage,
   });
+
   apolloClient = new ApolloClient({
     cache: this.cache,
     link: from([
@@ -72,7 +55,21 @@ export default class App extends Component {
           },
         };
       }),
-      new HttpLink(),
+      split(
+        // split based on operation type
+        ({ query }) => {
+          const { kind, operation } = getMainDefinition(query);
+
+          return kind === 'OperationDefinition' && operation === 'subscription';
+        },
+        new WebSocketLink({
+          uri: process.env.GRAPHQL_SUBSCRIPTION_ENDPOINT,
+          options: {
+            reconnect: true,
+          },
+        }),
+        new HttpLink()
+      ),
     ]),
   });
 
@@ -102,12 +99,38 @@ export default class App extends Component {
       }
     }
 
+    if (process.env.GA_TRACKING_ID) {
+      // Unique Google Analytics tracking number
+      ReactGA.initialize(`UA-${process.env.GA_TRACKING_ID}`);
+    }
+
     this.state = state;
   }
 
-  componentDidCatch(error) {
-    this.setState({ error });
-  }
+  authorize = async (user, persist = true) => {
+    if (persist) {
+      localStorage.setItem(AUTH_STORE, JSON.stringify(user));
+    }
+
+    this.setState({
+      auth: {
+        // eslint-disable-next-line react/no-access-state-in-setstate
+        ...this.state.auth,
+        user,
+      },
+    });
+  };
+
+  unauthorize = () => {
+    localStorage.removeItem(AUTH_STORE);
+    this.setState({
+      auth: {
+        // eslint-disable-next-line react/no-access-state-in-setstate
+        ...this.state.auth,
+        user: null,
+      },
+    });
+  };
 
   toggleTheme = () => {
     this.setState({
@@ -117,6 +140,10 @@ export default class App extends Component {
           : theme.darkTheme,
     });
   };
+
+  componentDidCatch(error) {
+    this.setState({ error });
+  }
 
   render() {
     const { auth, error, theme } = this.state;
