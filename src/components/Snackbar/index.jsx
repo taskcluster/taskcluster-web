@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import { func, object, string, oneOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -46,9 +45,6 @@ const variantIcon = {
   iconVariant: {
     marginRight: theme.spacing.unit,
   },
-  snackbarContent: {
-    // color: fade(theme.palette.common.white, 0.9),
-  },
   message: {
     display: 'flex',
     alignItems: 'center',
@@ -56,7 +52,9 @@ const variantIcon = {
 }))
 export default class Snackbar extends Component {
   static propTypes = {
+    /** Applies appropriate coloring to indicate purpose of message. */
     variant: oneOf(['success', 'info', 'error', 'warning']),
+    /** The message to display. */
     message: string.isRequired,
     /** Properties applied to the SnackbarContent element. */
     snackbarContentProps: object,
@@ -84,7 +82,7 @@ export default class Snackbar extends Component {
     return (
       <MuiSnackbar {...props}>
         <SnackbarContent
-          className={classNames(classes.snackbarContent, classes[variant])}
+          className={classes[variant]}
           action={
             <IconButton aria-label="Close" onClick={onClose}>
               <CloseIcon
