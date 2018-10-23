@@ -1,5 +1,5 @@
-import { schema } from 'taskcluster-lib-urls';
 import ajv from './ajv';
+import urls from './urls';
 
 let actionsJsonSchemaResponse;
 let validateActionsJson;
@@ -7,11 +7,7 @@ let validateActionsJson;
 export default async () => {
   if (!validateActionsJson) {
     actionsJsonSchemaResponse = await fetch(
-      schema(
-        process.env.TASKCLUSTER_ROOT_URL,
-        'common',
-        'action-schema-v1.json'
-      )
+      urls.schema('common', 'action-schema-v1.json')
     );
 
     validateActionsJson = ajv.compile(await actionsJsonSchemaResponse.json());

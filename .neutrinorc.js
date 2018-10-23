@@ -79,7 +79,7 @@ module.exports = {
         historyApiFallback: { disableDotRule: true },
         proxy: {
           '/login': {
-            target: `http://localhost:3050`,
+            target: 'http://localhost:3050',
           },
           '/graphql': {
             target: 'http://localhost:3050',
@@ -95,7 +95,7 @@ module.exports = {
         APPLICATION_NAME: 'Application Name',
         LOGIN_STRATEGIES: '',
         PORT: 5080,
-        TASKCLUSTER_ROOT_URL: `https://taskcluster.net`,
+        TASKCLUSTER_ROOT_URL: 'https://taskcluster.net',
         GRAPHQL_SUBSCRIPTION_ENDPOINT: 'ws://localhost:5080/subscription',
         GRAPHQL_ENDPOINT: 'http://localhost:5080/graphql',
         GA_TRACKING_ID: '',
