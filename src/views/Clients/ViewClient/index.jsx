@@ -50,6 +50,10 @@ import { THEME } from '../../../utils/constants';
       fill: THEME.PRIMARY_TEXT_LIGHT,
     },
   },
+  panelHeader: {
+    paddingTop: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+  },
   panelTextPrimary: {
     color: THEME.PRIMARY_TEXT_LIGHT,
   },
@@ -193,7 +197,10 @@ export default class ViewClient extends Component {
             <Collapse in={accessTokenPanelOpen}>
               <Card classes={{ root: classes.panelCard }}>
                 <CardHeader
-                  classes={{ title: classes.panelTextPrimary }}
+                  classes={{
+                    root: classes.panelHeader,
+                    title: classes.panelTextPrimary,
+                  }}
                   action={
                     <IconButton onClick={this.handleAccessTokenPanelClose}>
                       <ClearIcon className={classes.clearIcon} />
