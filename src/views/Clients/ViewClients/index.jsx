@@ -39,10 +39,6 @@ export default class ViewClients extends PureComponent {
     clientSearch: '',
     // eslint-disable-next-line react/no-unused-state
     previousClientId: '',
-    // eslint-disable-next-line react/no-unused-state
-    closeError: true,
-    // eslint-disable-next-line react/no-unused-state
-    error: false,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -64,53 +60,11 @@ export default class ViewClients extends PureComponent {
       };
     }
 
-    if (props.data.error && !state.error) {
-      return {
-        error: true,
-        closeError: true,
-      };
-    }
-
-    if (!props.data.error && state.error) {
-      return {
-        error: false,
-      };
-    }
-
     return null;
   }
 
-  handleErrorClose = () => {
-    this.setState({
-      // eslint-disable-next-line react/no-unused-state
-      closeError: false,
-    });
-  };
-
   handleClientSearchChange = ({ target }) => {
     this.setState({ clientSearch: target.value });
-  };
-
-  handleClientSearchSubmit = e => {
-    e.preventDefault();
-
-    const {
-      data: { refetch },
-    } = this.props;
-    const { clientSearch } = this.state;
-
-    refetch({
-      ...(clientSearch
-        ? {
-            clientOptions: {
-              prefix: clientSearch,
-            },
-          }
-        : null),
-      clientsConnection: {
-        limit: VIEW_CLIENTS_PAGE_SIZE,
-      },
-    });
   };
 
   handleCreate = () => {
@@ -188,7 +142,8 @@ export default class ViewClients extends PureComponent {
       description,
       data: { loading, error, clients },
     } = this.props;
-    const { clientSearch, closeError } = this.state;
+    const { clientSearch } = this.state;
+
     return (
       <Dashboard
         title="Clients"
@@ -205,11 +160,7 @@ export default class ViewClients extends PureComponent {
       >
         <Fragment>
           {!clients && loading && <Spinner loading />}
-          {error &&
-            error.graphQLErrors &&
-            closeError && (
-              <ErrorPanel error={error} onClose={this.handleErrorClose} />
-            )}
+          {error && error.graphQLErrors && <ErrorPanel error={error} />}
           {clients && (
             <ClientsTable
               onPageChange={this.handlePageChange}
