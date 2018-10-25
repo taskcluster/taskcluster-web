@@ -43,9 +43,9 @@ export default class ErrorPanel extends Component {
     const { error: _, ...props } = this.props;
     const { error } = this.state;
     const errorMessage =
-      typeof error === 'string' || error === null
-        ? error
-        : error.graphQLErrors[0].message;
+      error && error.graphQLErrors && error.graphQLErrors[0]
+        ? error.graphQLErrors[0].message
+        : error;
     return (
       error && (
         <MuiErrorPanel
