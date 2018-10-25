@@ -21,7 +21,7 @@ import UserMenu from './UserMenu';
 import SidebarList from './SidebarList';
 import { THEME } from '../../utils/constants';
 import { withThemeToggler } from '../../utils/ToggleTheme';
-import ErrorPanel from '../../utils/errorPanel';
+import ErrorPanel from '../ErrorPanel/errorPanel';
 
 @withStyles(
   theme => ({

@@ -13,7 +13,7 @@ import ClientScopesTable from '../../../components/ClientScopesTable';
 import HelpView from '../../../components/HelpView';
 import Search from '../../../components/Search';
 import { VIEW_CLIENT_SCOPES_INSPECT_SIZE } from '../../../utils/constants';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import scopesQuery from '../scopes.graphql';
 
 @hot(module)

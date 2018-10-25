@@ -23,7 +23,7 @@ import PlusIcon from 'mdi-react/PlusIcon';
 import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
 import DeleteIcon from 'mdi-react/DeleteIcon';
 import urls from '../../utils/urls';
-import ErrorPanel from '../../utils/errorPanel';
+import ErrorPanel from '../../components/ErrorPanel/errorPanel';
 import Dashboard from '../../components/Dashboard';
 import HelpView from '../../components/HelpView';
 import Button from '../../components/Button';

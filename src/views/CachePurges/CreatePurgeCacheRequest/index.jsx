@@ -9,7 +9,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import PlusIcon from 'mdi-react/PlusIcon';
 import Dashboard from '../../../components/Dashboard';
 import Button from '../../../components/Button';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import purgeCacheQuery from './purgeCache.graphql';
 
 @hot(module)

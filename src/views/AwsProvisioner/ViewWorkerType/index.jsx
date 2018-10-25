@@ -15,7 +15,7 @@ import AwsProvisionerWorkerTypeStatus from '../../../components/AwsProvisionerWo
 import Snackbar from '../../../components/Snackbar';
 import Ec2ResourcesTable from '../../../components/Ec2ResourcesTable';
 import formatError from '../../../utils/formatError';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import workerTypeQuery from './workerType.graphql';
 import terminateInstanceQuery from './terminateInstance.graphql';
 import terminateWorkerTypeQuery from './terminateWorkerType.graphql';

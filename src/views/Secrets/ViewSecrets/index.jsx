@@ -11,7 +11,7 @@ import SecretsTable from '../../../components/SecretsTable';
 import HelpView from '../../../components/HelpView';
 import Button from '../../../components/Button';
 import { VIEW_SECRETS_PAGE_SIZE } from '../../../utils/constants';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import secretsQuery from './secrets.graphql';
 
 @hot(module)

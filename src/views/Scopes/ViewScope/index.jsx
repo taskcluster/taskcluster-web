@@ -18,7 +18,7 @@ import {
   VIEW_CLIENT_SCOPES_INSPECT_SIZE,
   SCOPES_SEARCH_MODE,
 } from '../../../utils/constants';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import scopesQuery from '../scopes.graphql';
 
 @hot(module)

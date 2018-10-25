@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Dashboard from '../../../components/Dashboard';
 import SecretForm from '../../../components/SecretForm';
 import HelpView from '../../../components/HelpView';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import formatError from '../../../utils/formatError';
 import secretQuery from './secret.graphql';
 import createSecretQuery from './createSecret.graphql';
@@ -97,7 +97,7 @@ export default class ViewSecret extends Component {
         ) : (
           <Fragment>
             {data.loading && <Spinner loading />}
-            <ErrorPanel error={data.error} />
+            {data && <ErrorPanel error={data.error} />}
             {data &&
               data.secret && (
                 <SecretForm

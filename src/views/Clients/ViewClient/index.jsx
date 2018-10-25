@@ -16,7 +16,7 @@ import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import ClientForm from '../../../components/ClientForm';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import updateClientQuery from './updateClient.graphql';
 import createClientQuery from './createClient.graphql';
 import deleteClientQuery from './deleteClient.graphql';
@@ -233,7 +233,7 @@ export default class ViewClient extends Component {
           ) : (
             <Fragment>
               {data.loading && <Spinner loading />}
-              <ErrorPanel error={data.error} />
+              {data && <ErrorPanel error={data.error} />}
               {data &&
                 data.client && (
                   <ClientForm

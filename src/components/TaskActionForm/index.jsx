@@ -7,7 +7,7 @@ import Markdown from '@mozilla-frontend-infra/components/Markdown';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';
 import Code from '@mozilla-frontend-infra/components/Code';
 import { safeDump } from 'js-yaml';
-import ErrorPanel from '../../utils/errorPanel';
+import ErrorPanel from '../ErrorPanel/errorPanel';
 
 @withStyles(theme => ({
   code: {

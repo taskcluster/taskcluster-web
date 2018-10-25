@@ -22,7 +22,7 @@ import removeKeys from '../../../utils/removeKeys';
 import formatError from '../../../utils/formatError';
 import isWorkerTypeNameValid from '../../../utils/isWorkerTypeNameValid';
 import { DEFAULT_AWS_WORKER_TYPE } from '../../../utils/constants';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import workerTypeQuery from './workerType.graphql';
 import updateAwsProvisionerWorkerTypeQuery from './updateAwsProvisionerWorkerType.graphql';
 import createAwsProvisionerWorkerTypeQuery from './createAwsProvisionerWorkerType.graphql';
@@ -224,7 +224,7 @@ export default class ViewWorkerTypeDefinition extends Component {
         {data &&
           !data.awsProvisionerWorkerType &&
           data.loading && <Spinner loading />}
-        <ErrorPanel error={data.error} />
+        {data && <ErrorPanel error={data.error} />}
         <ErrorPanel error={error} />
         <List>
           <ListItem>

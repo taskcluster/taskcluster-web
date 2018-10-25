@@ -4,7 +4,7 @@ import { graphql, withApollo } from 'react-apollo';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import HookForm from '../../../components/HookForm';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import hookQuery from './hook.graphql';
 import createHookQuery from './createHook.graphql';
 import deleteHookQuery from './deleteHook.graphql';
@@ -126,7 +126,7 @@ export default class ViewHook extends Component {
           <Fragment>
             {!data.hook && data.loading && <Spinner loading />}
             <ErrorPanel error={error} />
-            <ErrorPanel error={data.error} />
+            {data && <ErrorPanel error={data.error} />}
             {data.hook && (
               <HookForm
                 error={error}

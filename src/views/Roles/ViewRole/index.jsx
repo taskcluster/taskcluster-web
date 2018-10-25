@@ -4,7 +4,7 @@ import { graphql, withApollo } from 'react-apollo';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import RoleForm from '../../../components/RoleForm';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import roleQuery from './role.graphql';
 import createRoleQuery from './createRole.graphql';
 import updateRoleQuery from './updateRole.graphql';
@@ -84,7 +84,7 @@ export default class ViewRole extends Component {
           ) : (
             <Fragment>
               {data.loading && <Spinner loading />}
-              <ErrorPanel error={data.error} />
+              {data && <ErrorPanel error={data.error} />}
               {data &&
                 data.role && (
                   <RoleForm

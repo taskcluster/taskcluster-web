@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import WorkerTypesTable from '../../../components/WorkerTypesTable';
 import Dashboard from '../../../components/Dashboard';
 import { VIEW_WORKER_TYPES_PAGE_SIZE } from '../../../utils/constants';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import workerTypesQuery from './workerTypes.graphql';
 
 @hot(module)

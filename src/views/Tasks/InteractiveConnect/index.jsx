@@ -19,7 +19,7 @@ import Dashboard from '../../../components/Dashboard';
 import Search from '../../../components/Search';
 import Markdown from '../../../components/Markdown';
 import StatusLabel from '../../../components/StatusLabel';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import taskQuery from './task.graphql';
 import {
   INITIAL_CURSOR,

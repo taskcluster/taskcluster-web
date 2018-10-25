@@ -9,7 +9,7 @@ import Search from '../../../components/Search';
 import Button from '../../../components/Button';
 import RolesTable from '../../../components/RolesTable';
 import HelpView from '../../../components/HelpView';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import rolesQuery from './roles.graphql';
 
 @hot(module)

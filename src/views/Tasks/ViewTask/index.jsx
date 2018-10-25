@@ -41,7 +41,7 @@ import {
   TASK_ADDED_FIELDS,
 } from '../../../utils/constants';
 import db from '../../../utils/db';
-import ErrorPanel from '../../../utils/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
 import formatError from '../../../utils/formatError';
 import removeKeys from '../../../utils/removeKeys';
 import parameterizeTask from '../../../utils/parameterizeTask';
