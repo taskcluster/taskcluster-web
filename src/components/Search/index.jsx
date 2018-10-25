@@ -6,6 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import MagnifyIcon from 'mdi-react/MagnifyIcon';
 import { THEME } from '../../utils/constants';
 
+
 @withStyles(theme => ({
   root: {
     background: fade(THEME.PRIMARY_DARK, 0.5),
@@ -85,10 +86,12 @@ export default class Search extends Component {
 
     return (
       <form onSubmit={onSubmit} className={classes.root}>
+
         <FormControl>
           <div className={classes.search}>
             <MagnifyIcon />
           </div>
+
           <input
             id="adornment-search"
             spellCheck={spellCheck}
