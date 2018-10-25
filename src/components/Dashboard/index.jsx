@@ -210,7 +210,6 @@ export default class Dashboard extends Component {
           >
             <MenuIcon />
           </IconButton>
-
           <Typography
             onMouseEnter={this.handleTitleToggle}
             onMouseLeave={this.handleTitleToggle}
