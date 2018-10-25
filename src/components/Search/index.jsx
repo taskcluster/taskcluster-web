@@ -95,6 +95,7 @@ export default class Search extends Component {
           <div className={classes.search}>
             <MagnifyIcon />
           </div>
+
           <input
             id="adornment-search"
             spellCheck={spellCheck}

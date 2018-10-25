@@ -151,6 +151,7 @@ export default class ViewClients extends PureComponent {
               clientsConnection={clients}
             />
           )}
+
           <Button
             onClick={this.handleCreate}
             variant="fab"
