@@ -183,6 +183,9 @@ export default class Dashboard extends Component {
   };
 
   render() {
+    const logoStyle = {
+      marginTop: '5px',
+    };
     const {
       classes,
       className,
@@ -207,6 +210,7 @@ export default class Dashboard extends Component {
           >
             <MenuIcon />
           </IconButton>
+
           <Typography
             onMouseEnter={this.handleTitleToggle}
             onMouseLeave={this.handleTitleToggle}
