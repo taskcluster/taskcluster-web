@@ -11,11 +11,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ArrowExpandVerticalIcon from 'mdi-react/ArrowExpandVerticalIcon';
 import LinkIcon from 'mdi-react/LinkIcon';
-import HelpView from '../../components/HelpView';
-import Dashboard from '../../components/Dashboard/index';
-import Button from '../../components/Button';
-import ErrorPanel from '../../components/ErrorPanel';
-import splitLines from '../../utils/splitLines';
+import HelpView from '../../../components/HelpView';
+import Dashboard from '../../../components/Dashboard/index';
+import Button from '../../../components/Button';
+import ErrorPanel from '../../../components/ErrorPanel';
+import splitLines from '../../../utils/splitLines';
 import scopesetQuery from './scopeset.graphql';
 
 @hot(module)
@@ -31,6 +31,8 @@ import scopesetQuery from './scopeset.graphql';
   },
   listItemButton: {
     ...theme.mixins.listItemButton,
+    paddingTop: theme.spacing.unit / 2,
+    paddingBottom: theme.spacing.unit / 2,
   },
 }))
 export default class ScopesetExpander extends Component {
@@ -88,7 +90,7 @@ export default class ScopesetExpander extends Component {
                         to={`/auth/scopes/${encodeURIComponent(scope)}`}
                         className={classes.listItemButton}
                       >
-                        <ListItemText secondary={<code>{scope}</code>} />
+                        <ListItemText secondary={scope} />
                         <LinkIcon size={16} />
                       </ListItem>
                     ))}

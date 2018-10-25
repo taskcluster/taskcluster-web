@@ -95,10 +95,6 @@ export default class ViewClients extends PureComponent {
       updateQuery(previousResult, { fetchMoreResult }) {
         const { edges, pageInfo } = fetchMoreResult.clients;
 
-        if (!edges.length) {
-          return previousResult;
-        }
-
         return dotProp.set(previousResult, 'clients', clients =>
           dotProp.set(
             dotProp.set(clients, 'edges', edges),
@@ -158,7 +154,7 @@ export default class ViewClients extends PureComponent {
         }
       >
         <Fragment>
-          {!clients && loading && <Spinner loading />}
+          {loading && <Spinner loading />}
           <ErrorPanel error={error} />
           {clients && (
             <ClientsTable
