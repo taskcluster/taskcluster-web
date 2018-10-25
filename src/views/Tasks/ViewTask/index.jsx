@@ -644,12 +644,10 @@ export default class ViewTask extends Component {
         }
       >
         {loading && <Spinner loading />}
-        {error &&
+        {!task &&
+          error &&
           error.graphQLErrors && (
-            <ErrorPanel
-              error={error.graphQLErrors[0].message}
-              warning={Boolean(task)}
-            />
+            <ErrorPanel error={error.graphQLErrors[0].message} />
           )}
         {task && (
           <Fragment>
