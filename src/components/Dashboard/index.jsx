@@ -154,6 +154,10 @@ export default class Dashboard extends Component {
     helpView: node,
   };
 
+  static getDerivedStateFromError(error) {
+    this.setState({ error });
+  }
+
   state = {
     mobileOpen: false,
     showHelpView: false,
@@ -167,10 +171,6 @@ export default class Dashboard extends Component {
   handleHelpViewToggle = () => {
     this.setState({ showHelpView: !this.state.showHelpView });
   };
-
-  componentDidCatch(error) {
-    this.setState({ error });
-  }
 
   render() {
     const {

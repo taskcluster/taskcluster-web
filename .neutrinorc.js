@@ -1,4 +1,12 @@
 const merge = require('deepmerge');
+const { join } = require('path');
+
+require('@babel/register')({
+  presets: [require.resolve('@babel/preset-env')],
+  cache: false,
+});
+
+const theme = require('./src/theme').default;
 
 module.exports = {
   use: [
@@ -63,10 +71,11 @@ module.exports = {
     ['@neutrinojs/react', {
       publicPath: '/',
       html: {
-        title: process.env.APPLICATION_NAME
+        title: process.env.APPLICATION_NAME,
+        favicon: './logo.png',
       },
       devServer: {
-        port: process.env.PORT || 9000,
+        port: process.env.PORT,
         historyApiFallback: { disableDotRule: true },
         proxy: {
           '/login': {
@@ -78,17 +87,20 @@ module.exports = {
           '/subscription': {
             ws: true,
             changeOrigin: true,
-            target: 'http://localhost:3050',
+            target: 'ws://localhost:3050',
           },
         },
       },
-      env: [
-        'APPLICATION_NAME',
-        'LOGIN_STRATEGIES',
-        'PORT',
-        'TASKCLUSTER_ROOT_URL',
-        'GRAPHQL_SUBSCRIPTION_ENDPOINT',
-      ],
+      env: {
+        APPLICATION_NAME: 'Application Name',
+        LOGIN_STRATEGIES: '',
+        PORT: 5080,
+        TASKCLUSTER_ROOT_URL: 'https://taskcluster.net',
+        GRAPHQL_SUBSCRIPTION_ENDPOINT: 'ws://localhost:5080/subscription',
+        GRAPHQL_ENDPOINT: 'http://localhost:5080/graphql',
+        GA_TRACKING_ID: '',
+        SENTRY_DSN: '',
+      },
       babel: {
         plugins: [
           [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
@@ -96,6 +108,29 @@ module.exports = {
         ],
       },
     }],
+    (neutrino) => {
+      neutrino.register('styleguide', () => ({
+        webpackConfig: neutrino.config.toConfig(),
+        components: join(
+          neutrino.options.source,
+          'components/**',
+          `*.{${neutrino.options.extensions.join(',')}}`
+        ),
+        skipComponentsWithoutExample: true,
+        theme: theme.styleguide,
+        styles: {
+          StyleGuide: theme.styleguide.StyleGuide,
+        },
+        editorConfig: {
+          theme: 'material',
+        },
+        usageMode: 'expand',
+        styleguideComponents: {
+          Wrapper: join(__dirname, 'src/styleguide/ThemeWrapper.jsx'),
+          StyleGuideRenderer: join(__dirname, 'src/styleguide/StyleGuideRenderer.jsx'),
+        },
+      }));
+    },
     (neutrino) => {
       neutrino.config.node.set('Buffer', true);
 

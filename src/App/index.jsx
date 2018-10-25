@@ -13,12 +13,16 @@ import {
   IntrospectionFragmentMatcher,
 } from 'apollo-cache-inmemory';
 import { CachePersistor } from 'apollo-cache-persist';
+import ReactGA from 'react-ga';
+import { init as initSentry } from '@sentry/browser';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FontStager from '../components/FontStager';
 import Main from './Main';
 import { ToggleThemeContext } from '../utils/ToggleTheme';
 import { AuthContext } from '../utils/Auth';
+import db from '../utils/db';
+import reportError from '../utils/reportError';
 import theme from '../theme';
 import introspectionQueryResultData from '../fragments/fragmentTypes.json';
 
@@ -67,7 +71,9 @@ export default class App extends Component {
             reconnect: true,
           },
         }),
-        new HttpLink()
+        new HttpLink({
+          uri: process.env.GRAPHQL_ENDPOINT,
+        })
       ),
     ]),
   });
@@ -98,7 +104,29 @@ export default class App extends Component {
       }
     }
 
+    if (process.env.GA_TRACKING_ID) {
+      // Unique Google Analytics tracking number
+      ReactGA.initialize(`UA-${process.env.GA_TRACKING_ID}`);
+    }
+
+    if (process.env.SENTRY_DSN) {
+      // Data Source Name (DSN), a configuration required by the Sentry SDK
+      initSentry({ dsn: process.env.SENTRY_DSN });
+    }
+
     this.state = state;
+  }
+
+  static getDerivedStateFromError(error) {
+    this.setState({ error });
+  }
+
+  async componentDidMount() {
+    const themeType = await db.userPreferences.get('theme');
+
+    if (themeType === 'light') {
+      this.setState({ theme: theme.lightTheme });
+    }
   }
 
   authorize = async (user, persist = true) => {
@@ -133,10 +161,17 @@ export default class App extends Component {
           ? theme.lightTheme
           : theme.darkTheme,
     });
+    const newTheme =
+      this.state.theme && this.state.theme.palette.type === 'dark'
+        ? theme.lightTheme
+        : theme.darkTheme;
+
+    db.userPreferences.put(newTheme.palette.type, 'theme');
+    this.setState({ theme: newTheme });
   };
 
-  componentDidCatch(error) {
-    this.setState({ error });
+  componentDidCatch(error, errorInfo) {
+    reportError(error, errorInfo);
   }
 
   render() {

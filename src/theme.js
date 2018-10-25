@@ -60,7 +60,7 @@ const createTheme = isDarkTheme => ({
       disabled: isDarkTheme ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
       hint: isDarkTheme ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
       icon: isDarkTheme ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-      active: isDarkTheme ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)',
+      active: isDarkTheme ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
       inactive: isDarkTheme ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)',
     },
   },
@@ -85,7 +85,7 @@ const createTheme = isDarkTheme => ({
     triple: 24,
     quad: 32,
   },
-  drawerWidth: 240,
+  drawerWidth: THEME.DRAWER_WIDTH,
   mixins: {
     highlight: {
       fontFamily: 'Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace',
@@ -211,4 +211,33 @@ const theme = createMuiTheme(createTheme(true));
 export default {
   lightTheme: createMuiTheme(createTheme(false)),
   darkTheme: theme,
+  styleguide: {
+    StyleGuide: {
+      root: {
+        overflowY: 'scroll',
+        minHeight: '100vh',
+        backgroundColor: THEME.DARK_THEME_BACKGROUND,
+        color: theme.palette.text.primary,
+      },
+    },
+    fontFamily: {
+      base: theme.typography.fontFamily,
+    },
+    fontSize: {
+      base: theme.typography.fontSize - 1,
+      text: theme.typography.fontSize,
+      small: theme.typography.fontSize - 2,
+    },
+    color: {
+      base: theme.palette.text.primary,
+      link: theme.palette.text.primary,
+      linkHover: theme.palette.text.primary,
+      border: theme.palette.divider,
+      baseBackground: THEME.DARK_THEME_BACKGROUND,
+      sidebarBackground: theme.palette.primary.main,
+      codeBackground: theme.palette.primary.main,
+    },
+    sidebarWidth: theme.drawerWidth,
+    maxWidth: '100vw',
+  },
 };

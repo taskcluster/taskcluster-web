@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { arrayOf, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import deepSortObject from 'deep-sort-object';
 import Code from '@mozilla-frontend-infra/components/Code';
 import Label from '@mozilla-frontend-infra/components/Label';
 import { withStyles } from '@material-ui/core/styles';
@@ -19,6 +21,7 @@ import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import DateDistance from '../DateDistance';
 import StatusLabel from '../StatusLabel';
 import { task } from '../../utils/prop-types';
+import urls from '../../utils/urls';
 
 @withStyles(theme => ({
   headline: {
@@ -96,6 +99,7 @@ export default class TaskDetailsCard extends Component {
     const { showPayload, showExtra } = this.state;
     const isExternal = task.metadata.source.startsWith('https://');
     const tags = Object.entries(task.tags);
+    const payload = deepSortObject(task.payload);
 
     return (
       <Card raised>
@@ -127,9 +131,7 @@ export default class TaskDetailsCard extends Component {
                 button
                 className={classes.listItemButton}
                 component="a"
-                href={`queue.${
-                  process.env.TASKCLUSTER_ROOT_URL
-                }/queue/v1/task/${task.taskId}`}
+                href={urls.api('queue', 'v1', `task/${task.taskId}`)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -148,29 +150,38 @@ export default class TaskDetailsCard extends Component {
                   secondary={`${task.status.retriesLeft} of ${task.retries}`}
                 />
               </ListItem>
-              <ListItem button className={classes.listItemButton}>
-                <ListItemText
-                  primary="Created"
-                  secondary={<DateDistance from={task.created} />}
-                />
-                <ContentCopyIcon />
-              </ListItem>
-              <ListItem button className={classes.listItemButton}>
-                <ListItemText
-                  primary="Deadline"
-                  secondary={
-                    <DateDistance from={task.deadline} offset={task.created} />
-                  }
-                />
-                <ContentCopyIcon />
-              </ListItem>
-              <ListItem button className={classes.listItemButton}>
-                <ListItemText
-                  primary="Expires"
-                  secondary={<DateDistance from={task.expires} />}
-                />
-                <ContentCopyIcon />
-              </ListItem>
+              <CopyToClipboard text={task.created}>
+                <ListItem button className={classes.listItemButton}>
+                  <ListItemText
+                    primary="Created"
+                    secondary={<DateDistance from={task.created} />}
+                  />
+                  <ContentCopyIcon />
+                </ListItem>
+              </CopyToClipboard>
+              <CopyToClipboard text={task.deadline}>
+                <ListItem button className={classes.listItemButton}>
+                  <ListItemText
+                    primary="Deadline"
+                    secondary={
+                      <DateDistance
+                        from={task.deadline}
+                        offset={task.created}
+                      />
+                    }
+                  />
+                  <ContentCopyIcon />
+                </ListItem>
+              </CopyToClipboard>
+              <CopyToClipboard text={task.expires}>
+                <ListItem button className={classes.listItemButton}>
+                  <ListItemText
+                    primary="Expires"
+                    secondary={<DateDistance from={task.expires} />}
+                  />
+                  <ContentCopyIcon />
+                </ListItem>
+              </CopyToClipboard>
               <ListItem>
                 <ListItemText
                   primary="Priority"
@@ -332,7 +343,7 @@ export default class TaskDetailsCard extends Component {
                       disableTypography
                       primary={
                         <Code language="json">
-                          {JSON.stringify(task.payload, null, 2)}
+                          {JSON.stringify(payload, null, 2)}
                         </Code>
                       }
                     />

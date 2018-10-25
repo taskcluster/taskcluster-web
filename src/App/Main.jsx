@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
 import { object } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import RouteWithProps from '../components/RouteWithProps';

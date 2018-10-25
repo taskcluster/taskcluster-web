@@ -42,13 +42,13 @@ export default class Landing extends Component {
     title: string,
   };
 
+  static getDerivedStateFromError(error) {
+    this.setState({ error });
+  }
+
   state = {
     error: null,
   };
-
-  componentDidCatch(error) {
-    this.setState({ error });
-  }
 
   render() {
     const { classes, className, children, title, ...props } = this.props;

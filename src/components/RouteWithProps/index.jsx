@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
+import React, { Suspense, Component } from 'react';
 import { Route } from 'react-router-dom';
+import withPageTracker from '../../utils/withPageTracker';
+import Loading from '../../utils/Loading';
 
 /**
  * Conditionally render a component based on location, with non-react-router
  * specific properties forwarded to the rendering component.
  */
+@withPageTracker
 export default class RouteWithProps extends Component {
   render() {
     const {
@@ -24,7 +27,11 @@ export default class RouteWithProps extends Component {
         strict={strict}
         location={location}
         sensitive={sensitive}
-        render={renderProps => <Component {...renderProps} {...props} />}
+        render={({ staticContext, ...renderProps }) => (
+          <Suspense fallback={<Loading />}>
+            <Component {...renderProps} {...props} />
+          </Suspense>
+        )}
       />
     );
   }
