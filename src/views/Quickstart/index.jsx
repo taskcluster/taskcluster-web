@@ -25,7 +25,7 @@ import Dashboard from '../../components/Dashboard';
 import Button from '../../components/Button';
 import HelpView from '../../components/HelpView';
 import urls from '../../utils/urls';
-import ErrorPanel from '../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../components/ErrorPanel';
 import githubQuery from './github.graphql';
 
 const initialYaml = {

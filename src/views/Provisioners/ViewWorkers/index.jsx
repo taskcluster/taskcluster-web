@@ -14,7 +14,7 @@ import WorkersTable from '../../../components/WorkersTable';
 import Dashboard from '../../../components/Dashboard';
 import { VIEW_WORKERS_PAGE_SIZE } from '../../../utils/constants';
 import { withAuth } from '../../../utils/Auth';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import workersQuery from './workers.graphql';
 
 @hot(module)

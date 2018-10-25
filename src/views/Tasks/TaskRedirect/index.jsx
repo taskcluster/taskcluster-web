@@ -5,7 +5,7 @@ import { graphql } from 'react-apollo';
 import cloneDeep from 'lodash.clonedeep';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import parameterizeTask from '../../../utils/parameterizeTask';
 import removeKeys from '../../../utils/removeKeys';
 import taskQuery from './task.graphql';

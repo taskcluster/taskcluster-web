@@ -4,7 +4,7 @@ import { graphql, withApollo } from 'react-apollo';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import HookForm from '../../../components/HookForm';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import hookQuery from './hook.graphql';
 import createHookQuery from './createHook.graphql';
 import deleteHookQuery from './deleteHook.graphql';

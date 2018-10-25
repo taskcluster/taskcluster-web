@@ -11,7 +11,7 @@ import Dashboard from '../../../components/Dashboard';
 import HelpView from '../../../components/HelpView';
 import Search from '../../../components/Search';
 import Button from '../../../components/Button';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import hooksQuery from './hooks.graphql';
 
 @hot(module)

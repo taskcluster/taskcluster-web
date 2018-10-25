@@ -5,7 +5,7 @@ import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import awsHealthQuery from './awsHealth.graphql';
 import Dashboard from '../../../components/Dashboard';
 import AwsProvisionerHealthTable from '../../../components/AwsProvisionerHealthTable';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 
 @hot(module)
 @graphql(awsHealthQuery)

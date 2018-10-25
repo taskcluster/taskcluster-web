@@ -12,7 +12,7 @@ import Button from '../../../components/Button';
 import CachePurgesTable from '../../../components/CachePurgesTable';
 import HelpView from '../../../components/HelpView';
 import { VIEW_CACHE_PURGES_PAGE_SIZE } from '../../../utils/constants';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import cachePurgesQuery from './cachePurges.graphql';
 
 @hot(module)

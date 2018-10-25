@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Dashboard from '../../../components/Dashboard';
 import SecretForm from '../../../components/SecretForm';
 import HelpView from '../../../components/HelpView';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import formatError from '../../../utils/formatError';
 import secretQuery from './secret.graphql';
 import createSecretQuery from './createSecret.graphql';

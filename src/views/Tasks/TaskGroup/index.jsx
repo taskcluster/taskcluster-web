@@ -26,7 +26,7 @@ import {
   TASK_GROUP_PROGRESS_SIZE,
 } from '../../../utils/constants';
 import db from '../../../utils/db';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import taskGroupQuery from './taskGroup.graphql';
 import taskGroupCompactQuery from './taskGroupCompact.graphql';
 import submitTaskAction from '../submitTaskAction';

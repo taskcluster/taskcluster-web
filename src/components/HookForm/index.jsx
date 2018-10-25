@@ -31,7 +31,7 @@ import DateDistance from '../DateDistance';
 import { HOOKS_LAST_FIRE_TYPE } from '../../utils/constants';
 import { hook } from '../../utils/prop-types';
 import removeKeys from '../../utils/removeKeys';
-import ErrorPanel from '../ErrorPanel/errorPanel';
+import ErrorPanel from '../ErrorPanel';
 
 const initialHook = {
   metadata: {

@@ -10,7 +10,7 @@ import HelpView from '../../../../components/HelpView';
 import IndexNamespacesTable from '../../../../components/IndexNamespacesTable';
 import IndexTaskNamespaceTable from '../../../../components/IndexTaskNamespaceTable';
 import { VIEW_NAMESPACES_PAGE_SIZE } from '../../../../utils/constants';
-import ErrorPanel from '../../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../../components/ErrorPanel';
 import namespacesQuery from './namespaces.graphql';
 import taskNamespaceQuery from '../taskNamespace.graphql';
 

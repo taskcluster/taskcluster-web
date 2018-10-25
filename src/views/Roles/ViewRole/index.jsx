@@ -4,7 +4,7 @@ import { graphql, withApollo } from 'react-apollo';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import RoleForm from '../../../components/RoleForm';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import roleQuery from './role.graphql';
 import createRoleQuery from './createRole.graphql';
 import updateRoleQuery from './updateRole.graphql';

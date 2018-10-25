@@ -16,7 +16,7 @@ import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import ClientForm from '../../../components/ClientForm';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import updateClientQuery from './updateClient.graphql';
 import createClientQuery from './createClient.graphql';
 import deleteClientQuery from './deleteClient.graphql';

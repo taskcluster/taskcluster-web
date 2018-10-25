@@ -4,7 +4,7 @@ import { object } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import RouteWithProps from '../components/RouteWithProps';
 import routes from './routes';
-import ErrorPanel from '../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../components/ErrorPanel';
 
 @withStyles(theme => ({
   '@global': {

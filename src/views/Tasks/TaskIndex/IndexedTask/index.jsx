@@ -7,7 +7,7 @@ import Dashboard from '../../../../components/Dashboard';
 import HelpView from '../../../../components/HelpView';
 import IndexedEntry from '../../../../components/IndexedEntry';
 import { ARTIFACTS_PAGE_SIZE } from '../../../../utils/constants';
-import ErrorPanel from '../../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../../components/ErrorPanel';
 import artifactsQuery from './artifacts.graphql';
 import indexedTaskQuery from './indexedTask.graphql';
 

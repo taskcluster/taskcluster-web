@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Dashboard from '../../components/Dashboard';
 import DateDistance from '../../components/DateDistance';
 import { withAuth } from '../../utils/Auth';
-import ErrorPanel from '../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../components/ErrorPanel';
 import profileQuery from './profile.graphql';
 
 @hot(module)

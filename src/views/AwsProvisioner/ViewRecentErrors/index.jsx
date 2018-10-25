@@ -5,7 +5,7 @@ import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import recentErrors from './recentErrors.graphql';
 import Dashboard from '../../../components/Dashboard';
 import AwsProvisionerErrorsTable from '../../../components/AwsProvisionerErrorsTable';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 
 @hot(module)
 @graphql(recentErrors)

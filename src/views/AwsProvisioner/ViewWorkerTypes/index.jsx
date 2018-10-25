@@ -12,7 +12,7 @@ import SpeedDial from '../../../components/SpeedDial';
 import SpeedDialAction from '../../../components/SpeedDialAction';
 import HelpView from '../../../components/HelpView';
 import AwsProvisionerWorkerTypeTable from '../../../components/AwsProvisionerWorkerTypeTable';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import workerTypesQuery from './workerTypes.graphql';
 
 @hot(module)

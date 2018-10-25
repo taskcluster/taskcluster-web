@@ -8,7 +8,7 @@ import provisionersQuery from './provisioners.graphql';
 import Dashboard from '../../../components/Dashboard';
 import HelpView from '../../../components/HelpView';
 import ProvisionerDetailsCard from '../../../components/ProvisionerDetailsCard';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 
 @hot(module)
 @graphql(provisionersQuery)

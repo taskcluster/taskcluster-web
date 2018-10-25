@@ -14,7 +14,7 @@ import LinkIcon from 'mdi-react/LinkIcon';
 import HelpView from '../../components/HelpView';
 import Dashboard from '../../components/Dashboard/index';
 import Button from '../../components/Button';
-import ErrorPanel from '../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../components/ErrorPanel';
 import splitLines from '../../utils/splitLines';
 import scopesetQuery from './scopeset.graphql';
 

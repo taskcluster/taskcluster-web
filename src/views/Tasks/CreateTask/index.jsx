@@ -23,7 +23,7 @@ import SpeedDial from '../../../components/SpeedDial';
 import SpeedDialAction from '../../../components/SpeedDialAction';
 import HelpView from '../../../components/HelpView';
 import Dashboard from '../../../components/Dashboard';
-import ErrorPanel from '../../../components/ErrorPanel/errorPanel';
+import ErrorPanel from '../../../components/ErrorPanel';
 import { nice } from '../../../utils/slugid';
 import {
   TASKS_CREATE_STORAGE_KEY,

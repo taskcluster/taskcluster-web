@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Button from '../Button';
-import ErrorPanel from '../ErrorPanel/errorPanel';
+import ErrorPanel from '../ErrorPanel';
 
 @withMobileDialog()
 @withStyles({
