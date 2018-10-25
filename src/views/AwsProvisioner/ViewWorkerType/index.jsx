@@ -1,7 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { Component } from 'react';
 import { graphql, withApollo } from 'react-apollo';
-import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -15,6 +14,7 @@ import AwsProvisionerHealthTable from '../../../components/AwsProvisionerHealthT
 import AwsProvisionerWorkerTypeStatus from '../../../components/AwsProvisionerWorkerTypeStatus';
 import Ec2ResourcesTable from '../../../components/Ec2ResourcesTable';
 import formatError from '../../../utils/formatError';
+import ErrorPanel from '../../../utils/errorPanel';
 import workerTypeQuery from './workerType.graphql';
 import terminateInstanceQuery from './terminateInstance.graphql';
 import terminateWorkerTypeQuery from './terminateWorkerType.graphql';
@@ -105,8 +105,8 @@ export default class ViewWorkerType extends Component {
 
     return (
       <Dashboard title={`AWS Provisioner ${workerType}`}>
-        {error && error.graphQLErrors && <ErrorPanel error={error} />}
-        {this.state.error && <ErrorPanel error={this.state.error} />}
+        <ErrorPanel error={error} />
+        <ErrorPanel error={this.state.error} />
         <Tabs fullWidth value={currentTab} onChange={this.handleTabChange}>
           <Tab label="Status" />
           <Tab label="Errors" />

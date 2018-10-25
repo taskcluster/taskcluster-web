@@ -3,7 +3,6 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Query } from 'react-apollo';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';
-import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -15,6 +14,7 @@ import LinkIcon from 'mdi-react/LinkIcon';
 import HelpView from '../../components/HelpView';
 import Dashboard from '../../components/Dashboard/index';
 import Button from '../../components/Button';
+import ErrorPanel from '../../utils/errorPanel';
 import splitLines from '../../utils/splitLines';
 import scopesetQuery from './scopeset.graphql';
 
@@ -76,12 +76,9 @@ export default class ScopesetExpander extends Component {
                       <Spinner />
                     </ListItem>
                   )}
-                  {error &&
-                    error.graphQLErrors && (
-                      <ListItem>
-                        <ErrorPanel error={error} />
-                      </ListItem>
-                    )}
+                  <ListItem>
+                    <ErrorPanel error={error} />
+                  </ListItem>
                   {expandScopes &&
                     expandScopes.map(scope => (
                       <ListItem

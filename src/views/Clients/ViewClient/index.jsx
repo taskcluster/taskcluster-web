@@ -1,10 +1,10 @@
 import { hot } from 'react-hot-loader';
 import React, { Component, Fragment } from 'react';
 import { graphql, withApollo } from 'react-apollo';
-import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import ClientForm from '../../../components/ClientForm';
+import ErrorPanel from '../../../utils/errorPanel';
 import updateClientQuery from './updateClient.graphql';
 import createClientQuery from './createClient.graphql';
 import deleteClientQuery from './deleteClient.graphql';
@@ -143,7 +143,7 @@ export default class ViewClient extends Component {
     return (
       <Dashboard title={isNewClient ? 'Create Client' : 'Client'}>
         <Fragment>
-          {error && <ErrorPanel error={error} />}
+          <ErrorPanel error={error} />
           {accessToken && (
             <ErrorPanel
               warning
@@ -160,11 +160,7 @@ export default class ViewClient extends Component {
           ) : (
             <Fragment>
               {data.loading && <Spinner loading />}
-              {data &&
-                data.error &&
-                data.error.graphQLErrors && (
-                  <ErrorPanel error={data.error.graphQLErrors[0].message} />
-                )}
+              <ErrorPanel error={data.error} />
               {data &&
                 data.client && (
                   <ClientForm
