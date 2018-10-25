@@ -22,6 +22,7 @@ import UserMenu from './UserMenu';
 import SidebarList from './SidebarList';
 import { THEME } from '../../utils/constants';
 import { withThemeToggler } from '../../utils/ToggleTheme';
+import Logo from '../../../logo.png';
 
 @withStyles(
   theme => ({
@@ -162,6 +163,7 @@ export default class Dashboard extends Component {
     mobileOpen: false,
     showHelpView: false,
     error: null,
+    isHovering: false,
   };
 
   handleDrawerToggle = () => {
@@ -172,7 +174,18 @@ export default class Dashboard extends Component {
     this.setState({ showHelpView: !this.state.showHelpView });
   };
 
+  handleMouseHover = () => {
+    this.setState(this.toggleHoverState);
+  };
+
+  toggleHoverState = state => ({
+    isHovering: !state.isHovering,
+  });
+
   render() {
+    const logoStyle = {
+      marginTop: '5px',
+    };
     const {
       classes,
       className,
@@ -197,14 +210,26 @@ export default class Dashboard extends Component {
           >
             <MenuIcon />
           </IconButton>
+
           <Typography
+            onMouseEnter={this.handleMouseHover}
+            onMouseLeave={this.handleMouseHover}
             component={Link}
             to="/"
             variant="h6"
             noWrap
             className={classes.title}
           >
-            {process.env.APPLICATION_NAME}
+            {!this.state.isHovering && process.env.APPLICATION_NAME}
+            {this.state.isHovering && (
+              <img
+                style={logoStyle}
+                width="70px"
+                height="70px"
+                alt="logo"
+                src={Logo}
+              />
+            )}
           </Typography>
         </div>
         <Divider />
