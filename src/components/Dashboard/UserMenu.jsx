@@ -75,7 +75,13 @@ export default class UserMenu extends Component {
   render() {
     const { classes, user } = this.props;
     const { anchorEl, signInDialogOpen } = this.state;
+const usernameStyle=
+{
+  
+ overflow:'hidden',
+  'white-space': 'nowrap'
 
+}
     if (!user) {
       return (
         <List component="nav">
@@ -124,7 +130,7 @@ export default class UserMenu extends Component {
                 {profile.displayName[0]}
               </Avatar>
             )}
-            <ListItemText primary={profile.displayName} />
+            <ListItemText primary={profile.displayName} style={usernameStyle}/>
           </ListItem>
         </List>
         <Menu
