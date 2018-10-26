@@ -89,7 +89,7 @@ import Logo from '../../../logo.png';
       paddingBottom: theme.spacing.triple * 4,
     },
     logoStyle: {
-      marginTop: '5px',
+      marginTop: '5',
     },
     content: {
       flexGrow: 1,
@@ -222,8 +222,8 @@ export default class Dashboard extends Component {
                 alt="logo"
                 src={Logo}
               />
-            ) : ( 
-              process.env.APPLICATION_NAME 
+            ) : (
+              process.env.APPLICATION_NAME
             )}
           </Typography>
         </div>
