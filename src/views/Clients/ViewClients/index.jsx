@@ -155,7 +155,6 @@ export default class ViewClients extends PureComponent {
       >
         <Fragment>
           {loading && <Spinner loading />}
-          {error && error.graphQLErrors && <ErrorPanel error={error} />}
           <ErrorPanel error={error} />
           {clients && (
             <ClientsTable
