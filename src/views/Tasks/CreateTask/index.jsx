@@ -220,10 +220,6 @@ export default class CreateTask extends Component {
       createdTaskId,
       loading,
     } = this.state;
-    const buttonstyle = {
-      paddingRight: '200px',
-      cursor: 'pointer',
-    };
     if (createdTaskId && interactive) {
       return <Redirect to={`/tasks/${createdTaskId}/connect`} push />;
     }
