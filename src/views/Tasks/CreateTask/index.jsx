@@ -228,7 +228,7 @@ export default class CreateTask extends Component {
     const buttonstyle = {
       paddingRight: '200px',
       cursor: 'pointer',
-    }
+    };
     if (createdTaskId && interactive) {
       return <Redirect to={`/tasks/${createdTaskId}/connect`} push />;
     }
@@ -285,6 +285,7 @@ export default class CreateTask extends Component {
                 value={task || ''}
                 onChange={this.handleTaskChange}
               />
+<<<<<<< HEAD
               <Tooltip
                 className={classes.createIcon}
                 placement="left"
@@ -292,6 +293,29 @@ export default class CreateTask extends Component {
               >
                 <Button
                   variant="fab"
+=======
+              <button
+                type="submit"
+                style={buttonstyle}
+                requiresAuth
+                tooltipOpen
+                icon={<PlusIcon />}
+                onClick={this.handleCreateTask}
+                tooltipTitle="Create Task"
+                classes={{ button: classes.createIcon }}
+                ButtonProps={{
+                  disabled: !task || invalid || loading,
+                }}
+              >
+                Add Task
+              </button>
+
+              <SpeedDial>
+                <SpeedDialAction
+                  requiresAuth
+                  tooltipOpen
+                  icon={<PlusIcon />}
+>>>>>>> Ran linter program
                   onClick={this.handleCreateTask}
                   ButtonProps={{
                     disabled: !task || invalid || loading,
