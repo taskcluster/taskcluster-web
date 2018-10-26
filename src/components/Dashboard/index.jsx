@@ -88,6 +88,9 @@ import Logo from '../../../logo.png';
       paddingRight: theme.spacing.triple,
       paddingBottom: theme.spacing.triple * 4,
     },
+    logoStyle: {
+      marginTop: '5px',
+    },
     content: {
       flexGrow: 1,
       backgroundColor: theme.palette.background,
@@ -163,7 +166,7 @@ export default class Dashboard extends Component {
     mobileOpen: false,
     showHelpView: false,
     error: null,
-    isHovering: false,
+    showLogo: false,
   };
 
   handleDrawerToggle = () => {
@@ -174,18 +177,11 @@ export default class Dashboard extends Component {
     this.setState({ showHelpView: !this.state.showHelpView });
   };
 
-  handleMouseHover = () => {
-    this.setState(this.toggleHoverState);
+  handleTitleToggle = () => {
+    this.setState({ showLogo: !this.state.showLogo });
   };
 
-  toggleHoverState = state => ({
-    isHovering: !state.isHovering,
-  });
-
   render() {
-    const logoStyle = {
-      marginTop: '5px',
-    };
     const {
       classes,
       className,
@@ -198,7 +194,7 @@ export default class Dashboard extends Component {
       onToggleTheme,
       ...props
     } = this.props;
-    const { error, mobileOpen, showHelpView } = this.state;
+    const { error, mobileOpen, showHelpView, showLogo } = this.state;
     const drawer = (
       <div>
         <div className={classes.toolbar}>
@@ -211,23 +207,23 @@ export default class Dashboard extends Component {
             <MenuIcon />
           </IconButton>
           <Typography
-            onMouseEnter={this.handleMouseHover}
-            onMouseLeave={this.handleMouseHover}
+            onMouseEnter={this.handleTitleToggle}
+            onMouseLeave={this.handleTitleToggle}
             component={Link}
             to="/"
             variant="h6"
             noWrap
             className={classes.title}
           >
-            {!this.state.isHovering && process.env.APPLICATION_NAME}
-            {this.state.isHovering && (
+            {showLogo ? (
               <img
-                style={logoStyle}
-                width="70px"
-                height="70px"
+                className={classes.logoStyle}
+                height={40}
                 alt="logo"
                 src={Logo}
               />
+            ) : ( 
+              process.env.APPLICATION_NAME 
             )}
           </Typography>
         </div>
