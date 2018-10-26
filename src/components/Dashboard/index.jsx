@@ -89,7 +89,7 @@ import ErrorPanel from '../ErrorPanel';
       paddingBottom: theme.spacing.triple * 4,
     },
     logoStyle: {
-      marginTop: '5',
+      marginTop: 5,
     },
     content: {
       flexGrow: 1,

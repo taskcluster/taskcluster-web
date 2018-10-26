@@ -220,6 +220,7 @@ export default class CreateTask extends Component {
       createdTaskId,
       loading,
     } = this.state;
+
     if (createdTaskId && interactive) {
       return <Redirect to={`/tasks/${createdTaskId}/connect`} push />;
     }
@@ -276,7 +277,6 @@ export default class CreateTask extends Component {
                 value={task || ''}
                 onChange={this.handleTaskChange}
               />
-
               <SpeedDial>
                 <SpeedDialAction
                   requiresAuth
