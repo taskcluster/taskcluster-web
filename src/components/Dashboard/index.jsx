@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { bool, node, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -23,6 +22,7 @@ import SidebarList from './SidebarList';
 import { THEME } from '../../utils/constants';
 import { withThemeToggler } from '../../utils/ToggleTheme';
 import Logo from '../../../logo.png';
+import ErrorPanel from '../ErrorPanel';
 
 @withStyles(
   theme => ({
