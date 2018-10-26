@@ -81,6 +81,7 @@ import ErrorPanel from '../ErrorPanel';
     title: {
       textDecoration: 'none',
       color: theme.palette.text.primary,
+      width: '100%',
     },
     contentPadding: {
       paddingTop: theme.spacing.triple,
