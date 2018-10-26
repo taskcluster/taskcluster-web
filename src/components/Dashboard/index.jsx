@@ -90,7 +90,11 @@ import ErrorPanel from '../ErrorPanel';
       paddingBottom: theme.spacing.triple * 4,
     },
     logoStyle: {
+<<<<<<< HEAD
       marginTop: theme.spacing.unit,
+=======
+      marginTop: 5,
+>>>>>>> Fixed line spacing and removed quotation marks from logostyle
     },
     content: {
       flexGrow: 1,
