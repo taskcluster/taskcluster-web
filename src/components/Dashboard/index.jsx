@@ -183,9 +183,6 @@ export default class Dashboard extends Component {
   };
 
   render() {
-    const logoStyle = {
-      marginTop: '5px',
-    };
     const {
       classes,
       className,
