@@ -1,7 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { hot } from 'react-hot-loader';
 import { graphql } from 'react-apollo';
-import ErrorPanel from '@mozilla-frontend-infra/components/ErrorPanel';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
 import PlusIcon from 'mdi-react/PlusIcon';
@@ -14,6 +13,7 @@ import ClientsTable from '../../../components/ClientsTable';
 import { VIEW_CLIENTS_PAGE_SIZE } from '../../../utils/constants';
 import clientsQuery from './clients.graphql';
 import { withAuth } from '../../../utils/Auth';
+import ErrorPanel from '../../../components/ErrorPanel';
 
 @hot(module)
 @withAuth
@@ -67,28 +67,6 @@ export default class ViewClients extends PureComponent {
     this.setState({ clientSearch: target.value });
   };
 
-  handleClientSearchSubmit = e => {
-    e.preventDefault();
-
-    const {
-      data: { refetch },
-    } = this.props;
-    const { clientSearch } = this.state;
-
-    refetch({
-      ...(clientSearch
-        ? {
-            clientOptions: {
-              prefix: clientSearch,
-            },
-          }
-        : null),
-      clientsConnection: {
-        limit: VIEW_CLIENTS_PAGE_SIZE,
-      },
-    });
-  };
-
   handleCreate = () => {
     this.props.history.push('/auth/clients/create');
   };
@@ -116,10 +94,6 @@ export default class ViewClients extends PureComponent {
       },
       updateQuery(previousResult, { fetchMoreResult }) {
         const { edges, pageInfo } = fetchMoreResult.clients;
-
-        if (!edges.length) {
-          return previousResult;
-        }
 
         return dotProp.set(previousResult, 'clients', clients =>
           dotProp.set(
@@ -165,7 +139,6 @@ export default class ViewClients extends PureComponent {
       data: { loading, error, clients },
     } = this.props;
     const { clientSearch } = this.state;
-
     return (
       <Dashboard
         title="Clients"
@@ -183,6 +156,7 @@ export default class ViewClients extends PureComponent {
         <Fragment>
           {loading && <Spinner loading />}
           {error && error.graphQLErrors && <ErrorPanel error={error} />}
+          <ErrorPanel error={error} />
           {clients && (
             <ClientsTable
               onPageChange={this.handlePageChange}
