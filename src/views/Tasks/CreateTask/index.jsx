@@ -230,7 +230,7 @@ export default class CreateTask extends Component {
       fontSize: 16,
       cursor: 'pointer',
       marginTop: 10,
-    }
+    };
     if (createdTaskId && interactive) {
       return <Redirect to={`/tasks/${createdTaskId}/connect`} push />;
     }
