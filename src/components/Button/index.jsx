@@ -57,6 +57,13 @@ export default class Button extends Component {
     } = this.props;
     const isDisabled = (requiresAuth && !user) || disabled;
 
+    /*
+     these function props are not relevant to button component 
+     and create console warning.
+    */
+    delete props.onAuthorize;
+    delete props.onUnauthorize;
+
     return (
       <MuiButton
         onClick={this.handleButtonClick}
