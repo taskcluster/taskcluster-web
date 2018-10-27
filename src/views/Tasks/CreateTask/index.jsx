@@ -220,7 +220,17 @@ export default class CreateTask extends Component {
       createdTaskId,
       loading,
     } = this.state;
-
+    const AddButtonStyle = {
+      backgroundColor: '#4CAF50',
+      border: 'none',
+      color: 'white',
+      padding: '10px 25px',
+      textAlign: 'center',
+      textDecoration: 'none',
+      fontSize: 16,
+      cursor: 'pointer',
+      marginTop: 10,
+    }
     if (createdTaskId && interactive) {
       return <Redirect to={`/tasks/${createdTaskId}/connect`} push />;
     }
@@ -278,6 +288,7 @@ export default class CreateTask extends Component {
                 onChange={this.handleTaskChange}
               />
               <button
+                style={AddButtonStyle}
                 type="submit"
                 requiresAuth
                 tooltipOpen
@@ -289,7 +300,7 @@ export default class CreateTask extends Component {
                   disabled: !task || invalid || loading,
                 }}
               >
-                Add Task
+                Create Task
               </button>
               <SpeedDial>
                 <SpeedDialAction
