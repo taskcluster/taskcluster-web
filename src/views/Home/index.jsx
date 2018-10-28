@@ -19,7 +19,6 @@ import Dashboard from '../../components/Dashboard';
     },
   },
   headline: {
-    // color: theme.palette.common.white,
     fontFamily: 'Roboto500',
     [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing.double,
