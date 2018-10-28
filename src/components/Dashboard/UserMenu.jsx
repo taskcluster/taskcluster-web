@@ -64,7 +64,7 @@ export default class UserMenu extends Component {
     this.handleMenuClose();
     // Since Apollo caches query results, it’s important to get rid of them
     // when the login state changes.
-    await this.props.client.resetStore();
+    await this.props.client.clearStore();
     this.props.onUnauthorize();
   };
 
