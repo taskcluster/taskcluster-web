@@ -36,8 +36,8 @@ import SignInDialog from '../SignInDialog';
   },
   usernameStyle: {
     overflow: 'hidden',
-    'white-space': 'nowrap',
-    'text-overflow': 'ellipsis',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   },
 }))
 @withAuth
