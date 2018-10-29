@@ -34,6 +34,12 @@ import SignInDialog from '../SignInDialog';
   leftIcon: {
     marginRight: theme.spacing.unit,
   },
+  usernameStyle : {
+    overflow: 'hidden',
+    'white-space': 'nowrap',
+    'text-overflow':'ellipsis',
+  
+  }
 }))
 @withAuth
 @withApollo
@@ -75,10 +81,7 @@ export default class UserMenu extends Component {
   render() {
     const { classes, user } = this.props;
     const { anchorEl, signInDialogOpen } = this.state;
-    const usernameStyle = {
-      overflow: 'hidden',
-      'white-space': 'nowrap',
-    };
+   
     if (!user) {
       return (
         <List component="nav">
@@ -127,7 +130,7 @@ export default class UserMenu extends Component {
                 {profile.displayName[0]}
               </Avatar>
             )}
-            <ListItemText primary={profile.displayName} style={usernameStyle} />
+            <ListItemText primary={profile.displayName} primaryTypographyProps={{className:classes.usernameStyle}} />
           </ListItem>
         </List>
         <Menu
