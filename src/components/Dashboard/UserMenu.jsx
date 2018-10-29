@@ -34,7 +34,7 @@ import SignInDialog from '../SignInDialog';
   leftIcon: {
     marginRight: theme.spacing.unit,
   },
-  usernameStyle: {
+  username: {
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
@@ -131,7 +131,7 @@ export default class UserMenu extends Component {
             )}
             <ListItemText
               primary={profile.displayName}
-              primaryTypographyProps={{ className: classes.usernameStyle }}
+              primaryTypographyProps={{ className: classes.username }}
             />
           </ListItem>
         </List>
