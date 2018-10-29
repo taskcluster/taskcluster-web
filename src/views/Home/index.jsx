@@ -34,15 +34,8 @@ import Dashboard from '../../components/Dashboard';
     },
   },
   icon: {
-    fill: theme.palette.primary.main,
+    fill: theme.palette.common.white,
     marginRight: theme.spacing.unit,
-  },
-  button: {
-    backgroundColor: theme.button.background,
-    color: theme.button.color,
-    '&:hover': {
-      backgroundColor: theme.button.hoverBackground,
-    },
   },
 }))
 export default class Home extends Component {
@@ -83,7 +76,7 @@ export default class Home extends Component {
           <div className={classes.actions}>
             <Button
               variant="contained"
-              className={classes.button}
+              color="secondary"
               onClick={this.handleOpenSignInDialog}
             >
               <AccountCircleIcon className={classes.icon} />

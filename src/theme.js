@@ -85,11 +85,6 @@ const createTheme = isDarkTheme => ({
     triple: 24,
     quad: 32,
   },
-  button: {
-    background: isDarkTheme ? '#e0e0e0' : THEME.SECONDARY,
-    color: isDarkTheme ? '#000' : '#fff',
-    hoverBackground: isDarkTheme ? '#d5d5d5' : '#2d5373',
-  },
   drawerWidth: THEME.DRAWER_WIDTH,
   mixins: {
     highlight: {
