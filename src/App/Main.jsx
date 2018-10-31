@@ -19,7 +19,7 @@ import ErrorPanel from '../components/ErrorPanel';
       transitionDelay: 'background-color 5000s, color 5000s',
     },
     '.mdi-icon': {
-      fill: theme.palette.text.primary,
+      fill: 'white',
     },
     '.CodeMirror': {
       fontSize: 13,
