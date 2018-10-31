@@ -19,6 +19,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import PlusIcon from 'mdi-react/PlusIcon';
 import RotateLeftIcon from 'mdi-react/RotateLeftIcon';
 import ClockOutlineIcon from 'mdi-react/ClockOutlineIcon';
+import Tooltip from '@material-ui/core/Tooltip';
 import SpeedDial from '../../../components/SpeedDial';
 import SpeedDialAction from '../../../components/SpeedDialAction';
 import HelpView from '../../../components/HelpView';
@@ -31,6 +32,7 @@ import {
 } from '../../../utils/constants';
 import urls from '../../../utils/urls';
 import createTaskQuery from '../createTask.graphql';
+import Button from '../../../components/Button';
 
 const defaultTask = {
   provisionerId: 'aws-provisioner-v1',
@@ -220,17 +222,6 @@ export default class CreateTask extends Component {
       createdTaskId,
       loading,
     } = this.state;
-    const AddButtonStyle = {
-      backgroundColor: '#4CAF50',
-      border: 'none',
-      color: 'white',
-      padding: '10px 25px',
-      textAlign: 'center',
-      textDecoration: 'none',
-      fontSize: 16,
-      cursor: 'pointer',
-      marginTop: 10,
-    };
     if (createdTaskId && interactive) {
       return <Redirect to={`/tasks/${createdTaskId}/connect`} push />;
     }
@@ -287,33 +278,24 @@ export default class CreateTask extends Component {
                 value={task || ''}
                 onChange={this.handleTaskChange}
               />
-              <button
-                style={AddButtonStyle}
-                type="submit"
-                requiresAuth
-                tooltipOpen
-                icon={<PlusIcon />}
-                onClick={this.handleCreateTask}
-                tooltipTitle="Create Task"
-                classes={{ button: classes.createIcon }}
-                ButtonProps={{
-                  disabled: !task || invalid || loading,
-                }}
+              <Tooltip
+                style={{ position: 'fixed', bottom: 16, right: 90 }}
+                placement="left"
+                title="Create Task"
               >
-                Create Task
-              </button>
-              <SpeedDial>
-                <SpeedDialAction
-                  requiresAuth
-                  tooltipOpen
-                  icon={<PlusIcon />}
+                <Button
+                  color="secondary"
+                  variant="fab"
                   onClick={this.handleCreateTask}
-                  tooltipTitle="Create Task"
-                  classes={{ button: classes.createIcon }}
+                  className={classes.createIcon}
                   ButtonProps={{
                     disabled: !task || invalid || loading,
                   }}
-                />
+                >
+                  <PlusIcon />
+                </Button>
+              </Tooltip>
+              <SpeedDial>
                 <SpeedDialAction
                   tooltipOpen
                   icon={<RotateLeftIcon />}
