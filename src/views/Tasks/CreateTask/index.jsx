@@ -63,6 +63,12 @@ const defaultTask = {
   createIcon: {
     ...theme.mixins.successIcon,
   },
+  toolTip: {
+    position: 'fixed',
+    bottom: 16,
+    right: 90,
+    background: '#4CAF50',
+  },
 }))
 export default class CreateTask extends Component {
   static defaultProps = {
@@ -222,6 +228,7 @@ export default class CreateTask extends Component {
       createdTaskId,
       loading,
     } = this.state;
+
     if (createdTaskId && interactive) {
       return <Redirect to={`/tasks/${createdTaskId}/connect`} push />;
     }
@@ -279,15 +286,14 @@ export default class CreateTask extends Component {
                 onChange={this.handleTaskChange}
               />
               <Tooltip
-                style={{ position: 'fixed', bottom: 16, right: 90 }}
+                className={classes.toolTip}
                 placement="left"
                 title="Create Task"
               >
                 <Button
-                  color="secondary"
                   variant="fab"
-                  onClick={this.handleCreateTask}
                   className={classes.createIcon}
+                  onClick={this.handleCreateTask}
                   ButtonProps={{
                     disabled: !task || invalid || loading,
                   }}
