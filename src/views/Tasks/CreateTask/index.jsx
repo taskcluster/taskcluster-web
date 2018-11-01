@@ -283,9 +283,7 @@ export default class CreateTask extends Component {
                 value={task || ''}
                 onChange={this.handleTaskChange}
               />
-              <Tooltip
-                title="Create Task"
-              >
+              <Tooltip title="Create Task">
                 <Button
                   requireAuth
                   variant="fab"
