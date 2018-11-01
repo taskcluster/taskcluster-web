@@ -62,14 +62,11 @@ const defaultTask = {
 @withStyles(theme => ({
   createIcon: {
     ...theme.mixins.successIcon,
-<<<<<<< HEAD
     position: 'fixed',
     bottom: theme.spacing.double,
     right: theme.spacing.unit * 11,
   },
   toolTip: {
-=======
->>>>>>> Fixed button color error by putting the styling in the buttonIcon css
     position: 'fixed',
     bottom: theme.spacing.double,
     right: theme.spacing.unit * 11,
