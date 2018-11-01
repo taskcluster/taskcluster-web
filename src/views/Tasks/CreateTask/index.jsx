@@ -285,7 +285,7 @@ export default class CreateTask extends Component {
               />
               <Tooltip title="Create Task">
                 <Button
-                  requireAuth
+                  requiresAuth
                   variant="fab"
                   className={classes.createIcon}
                   onClick={this.handleCreateTask}
