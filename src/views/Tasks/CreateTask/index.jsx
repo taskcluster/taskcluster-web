@@ -66,6 +66,12 @@ const defaultTask = {
     bottom: theme.spacing.double,
     right: theme.spacing.unit * 11,
   },
+  toolTip: {
+    position: 'fixed',
+    bottom: 16,
+    right: 90,
+    background: '#4CAF50',
+  },
 }))
 export default class CreateTask extends Component {
   static defaultProps = {
