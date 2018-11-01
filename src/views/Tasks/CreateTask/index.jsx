@@ -62,11 +62,7 @@ const defaultTask = {
 @withStyles(theme => ({
   createIcon: {
     ...theme.mixins.successIcon,
-    position: 'fixed',
-    bottom: theme.spacing.double,
-    right: theme.spacing.unit * 11,
-  },
-  toolTip: {
+    ...theme.mixins.fab,
     position: 'fixed',
     bottom: theme.spacing.double,
     right: theme.spacing.unit * 11,
@@ -288,12 +284,12 @@ export default class CreateTask extends Component {
                 onChange={this.handleTaskChange}
               />
               <Tooltip
-                className={classes.createIcon}
-                placement="left"
                 title="Create Task"
               >
                 <Button
+                  requireAuth
                   variant="fab"
+                  className={classes.createIcon}
                   onClick={this.handleCreateTask}
                   ButtonProps={{
                     disabled: !task || invalid || loading,
