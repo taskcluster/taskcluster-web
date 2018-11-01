@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { bool, func, shape, arrayOf, string } from 'prop-types';
-import dotProp from 'dot-prop-immutable';
+import { func, shape, arrayOf, string } from 'prop-types';
 import memoize from 'fast-memoize';
 import { equals, pipe, filter, map, sort as rSort } from 'ramda';
 import { lowerCase, title } from 'change-case';
@@ -21,13 +20,7 @@ import CloseIcon from 'mdi-react/CloseIcon';
 import AutorenewIcon from 'mdi-react/AutorenewIcon';
 import PlaylistRemoveIcon from 'mdi-react/PlaylistRemoveIcon';
 import { task, pageInfo, taskState } from '../../utils/prop-types';
-import {
-  TASK_GROUP_PROGRESS_SIZE,
-  TASK_GROUP_POLLING_INTERVAL,
-  TASK_STATE,
-  THEME,
-  INITIAL_CURSOR,
-} from '../../utils/constants';
+import { TASK_STATE, THEME } from '../../utils/constants';
 import sort from '../../utils/sort';
 
 const sorted = pipe(
@@ -49,7 +42,6 @@ const initialStatusCount = {
   pending: 0,
   unscheduled: 0,
 };
-let previousCursor;
 const getStatusCount = memoize(
   taskGroupCompactEdges => {
     const statusCount = { ...initialStatusCount };
@@ -109,10 +101,6 @@ const getStatusCount = memoize(
     justifyContent: 'space-around',
     cursor: 'pointer',
     margin: theme.spacing.unit,
-    '&:disabled': {
-      backgroundColor: theme.palette.action.disabledBackground,
-      color: theme.palette.action.disabled,
-    },
     '& > div': {
       display: 'flex',
       flexDirection: 'column',
@@ -172,10 +160,6 @@ export default class TaskGroupProgress extends Component {
   static defaultProps = {
     taskGroup: null,
     filter: null,
-    disabled: false,
-    onRefetch: null,
-    onFetchMore: null,
-    onCountUpdate: null,
   };
 
   static propTypes = {
@@ -185,27 +169,12 @@ export default class TaskGroupProgress extends Component {
     filter: taskState,
     /** Callback fired when the a state card is clicked */
     onStatusClick: func.isRequired,
-    /** Callback fired when the status counts has been calculated. */
-    onCountUpdate: func,
     /** A Task GraphQL PageConnection instance. */
     taskGroup: shape({
       pageInfo,
       edges: arrayOf(task),
     }),
-    // TODO: Add comment
-    /** A GraphQL Apollo fetchMore function. */
-    onFetchMore: func,
-    /** A GraphQL Apollo refetch function. */
-    onRefetch: func,
-    /** If true, the state cards will be disabled. */
-    disabled: bool,
   };
-
-  constructor(props) {
-    super(props);
-
-    previousCursor = INITIAL_CURSOR;
-  }
 
   state = {
     statusCount: initialStatusCount,
@@ -213,13 +182,7 @@ export default class TaskGroupProgress extends Component {
 
   /* eslint-disable react/no-did-update-set-state */
   componentDidUpdate(prevProps) {
-    const {
-      onCountUpdate,
-      onRefetch,
-      onFetchMore,
-      taskGroupId,
-      taskGroup,
-    } = this.props;
+    const { taskGroupId, taskGroup } = this.props;
 
     if (!taskGroup) {
       return;
@@ -228,18 +191,8 @@ export default class TaskGroupProgress extends Component {
     const { statusCount } = this.state;
 
     if (prevProps.taskGroupId !== taskGroupId) {
-      previousCursor = INITIAL_CURSOR;
+      //   previousCursor = INITIAL_CURSOR;
       this.setState({ statusCount: initialStatusCount });
-
-      return onRefetch({
-        pollInterval: TASK_GROUP_POLLING_INTERVAL,
-        variables: {
-          taskGroupId,
-          taskGroupCompactConnection: {
-            limit: TASK_GROUP_PROGRESS_SIZE,
-          },
-        },
-      });
     }
 
     const newStatusCount = taskGroup.edges
@@ -258,54 +211,6 @@ export default class TaskGroupProgress extends Component {
       isFromSameTaskGroupId
     ) {
       this.setState({ statusCount: newStatusCount });
-
-      return onCountUpdate();
-    }
-
-    if (
-      previousCursor === taskGroup.pageInfo.cursor &&
-      taskGroup.pageInfo.hasNextPage
-    ) {
-      const { taskGroup } = this.props;
-
-      onFetchMore({
-        variables: {
-          taskGroupId: this.props.taskGroupId,
-          taskGroupCompactConnection: {
-            limit: TASK_GROUP_PROGRESS_SIZE,
-            cursor: taskGroup.pageInfo.nextCursor,
-            previousCursor: taskGroup.pageInfo.cursor,
-          },
-        },
-        updateQuery(previousResult, { fetchMoreResult, variables }) {
-          if (
-            variables.taskGroupCompactConnection.previousCursor ===
-            previousCursor
-          ) {
-            const { edges, pageInfo } = fetchMoreResult.taskGroup;
-
-            previousCursor = variables.taskGroupCompactConnection.cursor;
-
-            if (!edges.length) {
-              return previousResult;
-            }
-
-            const result = dotProp.set(previousResult, 'taskGroup', taskGroup =>
-              dotProp.set(
-                dotProp.set(
-                  taskGroup,
-                  'edges',
-                  previousResult.taskGroup.edges.concat(edges)
-                ),
-                'pageInfo',
-                pageInfo
-              )
-            );
-
-            return result;
-          }
-        },
-      });
     }
   }
   /* eslint-enable react/no-did-update-set-state */
@@ -347,7 +252,7 @@ export default class TaskGroupProgress extends Component {
   };
 
   render() {
-    const { classes, onStatusClick, disabled } = this.props;
+    const { classes, onStatusClick } = this.props;
     const { statusCount } = this.state;
     const showDots = Object.values(statusCount).reduce((a, b) => a + b) === 0;
 
@@ -355,13 +260,9 @@ export default class TaskGroupProgress extends Component {
       <Grid container spacing={16}>
         {Object.keys(TASK_STATE).map(status => {
           const Icon = this.getStatusIcon(status);
-          const count = showDots ? '...' : statusCount[lowerCase(status)];
 
           return (
             <ButtonBase
-              disabled={disabled}
-              centerRipple
-              focusRipple
               key={status}
               name={status}
               variant="contained"
@@ -377,19 +278,16 @@ export default class TaskGroupProgress extends Component {
               <div>
                 <Typography
                   align="right"
-                  className={classNames({
-                    [classes.statusButtonTypography]: !disabled,
-                    [classes.statusButtonTypographyDisabled]: disabled,
-                  })}
+                  className={classes.statusButtonTypography}
                   variant="h4"
                 >
-                  {count}
+                  {showDots ? '...' : statusCount[lowerCase(status)]}
                 </Typography>
                 <Typography
-                  className={classNames(classes.statusTitle, {
-                    [classes.statusButtonTypography]: !disabled,
-                    [classes.statusButtonTypographyDisabled]: disabled,
-                  })}
+                  className={classNames(
+                    classes.statusTitle,
+                    classes.statusButtonTypography
+                  )}
                   variant="caption"
                 >
                   {title(status)}
