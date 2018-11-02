@@ -265,7 +265,13 @@ export default class TaskGroup extends Component {
         if (variables.taskGroupConnection.previousCursor === previousCursor) {
           const { edges, pageInfo } = fetchMoreResult.taskGroup;
 
-          previousCursor = variables.taskGroupConnection.cursor;
+          if (!pageInfo.hasNextPage) {
+            // Resetting to the initial cursor will allow us to
+            // capture updates since the query has a polling interval
+            previousCursor = INITIAL_CURSOR;
+          } else {
+            previousCursor = variables.taskGroupConnection.cursor;
+          }
 
           if (!edges.length) {
             return previousResult;

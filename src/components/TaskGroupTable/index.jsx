@@ -23,8 +23,9 @@ const sorted = pipe(
     ({
       node: {
         metadata: { name },
+        status: { state },
       },
-    }) => name
+    }) => `${name}-${state}`
   )
 );
 
