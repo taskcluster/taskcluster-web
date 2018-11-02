@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { func, shape, arrayOf, string } from 'prop-types';
 import memoize from 'fast-memoize';
-import { equals, pipe, filter, map, sort as rSort } from 'ramda';
+import { pipe, filter, map, sort as rSort } from 'ramda';
 import { lowerCase, title } from 'change-case';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -163,57 +163,49 @@ export default class TaskGroupProgress extends Component {
   };
 
   static propTypes = {
-    /** The task group ID being inspected. */
-    taskGroupId: string.isRequired,
     /** The selected task state. This will change the card icon. */
     filter: taskState,
     /** Callback fired when the a state card is clicked */
     onStatusClick: func.isRequired,
+    /* eslint-disable react/no-unused-prop-types */
+    /** The task group ID being inspected. */
+    taskGroupId: string.isRequired,
     /** A Task GraphQL PageConnection instance. */
     taskGroup: shape({
       pageInfo,
       edges: arrayOf(task),
     }),
+    /* eslint-enable react/no-unused-prop-types */
   };
 
   state = {
     statusCount: initialStatusCount,
   };
 
-  /* eslint-disable react/no-did-update-set-state */
-  componentDidUpdate(prevProps) {
-    const { taskGroupId, taskGroup } = this.props;
+  static getDerivedStateFromProps(props) {
+    const { taskGroupId, taskGroup } = props;
 
-    if (!taskGroup) {
-      return;
-    }
-
-    const { statusCount } = this.state;
-
-    if (prevProps.taskGroupId !== taskGroupId) {
-      //   previousCursor = INITIAL_CURSOR;
-      this.setState({ statusCount: initialStatusCount });
-    }
-
-    const newStatusCount = taskGroup.edges
-      ? getStatusCount(taskGroup.edges)
-      : {};
     // Make sure data is not from another task group which
     // can happen when a user searches for a different task group
-    const isFromSameTaskGroupId = taskGroup.edges[0]
-      ? taskGroup.edges[0].node.taskGroupId === taskGroupId
-      : true;
+    const isFromSameTaskGroupId =
+      taskGroup &&
+      (taskGroup.edges[0]
+        ? taskGroup.edges[0].node.taskGroupId === taskGroupId
+        : true);
 
     // We're done counting
-    if (
-      !taskGroup.pageInfo.hasNextPage &&
-      !equals(statusCount, newStatusCount) &&
-      isFromSameTaskGroupId
-    ) {
-      this.setState({ statusCount: newStatusCount });
+    if (isFromSameTaskGroupId && !taskGroup.pageInfo.hasNextPage) {
+      const newStatusCount = taskGroup.edges
+        ? getStatusCount(taskGroup.edges)
+        : {};
+
+      return { statusCount: newStatusCount };
     }
+
+    return {
+      statusCount: initialStatusCount,
+    };
   }
-  /* eslint-enable react/no-did-update-set-state */
 
   getStatusIcon = status => {
     if (this.props.filter === status) {

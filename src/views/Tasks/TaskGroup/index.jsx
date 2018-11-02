@@ -80,10 +80,20 @@ export default class TaskGroup extends Component {
     const groupActions = [];
     const actionInputs = state.actionInputs || {};
     const actionData = state.actionData || {};
+    const taskGroupLoaded = taskGroup && !taskGroup.pageInfo.hasNextPage;
+    // Make sure data is not from another task group which
+    // can happen when a user searches for a different task group
+    const isFromSameTaskGroupId =
+      taskGroup && taskGroup.edges[0]
+        ? taskGroup.edges[0].node.taskGroupId === taskGroupId
+        : true;
 
-    if (taskGroupId !== state.previousTaskGroupId && taskActions) {
+    if (
+      isFromSameTaskGroupId &&
+      taskGroupId !== state.previousTaskGroupId &&
+      taskActions
+    ) {
       updateTaskGroupIdHistory(taskGroupId);
-
       taskActions.actions
         .filter(action => isEmpty(action.context))
         .forEach(action => {
@@ -107,17 +117,13 @@ export default class TaskGroup extends Component {
         actionInputs,
         actionData,
         previousTaskGroupId: taskGroupId,
-        taskGroupLoaded: false,
+        taskGroupLoaded,
       };
     }
 
-    if (taskGroup && !taskGroup.pageInfo.hasNextPage) {
-      return {
-        taskGroupLoaded: true,
-      };
-    }
-
-    return null;
+    return {
+      taskGroupLoaded: isFromSameTaskGroupId ? taskGroupLoaded : false,
+    };
   }
 
   constructor(props) {
@@ -129,7 +135,7 @@ export default class TaskGroup extends Component {
   state = {
     filter: null,
     // eslint-disable-next-line react/no-unused-state
-    previousTaskGroupId: this.props.match.params.taskGroupId,
+    previousTaskGroupId: '',
     groupActions: [],
     actionLoading: false,
     actionInputs: {},
