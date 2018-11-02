@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import { arrayOf, string, shape } from 'prop-types';
 import { Link } from 'react-router-dom';
 import { pipe, map, sort as rSort } from 'ramda';
+import { lowerCase } from 'change-case';
 import memoize from 'fast-memoize';
 import { FixedSizeList as List } from 'react-window';
 import { withStyles } from '@material-ui/core/styles';
@@ -9,7 +10,6 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableHead from '@material-ui/core/TableHead';
 import LinkIcon from 'mdi-react/LinkIcon';
@@ -87,6 +87,10 @@ const createSortedTasks = memoize(
     verticalAlign: 'middle',
     display: 'inline-block',
   },
+  table: {
+    marginTop: theme.spacing.double,
+    marginBottom: theme.spacing.unit,
+  },
   tableHead: {
     display: 'flex',
   },
@@ -94,6 +98,10 @@ const createSortedTasks = memoize(
     flex: 1,
     display: 'flex',
     alignItems: 'center',
+    height: theme.spacing.unit * 4,
+    '& > th': {
+      paddingBottom: theme.spacing.double,
+    },
   },
   tableHeadCell: {
     flexDirection: 'row',
@@ -110,6 +118,9 @@ const createSortedTasks = memoize(
     flexGrow: 0,
     flexDirection: 'column',
     justifyContent: 'center',
+  },
+  noTasksText: {
+    marginTop: theme.spacing.double,
   },
 }))
 export default class TaskGroupTable extends Component {
@@ -161,8 +172,8 @@ export default class TaskGroupTable extends Component {
     const iconSize = 16;
     const windowHeight = window.innerHeight;
     const tableHeight = windowHeight > 400 ? 0.6 * windowHeight : 400;
-
     const items = createSortedTasks(tasks, sortBy, sortDirection, filter);
+    const itemCount = items.length;
 
     const ItemRenderer = ({ index, style }) => {
       const taskGroup = items[index].node;
@@ -190,42 +201,44 @@ export default class TaskGroupTable extends Component {
     };
 
     return (
-      <Table>
-        <TableHead className={classes.tableHead}>
-          <TableRow className={classes.tableHeadRow}>
-            <TableCell className={classes.tableFirstCell}>
-              <TableSortLabel
-                id="Name"
-                active={sortBy === 'Name'}
-                direction={sortDirection || 'desc'}
-                onClick={this.handleHeaderClick}
-              >
-                Name
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                id="Status"
-                active={sortBy === 'Status'}
-                direction={sortDirection || 'desc'}
-                onClick={this.handleHeaderClick}
-              >
-                Status
-              </TableSortLabel>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <List
-            height={tableHeight}
-            itemCount={items.length}
-            itemSize={50}
-            width="100%"
-          >
+      <Fragment>
+        <Table className={classes.table}>
+          <TableHead className={classes.tableHead}>
+            <TableRow className={classes.tableHeadRow}>
+              <TableCell className={classes.tableFirstCell}>
+                <TableSortLabel
+                  id="Name"
+                  active={sortBy === 'Name'}
+                  direction={sortDirection || 'desc'}
+                  onClick={this.handleHeaderClick}
+                >
+                  Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  id="Status"
+                  active={sortBy === 'Status'}
+                  direction={sortDirection || 'desc'}
+                  onClick={this.handleHeaderClick}
+                >
+                  Status
+                </TableSortLabel>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+        </Table>
+        {itemCount ? (
+          <List height={tableHeight} itemCount={items.length} itemSize={48}>
             {ItemRenderer}
           </List>
-        </TableBody>
-      </Table>
+        ) : (
+          <Typography className={classes.noTasksText}>
+            No
+            {filter ? ` ${lowerCase(filter)}` : ''} tasks available
+          </Typography>
+        )}
+      </Fragment>
     );
   }
 }
