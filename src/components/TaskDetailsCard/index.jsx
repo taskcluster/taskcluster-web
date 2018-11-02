@@ -64,7 +64,7 @@ import urls from '../../utils/urls';
   },
   tag: {
     height: theme.spacing.unit * 3,
-    margin: `0 ${theme.spacing.unit}px ${theme.spacing.unit}px 0`,
+    margin: `${theme.spacing.unit}px ${theme.spacing.unit}px 0 0`,
   },
 }))
 /**
