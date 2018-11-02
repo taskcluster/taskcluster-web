@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from 'react';
-import { arrayOf, string, shape } from 'prop-types';
+import { arrayOf, oneOf, shape } from 'prop-types';
 import { Link } from 'react-router-dom';
 import { pipe, map, sort as rSort } from 'ramda';
 import { lowerCase } from 'change-case';
@@ -15,6 +15,7 @@ import TableHead from '@material-ui/core/TableHead';
 import LinkIcon from 'mdi-react/LinkIcon';
 import StatusLabel from '../StatusLabel';
 import sort from '../../utils/sort';
+import { TASK_STATE } from '../../utils/constants';
 import { pageInfo, client } from '../../utils/prop-types';
 
 const sorted = pipe(
@@ -136,8 +137,8 @@ export default class TaskGroupTable extends Component {
       edges: arrayOf(client),
       pageInfo,
     }).isRequired,
-    // TODO: Add comment
-    filter: string,
+    /** A task state filter to narrow down results */
+    filter: oneOf(Object.values(TASK_STATE)),
   };
 
   state = {
