@@ -7,22 +7,18 @@ import {
   filter,
   pipe,
   map,
-  identity,
   contains,
-  any,
   prop,
   pluck,
   sort as rSort,
 } from 'ramda';
 import memoize from 'fast-memoize';
 import { withStyles } from '@material-ui/core/styles';
-import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import LinkIcon from 'mdi-react/LinkIcon';
-import TableCellListItem from '../TableCellListItem';
 import DataTable from '../DataTable';
-import scopeMatch from '../../utils/scopeMatch';
 import sort from '../../utils/sort';
 import { role, scopeExpansionLevel } from '../../utils/prop-types';
 
@@ -32,24 +28,28 @@ const sorted = pipe(
 );
 
 @withRouter
-@withStyles({
-  listItemCell: {
-    width: '100%',
+@withStyles(theme => ({
+  tableCell: {
+    textDecoration: 'none',
   },
-})
+  listItemCell: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
+    padding: theme.spacing.unit,
+    ...theme.mixins.hover,
+  },
+}))
 export default class RoleScopesTable extends Component {
   static defaultProps = {
     searchTerm: null,
     selectedScope: null,
-    searchMode: null,
     searchProperty: 'expandedScopes',
   };
 
   static propTypes = {
     /** A GraphQL roles response. */
     roles: arrayOf(role).isRequired,
-    /** The entity search mode for scopes. */
-    searchMode: string,
     /** The scope expansion level. */
     searchProperty: scopeExpansionLevel,
     /** A string to filter the list of results. */
@@ -62,22 +62,15 @@ export default class RoleScopesTable extends Component {
   };
 
   createSortedRolesScopes = memoize(
-    (roles, searchMode, selectedScope, searchProperty) => {
-      const match = scopeMatch(searchMode, selectedScope);
+    (roles, selectedScope, searchProperty) => {
       const extractExpandedScopes = pipe(
         pluck('expandedScopes'),
         flatten,
         uniq,
-        searchMode ? filter(match) : identity,
         rSort(sort)
       );
       const extractRoles = pipe(
-        filter(
-          pipe(
-            prop(searchProperty),
-            any(match)
-          )
-        ),
+        filter(prop(searchProperty)),
         pluck('roleId'),
         rSort(sort)
       );
@@ -85,10 +78,8 @@ export default class RoleScopesTable extends Component {
       return selectedScope ? extractRoles(roles) : extractExpandedScopes(roles);
     },
     {
-      serializer: ([roles, searchMode, selectedScope, searchProperty]) =>
-        `${sorted(roles).join(
-          '-'
-        )}-${searchMode}-${selectedScope}-${searchProperty}`,
+      serializer: ([roles, selectedScope, searchProperty]) =>
+        `${sorted(roles).join('-')}-${selectedScope}-${searchProperty}`,
     }
   );
 
@@ -99,19 +90,19 @@ export default class RoleScopesTable extends Component {
     return (
       <TableRow key={node}>
         <TableCell padding="dense">
-          <TableCellListItem
-            className={classes.listItemCell}
-            button
-            component={Link}
+          <Link
+            className={classes.tableCell}
             to={
               selectedScope
                 ? `/auth/roles/${encodeURIComponent(node)}`
                 : `/auth/scopes/${encodeURIComponent(node)}`
             }
           >
-            <ListItemText disableTypography primary={node} />
-            <LinkIcon size={iconSize} />
-          </TableCellListItem>
+            <div className={classes.listItemCell}>
+              <Typography>{node}</Typography>
+              <LinkIcon size={iconSize} />
+            </div>
+          </Link>
         </TableCell>
       </TableRow>
     );
@@ -121,14 +112,12 @@ export default class RoleScopesTable extends Component {
     const {
       roles,
       searchTerm,
-      searchMode,
       selectedScope,
       searchProperty,
       ...props
     } = this.props;
     const items = this.createSortedRolesScopes(
       roles,
-      searchMode,
       selectedScope,
       searchProperty
     );

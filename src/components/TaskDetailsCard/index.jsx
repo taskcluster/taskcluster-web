@@ -10,9 +10,12 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
+import Chip from '@material-ui/core/Chip';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
 import ChevronUpIcon from 'mdi-react/ChevronUpIcon';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
 import ContentCopyIcon from 'mdi-react/ContentCopyIcon';
@@ -51,6 +54,21 @@ import urls from '../../utils/urls';
     margin: 0,
     fontSize: theme.typography.body2.fontSize,
   },
+  listItemSecondaryAction: {
+    paddingRight: theme.spacing.unit,
+    display: 'flex',
+    alignItems: 'center',
+    '& button, & a': {
+      ...theme.mixins.listItemButton,
+    },
+  },
+  tag: {
+    height: theme.spacing.unit * 3,
+    margin: `${theme.spacing.unit}px ${theme.spacing.unit}px 0 0`,
+  },
+  unorderedList: {
+    ...theme.mixins.unorderedList,
+  },
 }))
 /**
  * Render information in a card layout about a task.
@@ -84,6 +102,7 @@ export default class TaskDetailsCard extends Component {
   state = {
     showPayload: false,
     showExtra: false,
+    showMore: false,
   };
 
   handleToggleExtra = () => {
@@ -94,9 +113,13 @@ export default class TaskDetailsCard extends Component {
     this.setState({ showPayload: !this.state.showPayload });
   };
 
+  handleToggleMore = () => {
+    this.setState({ showMore: !this.state.showMore });
+  };
+
   render() {
     const { classes, task, dependentTasks } = this.props;
-    const { showPayload, showExtra } = this.state;
+    const { showPayload, showExtra, showMore } = this.state;
     const isExternal = task.metadata.source.startsWith('https://');
     const tags = Object.entries(task.tags);
     const payload = deepSortObject(task.payload);
@@ -140,17 +163,32 @@ export default class TaskDetailsCard extends Component {
               </ListItem>
               <ListItem>
                 <ListItemText
+                  primary="Task Group ID"
+                  secondary={task.taskGroupId}
+                />
+                <ListItemSecondaryAction
+                  className={classes.listItemSecondaryAction}
+                >
+                  <CopyToClipboard text={task.taskGroupId}>
+                    <IconButton>
+                      <ContentCopyIcon />
+                    </IconButton>
+                  </CopyToClipboard>
+                  <IconButton
+                    component={Link}
+                    to={`/tasks/groups/${task.taskGroupId}`}
+                  >
+                    <LinkIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <ListItem>
+                <ListItemText
                   primary="State"
                   secondary={<StatusLabel state={task.status.state} />}
                 />
               </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Retries Left"
-                  secondary={`${task.status.retriesLeft} of ${task.retries}`}
-                />
-              </ListItem>
-              <CopyToClipboard text={task.created}>
+              <CopyToClipboard title={task.created} text={task.created}>
                 <ListItem button className={classes.listItemButton}>
                   <ListItemText
                     primary="Created"
@@ -159,119 +197,54 @@ export default class TaskDetailsCard extends Component {
                   <ContentCopyIcon />
                 </ListItem>
               </CopyToClipboard>
-              <CopyToClipboard text={task.deadline}>
-                <ListItem button className={classes.listItemButton}>
-                  <ListItemText
-                    primary="Deadline"
-                    secondary={
-                      <DateDistance
-                        from={task.deadline}
-                        offset={task.created}
-                      />
-                    }
-                  />
-                  <ContentCopyIcon />
-                </ListItem>
-              </CopyToClipboard>
-              <CopyToClipboard text={task.expires}>
-                <ListItem button className={classes.listItemButton}>
-                  <ListItemText
-                    primary="Expires"
-                    secondary={<DateDistance from={task.expires} />}
-                  />
-                  <ContentCopyIcon />
-                </ListItem>
-              </CopyToClipboard>
               <ListItem>
-                <ListItemText
-                  primary="Priority"
-                  secondary={
-                    <Label mini status="info">
-                      {task.priority}
-                    </Label>
-                  }
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Provisioner"
-                  secondary={task.provisionerId}
-                />
-              </ListItem>
-              <ListItem
-                button
-                className={classes.listItemButton}
-                component={Link}
-                to={`/provisioners/${task.provisionerId}/worker-types/${
-                  task.workerType
-                }`}
-              >
                 <ListItemText
                   primary="Worker Type"
                   secondary={task.workerType}
                 />
-                <LinkIcon />
+                <ListItemSecondaryAction
+                  className={classes.listItemSecondaryAction}
+                >
+                  <CopyToClipboard text={task.workerType}>
+                    <IconButton>
+                      <ContentCopyIcon />
+                    </IconButton>
+                  </CopyToClipboard>
+                  <IconButton
+                    component={Link}
+                    to={`/provisioners/${task.provisionerId}/worker-types/${
+                      task.workerType
+                    }`}
+                  >
+                    <LinkIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Scheduler ID"
-                  secondary={
-                    task.schedulerId === '-' ? <em>n/a</em> : task.schedulerId
-                  }
-                />
-              </ListItem>
-              {dependentTasks && dependentTasks.length ? (
-                <Fragment>
-                  <ListItem>
-                    <ListItemText primary="Dependencies" />
-                  </ListItem>
-                  <List dense disablePadding>
-                    {dependentTasks.map(task => (
-                      <ListItem
-                        button
-                        className={classes.listItemButton}
-                        component={Link}
-                        to={`/tasks/${task.taskId}`}
-                        key={task.taskId}
-                      >
-                        <StatusLabel state={task.status.state} />
-                        <ListItemText primary={task.metadata.name} />
-                        <LinkIcon />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Fragment>
-              ) : (
-                <ListItem>
-                  <ListItemText
-                    primary="Dependencies"
-                    secondary={<em>n/a</em>}
-                  />
-                </ListItem>
-              )}
 
-              {tags.length ? (
+              <Fragment>
                 <ListItem>
-                  <ListItemText primary="Tags" secondary={<em>n/a</em>} />
-                </ListItem>
-              ) : (
-                <Fragment>
-                  <ListItem>
-                    <ListItemText primary="Tags" />
-                  </ListItem>
-                  <List dense disablePadding>
-                    {tags.map(([key, value]) => (
-                      <ListItem key={key}>
-                        <ListItemText
-                          primary={key}
-                          secondary={<em>{value}</em>}
+                  {tags.length ? (
+                    <ListItemText
+                      primary="Tags"
+                      secondary={tags.map(([key, value]) => (
+                        <Chip
+                          key={key}
+                          className={classes.tag}
+                          label={
+                            <Fragment>
+                              {key}
+                              :&nbsp;&nbsp;
+                              <em>{value}</em>
+                            </Fragment>
+                          }
                         />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Fragment>
-              )}
-
+                      ))}
+                    />
+                  ) : (
+                    <ListItemText primary="Tags" secondary="n/a" />
+                  )}
+                </ListItem>
+              </Fragment>
               <ListItem>
                 <ListItemText
                   primary="Requires"
@@ -297,37 +270,51 @@ export default class TaskDetailsCard extends Component {
                   }
                 />
               </ListItem>
-              <ListItem>
-                <ListItemText
-                  disableTypography
-                  primary={<Typography variant="subtitle1">Scopes</Typography>}
-                  secondary={
-                    task.scopes.length ? (
-                      <pre className={classes.pre}>
-                        {task.scopes.join('\n')}
-                      </pre>
-                    ) : (
-                      <em>n/a</em>
-                    )
-                  }
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  disableTypography
-                  primary={<Typography variant="subtitle1">Routes</Typography>}
-                  secondary={
-                    task.routes.length ? (
-                      <pre className={classes.pre}>
-                        {task.routes.join('\n')}
-                      </pre>
-                    ) : (
-                      <em>n/a</em>
-                    )
-                  }
-                />
-              </ListItem>
-
+              {dependentTasks && dependentTasks.length ? (
+                <Fragment>
+                  <ListItem>
+                    <ListItemText primary="Dependencies" />
+                  </ListItem>
+                  <List dense disablePadding>
+                    {dependentTasks.map(task => (
+                      <ListItem
+                        button
+                        classes={{
+                          container: classes.listItemWithSecondaryAction,
+                        }}
+                        component={Link}
+                        to={`/tasks/${task.taskId}`}
+                        key={task.taskId}
+                      >
+                        <StatusLabel state={task.status.state} />
+                        <ListItemText primary={task.metadata.name} />
+                        <ListItemSecondaryAction
+                          className={classes.listItemSecondaryAction}
+                        >
+                          <CopyToClipboard text={task.metadata.name}>
+                            <IconButton>
+                              <ContentCopyIcon />
+                            </IconButton>
+                          </CopyToClipboard>
+                          <IconButton
+                            component={Link}
+                            to={`/tasks/${task.taskId}`}
+                          >
+                            <LinkIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Fragment>
+              ) : (
+                <ListItem>
+                  <ListItemText
+                    primary="Dependencies"
+                    secondary={<em>n/a</em>}
+                  />
+                </ListItem>
+              )}
               <ListItem
                 button
                 className={classes.listItemButton}
@@ -336,7 +323,7 @@ export default class TaskDetailsCard extends Component {
                 <ListItemText primary="Payload" />
                 {showPayload ? <ChevronUpIcon /> : <ChevronDownIcon />}
               </ListItem>
-              <Collapse in={showPayload} timeout="auto" unmountOnExit>
+              <Collapse in={showPayload} timeout="auto">
                 <List component="div" disablePadding>
                   <ListItem>
                     <ListItemText
@@ -361,7 +348,7 @@ export default class TaskDetailsCard extends Component {
                     <ListItemText primary="Extra" />
                     {showExtra ? <ChevronUpIcon /> : <ChevronDownIcon />}
                   </ListItem>
-                  <Collapse in={showExtra} timeout="auto" unmountOnExit>
+                  <Collapse in={showExtra} timeout="auto">
                     <List component="div" disablePadding>
                       <ListItem>
                         <ListItemText
@@ -377,7 +364,122 @@ export default class TaskDetailsCard extends Component {
                   </Collapse>
                 </Fragment>
               )}
+              <ListItem
+                button
+                className={classes.listItemButton}
+                onClick={this.handleToggleMore}
+              >
+                <ListItemText primary={showMore ? 'Less...' : 'More...'} />
+                {showMore ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              </ListItem>
             </List>
+            <Collapse in={showMore} timeout="auto">
+              <List>
+                <ListItem>
+                  <ListItemText
+                    primary="Provisioner"
+                    secondary={task.provisionerId}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Retries Left"
+                    secondary={`${task.status.retriesLeft} of ${task.retries}`}
+                  />
+                </ListItem>
+                <CopyToClipboard title={task.deadline} text={task.deadline}>
+                  <ListItem button className={classes.listItemButton}>
+                    <ListItemText
+                      primary="Deadline"
+                      secondary={
+                        <DateDistance
+                          from={task.deadline}
+                          offset={task.created}
+                        />
+                      }
+                    />
+                    <ContentCopyIcon />
+                  </ListItem>
+                </CopyToClipboard>
+                <CopyToClipboard title={task.expires} text={task.expires}>
+                  <ListItem button className={classes.listItemButton}>
+                    <ListItemText
+                      primary="Expires"
+                      secondary={<DateDistance from={task.expires} />}
+                    />
+                    <ContentCopyIcon />
+                  </ListItem>
+                </CopyToClipboard>
+                <ListItem>
+                  <ListItemText
+                    primary="Priority"
+                    secondary={
+                      <Label mini status="info">
+                        {task.priority}
+                      </Label>
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Scheduler ID"
+                    secondary={
+                      task.schedulerId === '-' ? <em>n/a</em> : task.schedulerId
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography variant="subtitle1">Scopes</Typography>
+                    }
+                    secondary={
+                      task.scopes.length ? (
+                        <ul className={classes.unorderedList}>
+                          {task.scopes.map(scope => (
+                            <Typography
+                              component="span"
+                              color="textSecondary"
+                              key={scope}
+                            >
+                              <li>{scope}</li>
+                            </Typography>
+                          ))}
+                        </ul>
+                      ) : (
+                        <em>n/a</em>
+                      )
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography variant="subtitle1">Routes</Typography>
+                    }
+                    secondary={
+                      task.routes.length ? (
+                        <ul className={classes.unorderedList}>
+                          {task.routes.map(route => (
+                            <Typography
+                              component="span"
+                              color="textSecondary"
+                              key={route}
+                            >
+                              <li>{route}</li>
+                            </Typography>
+                          ))}
+                        </ul>
+                      ) : (
+                        <em>n/a</em>
+                      )
+                    }
+                  />
+                </ListItem>
+              </List>
+            </Collapse>
           </CardContent>
         </div>
       </Card>
