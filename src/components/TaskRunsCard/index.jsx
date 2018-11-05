@@ -180,6 +180,18 @@ export default class TaskRunsCard extends Component {
     this.setState({ showArtifacts: !this.state.showArtifacts });
   };
 
+  getLiveLogArtifactFromRun = run => {
+    const artifact = run.artifacts.edges.find(({ node: { name } }) =>
+      name.includes('live_backing.log')
+    );
+
+    if (!artifact) {
+      return;
+    }
+
+    return artifact.node;
+  };
+
   createSortedArtifactsConnection(artifacts) {
     return {
       ...artifacts,
@@ -249,6 +261,7 @@ export default class TaskRunsCard extends Component {
     } = this.props;
     const { showArtifacts } = this.state;
     const run = this.getCurrentRun();
+    const liveLogArtifact = this.getLiveLogArtifactFromRun(run);
 
     return (
       <Card raised>
@@ -369,6 +382,19 @@ export default class TaskRunsCard extends Component {
                     <ContentCopyIcon />
                   </ListItem>
                 </CopyToClipboard>
+                {liveLogArtifact && (
+                  <ListItem
+                    button
+                    className={classes.listItemButton}
+                    onClick={this.handleArtifactClick(liveLogArtifact)}
+                  >
+                    <ListItemText
+                      primary="View Live Log"
+                      secondary={liveLogArtifact.name}
+                    />
+                    <LinkIcon />
+                  </ListItem>
+                )}
                 <ListItem
                   button
                   className={classes.listItemButton}
