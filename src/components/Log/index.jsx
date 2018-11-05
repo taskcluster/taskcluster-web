@@ -19,7 +19,7 @@ const FOLLOW_STORAGE_KEY = 'follow-log';
 @withStyles(theme => ({
   '@global': {
     'div.react-lazylog': {
-      backgroundColor: `${theme.palette.primary.dark}`,
+      backgroundColor: 'rgb(18, 29, 39)',
       fontFamily: 'Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace',
       fontSize: 13,
       paddingTop: 4,
@@ -29,27 +29,27 @@ const FOLLOW_STORAGE_KEY = 'follow-log';
     },
   },
   highlight: {
-    backgroundColor: `${theme.palette.action.selected} !important`,
+    backgroundColor: 'rgba(255, 255, 255, 0.2) !important',
   },
   line: {
     '& > a': {
       transition: theme.transitions.create('color'),
-      color: theme.palette.text.inactive,
+      color: 'rgba(255, 255, 255, 0.4)',
     },
     '&:hover > a': {
-      color: `${theme.palette.text.primary} !important`,
+      color: 'rgba(255, 255, 255, 0.9) !important',
     },
     '&$highlight > a': {
-      color: theme.palette.common.white,
+      color: '#fff',
     },
     '&:hover': {
-      backgroundColor: `${theme.palette.action.hover} !important`,
+      backgroundColor: 'rgba(255, 255, 255, 0.1) !important',
     },
   },
   followButtonFollowing: {
-    backgroundColor: theme.palette.success.main,
+    backgroundColor: '#4caf50',
     '&:hover': {
-      backgroundColor: theme.palette.success.dark,
+      backgroundColor: '#388e3c',
     },
   },
 }))
