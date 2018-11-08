@@ -181,8 +181,8 @@ export default class TaskRunsCard extends Component {
   };
 
   getLiveLogArtifactFromRun = run => {
-    const artifact = run.artifacts.edges.find(({ node: { name } }) =>
-      name.includes('live.log')
+    const artifact = run.artifacts.edges.find(
+      ({ node: { name } }) => name === 'public/logs/live.log'
     );
 
     if (!artifact) {
