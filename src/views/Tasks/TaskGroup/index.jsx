@@ -132,18 +132,6 @@ export default class TaskGroup extends Component {
     taskGroupLoaded: false,
   };
 
-  componentDidMount() {
-    const link = document.createElement('link');
-    const oldLink = document.getElementsByTagName('link')[0];
-    link.id = 'dynamic-favicon';
-    link.rel = 'shortcut icon';
-    link.href = '/testLogo.png';
-    if (oldLink) {
-      document.head.removeChild(oldLink);
-    }
-    document.head.appendChild(link);
-  }
-
   componentDidUpdate(prevProps) {
     const {
       data: { taskGroup },
@@ -315,7 +303,6 @@ export default class TaskGroup extends Component {
       },
       data: { taskGroup, error, loading },
     } = this.props;
-
     return (
       <Dashboard
         helpView={<HelpView description={description} />}
