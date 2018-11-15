@@ -251,7 +251,7 @@ export default class TaskGroupProgress extends Component {
 
     return (
       <Grid container spacing={16}>
-        <TestHelmet status="test" />
+        <TestHelmet status="Test" />
         {Object.keys(TASK_STATE).map(status => {
           const Icon = this.getStatusIcon(status);
 
