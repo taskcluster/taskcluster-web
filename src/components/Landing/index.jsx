@@ -3,6 +3,7 @@ import { node, string } from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import PageTitle from '../PageTitle';
+import TestHelmet from '../../views/Tasks/TaskGroup/helmet';
 import ErrorPanel from '../ErrorPanel';
 
 @withStyles(theme => ({
@@ -56,6 +57,7 @@ export default class Landing extends Component {
 
     return (
       <div className={classes.root}>
+        <TestHelmet />
         <PageTitle>{title}</PageTitle>
         <main className={classNames(classes.content, className)} {...props}>
           {error ? <ErrorPanel error={error} /> : children}

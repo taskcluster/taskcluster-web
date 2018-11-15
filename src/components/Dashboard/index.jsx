@@ -17,6 +17,7 @@ import HelpIcon from 'mdi-react/HelpIcon';
 import LightBulbOn from 'mdi-react/LightbulbOnIcon';
 import LightBulbOnOutline from 'mdi-react/LightbulbOnOutlineIcon';
 import PageTitle from '../PageTitle';
+import TestHelmet from '../../views/Tasks/TaskGroup/helmet';
 import UserMenu from './UserMenu';
 import SidebarList from './SidebarList';
 import { THEME } from '../../utils/constants';
@@ -235,6 +236,7 @@ export default class Dashboard extends Component {
 
     return (
       <div className={classes.root}>
+        <TestHelmet />
         <PageTitle>{title}</PageTitle>
         <AppBar className={classes.appBar}>
           <Toolbar>

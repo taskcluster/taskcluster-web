@@ -5,8 +5,11 @@ export default class TestHelmet extends Component {
   render() {
     return (
       <Helmet>
-        {/* <title>Testing</title> */}
-        <link href="/testLogo.png" rel="shortcut icon" />
+        {this.props.status ? (
+          <link href={`/logo${this.props.status}`} rel="shortcut icon" />
+        ) : (
+          <link href="/logo.png" rel="shortcut icon" />
+        )}
       </Helmet>
     );
   }

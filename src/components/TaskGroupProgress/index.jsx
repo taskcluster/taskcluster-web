@@ -22,6 +22,7 @@ import PlaylistRemoveIcon from 'mdi-react/PlaylistRemoveIcon';
 import { task, pageInfo, taskState } from '../../utils/prop-types';
 import { TASK_STATE, THEME } from '../../utils/constants';
 import sort from '../../utils/sort';
+import TestHelmet from '../../views/Tasks/TaskGroup/helmet';
 
 const sorted = pipe(
   filter(taskGroup => taskGroup.node.metadata.name),
@@ -250,6 +251,7 @@ export default class TaskGroupProgress extends Component {
 
     return (
       <Grid container spacing={16}>
+        <TestHelmet status="test" />
         {Object.keys(TASK_STATE).map(status => {
           const Icon = this.getStatusIcon(status);
 
