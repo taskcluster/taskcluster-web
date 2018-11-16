@@ -251,9 +251,11 @@ export default class TaskGroupProgress extends Component {
     if (failed > 0) {
       return 'Failed';
     }
+
     if (incompletedTasks > 0) {
       return 'Running';
     }
+
     return 'Completed';
   };
 
@@ -261,6 +263,7 @@ export default class TaskGroupProgress extends Component {
     const { classes, onStatusClick } = this.props;
     const { statusCount } = this.state;
     const showDots = Object.values(statusCount).reduce((a, b) => a + b) === 0;
+
     return (
       <Grid container spacing={16}>
         <Favicon status={this.getFaviconStatus(statusCount)} />

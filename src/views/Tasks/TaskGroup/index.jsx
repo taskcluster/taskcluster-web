@@ -303,6 +303,7 @@ export default class TaskGroup extends Component {
       },
       data: { taskGroup, error, loading },
     } = this.props;
+
     return (
       <Dashboard
         helpView={<HelpView description={description} />}
