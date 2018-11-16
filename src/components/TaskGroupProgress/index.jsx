@@ -22,7 +22,7 @@ import PlaylistRemoveIcon from 'mdi-react/PlaylistRemoveIcon';
 import { task, pageInfo, taskState } from '../../utils/prop-types';
 import { TASK_STATE, THEME } from '../../utils/constants';
 import sort from '../../utils/sort';
-import TestHelmet from '../../views/Tasks/TaskGroup/helmet';
+import Favicon from '../Favicon';
 
 const sorted = pipe(
   filter(taskGroup => taskGroup.node.metadata.name),
@@ -244,14 +244,26 @@ export default class TaskGroupProgress extends Component {
     }
   };
 
+  getFaviconStatus = statusCount => {
+    const { failed, pending, running, unscheduled } = statusCount;
+    const incompletedTasks = pending + running + unscheduled;
+
+    if (failed > 0) {
+      return 'Failed';
+    }
+    if (incompletedTasks > 0) {
+      return 'Running';
+    }
+    return 'Completed';
+  };
+
   render() {
     const { classes, onStatusClick } = this.props;
     const { statusCount } = this.state;
     const showDots = Object.values(statusCount).reduce((a, b) => a + b) === 0;
-
     return (
       <Grid container spacing={16}>
-        <TestHelmet status="Test" />
+        <Favicon status={this.getFaviconStatus(statusCount)} />
         {Object.keys(TASK_STATE).map(status => {
           const Icon = this.getStatusIcon(status);
 
