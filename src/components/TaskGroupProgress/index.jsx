@@ -244,19 +244,31 @@ export default class TaskGroupProgress extends Component {
     }
   };
 
-  getFaviconStatus = statusCount => {
-    const { failed, pending, running, unscheduled } = statusCount;
+  getFaviconState = () => {
+    const {
+      completed,
+      exception,
+      failed,
+      pending,
+      running,
+      unscheduled,
+    } = this.state.statusCount;
+    const allTasks = completed + exception + pending + running + unscheduled;
     const incompletedTasks = pending + running + unscheduled;
 
+    if (allTasks === 0) {
+      return;
+    }
+
     if (failed > 0) {
-      return 'Failed';
+      return TASK_STATE.FAILED;
     }
 
     if (incompletedTasks > 0) {
-      return 'Running';
+      return TASK_STATE.RUNNING;
     }
 
-    return 'Completed';
+    return TASK_STATE.COMPLETED;
   };
 
   render() {
@@ -266,7 +278,7 @@ export default class TaskGroupProgress extends Component {
 
     return (
       <Grid container spacing={16}>
-        <Favicon status={this.getFaviconStatus(statusCount)} />
+        <Favicon state={this.getFaviconState()} />
         {Object.keys(TASK_STATE).map(status => {
           const Icon = this.getStatusIcon(status);
 
