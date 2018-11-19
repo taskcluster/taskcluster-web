@@ -14,6 +14,7 @@ export default class Favicon extends Component {
 
   render() {
     const { state } = this.props;
+
     return (
       <Helmet>
         {state ? (
