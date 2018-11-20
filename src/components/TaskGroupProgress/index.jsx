@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { func, shape, arrayOf, string } from 'prop-types';
 import memoize from 'fast-memoize';
-import { pipe, filter, map, sort as rSort } from 'ramda';
+import { sum, pipe, filter, map, sort as rSort } from 'ramda';
 import { lowerCase, title } from 'change-case';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -22,7 +22,7 @@ import PlaylistRemoveIcon from 'mdi-react/PlaylistRemoveIcon';
 import { task, pageInfo, taskState } from '../../utils/prop-types';
 import { TASK_STATE, THEME } from '../../utils/constants';
 import sort from '../../utils/sort';
-import Favicon from '../Favicon';
+import Helmet from '../Helmet';
 
 const sorted = pipe(
   filter(taskGroup => taskGroup.node.metadata.name),
@@ -244,7 +244,7 @@ export default class TaskGroupProgress extends Component {
     }
   };
 
-  getFaviconState = () => {
+  getTaskGroupState = () => {
     const {
       completed,
       exception,
@@ -253,8 +253,8 @@ export default class TaskGroupProgress extends Component {
       running,
       unscheduled,
     } = this.state.statusCount;
-    const allTasks = completed + exception + pending + running + unscheduled;
-    const incompletedTasks = pending + running + unscheduled;
+    const allTasks = sum([completed, exception, pending, running, unscheduled]);
+    const unfinishedTasks = sum([pending, running, unscheduled]);
 
     if (allTasks === 0) {
       return;
@@ -264,7 +264,7 @@ export default class TaskGroupProgress extends Component {
       return TASK_STATE.FAILED;
     }
 
-    if (incompletedTasks > 0) {
+    if (unfinishedTasks > 0) {
       return TASK_STATE.RUNNING;
     }
 
@@ -275,10 +275,11 @@ export default class TaskGroupProgress extends Component {
     const { classes, onStatusClick } = this.props;
     const { statusCount } = this.state;
     const showDots = Object.values(statusCount).reduce((a, b) => a + b) === 0;
+    const taskGroupState = this.getTaskGroupState();
 
     return (
       <Grid container spacing={16}>
-        <Favicon state={this.getFaviconState()} />
+        <Helmet state={taskGroupState} />
         {Object.keys(TASK_STATE).map(status => {
           const Icon = this.getStatusIcon(status);
 
