@@ -39,10 +39,11 @@ export default class Helmet extends Component {
 
   render() {
     const { title } = this.props;
+    const Favicon = this.getFavicon();
 
     return (
       <ReactHelmet>
-        <link href={this.getFavicon()} rel="shortcut icon" />
+        <link href={Favicon} rel="shortcut icon" />
         {title && <title>{title}</title>}
       </ReactHelmet>
     );
