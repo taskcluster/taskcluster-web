@@ -222,13 +222,12 @@ export default class TaskRunsCard extends Component {
             className={classNames(classes.listItemButton, {
               [classes.pointer]: !!artifact.url,
             })}
-            onClick={this.handleArtifactClick(artifact)}
             hover={!!artifact.url}>
-            <TableCell>
+            <TableCell onClick={this.handleArtifactClick(artifact)}>
               {artifact.isPublic && <LockOpenOutlineIcon />}
               {!artifact.isPublic && <LockIcon />}
             </TableCell>
-            <TableCell>
+            <TableCell onClick={this.handleArtifactClick(artifact)}>
               <Fragment>
                 {artifact.isLog && (
                   <Label status="info" mini className={classes.logButton}>
@@ -238,7 +237,16 @@ export default class TaskRunsCard extends Component {
                 {artifact.name}
               </Fragment>
             </TableCell>
-            <TableCell className={classes.linkCell}>
+            <TableCell>
+              <CopyToClipboard text={artifact.url}>
+                <IconButton>
+                  <ContentCopyIcon />
+                </IconButton>
+              </CopyToClipboard>
+            </TableCell>
+            <TableCell
+              onClick={this.handleArtifactClick(artifact)}
+              className={classes.linkCell}>
               {artifact.isPublic && <LinkIcon size={16} />}
               {!artifact.isPublic &&
                 artifact.url && <OpenInNewIcon size={16} />}
