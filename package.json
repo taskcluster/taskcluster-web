@@ -108,6 +108,7 @@
     "@neutrinojs/airbnb": "^9.0.0-beta.1",
     "@neutrinojs/karma": "^9.0.0-beta.1",
     "@neutrinojs/react": "^9.0.0-beta.1",
+    "babel-loader": "^8.0.4",
     "babel-merge": "^2.0.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.21",
     "chai": "^4.2.0",
