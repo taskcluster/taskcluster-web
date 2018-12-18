@@ -113,6 +113,10 @@ export default class DocsSidebarList extends Component {
       return null;
     }
 
+    if (node.path.includes('README')) {
+      // console.log('rendering node: ', node);
+    }
+
     if (node.children && node.children.length) {
       return (
         <Fragment key={node.path}>
@@ -124,7 +128,7 @@ export default class DocsSidebarList extends Component {
             })}
             component={Link}
             to={href}>
-            {node.data.title}
+            {node.data.title || node.name}
           </Typography>
           <ul className={classes.ul}>
             {node.children.map(child => (
@@ -161,6 +165,8 @@ export default class DocsSidebarList extends Component {
   render() {
     const { classes } = this.props;
     const { currentMenu, menuOpen } = this.state;
+
+    // console.log(docsTableOfContents);
 
     return (
       <div className={classes.toc}>

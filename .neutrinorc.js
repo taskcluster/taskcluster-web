@@ -1,4 +1,5 @@
 const merge = require('deepmerge');
+const babelMerge = require('babel-merge');
 const { join } = require('path');
 
 require('@babel/register')({
@@ -7,6 +8,8 @@ require('@babel/register')({
 });
 
 const theme = require('./src/theme').default;
+const env = process.env.NODE_ENV;
+const isEnvProduction = env === 'production';
 
 module.exports = {
   options: {
@@ -25,6 +28,7 @@ module.exports = {
       rules: {
         'react/no-access-state-in-setstate': 'off',
         'babel/no-unused-expressions': 'off',
+        'linebreak-style': 'off',
       },
     }],
     ['@neutrinojs/react', {
@@ -102,6 +106,18 @@ module.exports = {
           bindings: 'bindings'
         }));
 
+
+      if (isEnvProduction) {
+        neutrino.config.module
+          .rule('compile')
+            .use('babel')
+              .tap(options => babelMerge({
+                plugins: [
+                  require.resolve('babel-plugin-transform-react-remove-prop-types')
+                ]
+              }, options));
+      }
+
       neutrino.config.module
         .rule('graphql')
           .test(/\.graphql$/)
@@ -124,6 +140,9 @@ module.exports = {
           .test(/\.mdx?$/)
           .use('babel-loader')
             .loader('babel-loader')
+            .options({
+              presets: [require.resolve('@babel/preset-react')],
+            })
             .end()
           .use('mdx-loader')
             .loader('mdx-loader');
