@@ -118,13 +118,6 @@ module.exports = {
             .loader('mdx-loader');
     },
     ['@neutrinojs/karma', {
-      browsers: [process.env.CI ? 'FirefoxCI' : 'Firefox'],
-      customLaunchers: {
-        FirefoxCI: {
-          base: 'Firefox',
-          flags: ['-headless']
-        }
-      },
       plugins: [
         'karma-firefox-launcher',
       ],
