@@ -1,13 +1,6 @@
 import { lazy } from 'react';
-import { DOCS_PATH_PREFIX } from '../utils/constants';
 
 export default [
-  {
-    component: lazy(() =>
-      import(/* webpackChunkName: 'Documentation' */ '../views/Documentation')
-    ),
-    path: `${DOCS_PATH_PREFIX}/:path*`,
-  },
   {
     component: lazy(() =>
       import(/* webpackChunkName: 'Tasks' */ '../views/Tasks')
@@ -97,6 +90,7 @@ export default [
       import(/* webpackChunkName: 'HomeOrDashboard' */ '../views/HomeOrDashboard')
     ),
     path: '/',
+    exact: true,
   },
   {
     component: lazy(() =>

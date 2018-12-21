@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { lowerCase } from 'change-case';
 import resolve from 'resolve-pathname';
 import { withStyles } from '@material-ui/core/styles';
+import { join } from 'path';
 import 'prismjs/themes/prism.css';
 import Dashboard from '../../components/Dashboard';
 import ErrorPanel from '../../components/ErrorPanel';
@@ -64,7 +65,7 @@ export default class Documentation extends Component {
   /* eslint-enable react/no-danger */
 
   handlePageChange = url =>
-    this.props.history.push(`${DOCS_PATH_PREFIX}/${url}`);
+    this.props.history.push(join(DOCS_PATH_PREFIX, url));
 
   findChildFromRootNode(node) {
     const currentPath = window.location.pathname.replace(
