@@ -32,6 +32,7 @@ import { HOOKS_LAST_FIRE_TYPE } from '../../utils/constants';
 import { hook } from '../../utils/prop-types';
 import removeKeys from '../../utils/removeKeys';
 import ErrorPanel from '../ErrorPanel';
+import WindowCloseWarnPopup from '../../utils/WindowCloseWarnPopup';
 
 const initialHook = {
   metadata: {
@@ -671,6 +672,7 @@ export default class HookForm extends Component {
             }
           />
         )}
+        <WindowCloseWarnPopup />
       </Fragment>
     );
   }
