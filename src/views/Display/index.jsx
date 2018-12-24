@@ -10,7 +10,9 @@ import Dashboard from '../../components/Dashboard';
 import DataTable from '../../components/DataTable';
 import { VNC_DISPLAYS_POLLING_INTERVAL } from '../../utils/constants';
 import ErrorPanel from '../../components/ErrorPanel';
+import withAlertOnClose from '../../utils/withAlertOnClose';
 
+@withAlertOnClose
 @withStyles({
   vncDisplay: {
     padding: 0,
