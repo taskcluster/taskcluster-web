@@ -52,9 +52,7 @@ let previousCursor;
   warningPanel: {
     marginTop: theme.spacing.double,
     marginBottom: theme.spacing.double,
-  },
-  errorPanel: {
-    ...theme.mixins.errorPanel,
+    ...theme.mixins.warningPanel,
   },
   viewTaskDetails: {
     marginTop: theme.spacing.double,
@@ -265,7 +263,7 @@ export default class InteractiveConnect extends Component {
       <Fragment>
         {isSessionReady && (
           <ErrorPanel
-            className={{ ...classes.warningPanel, ...classes.errorPanel }}
+            className={classes.warningPanel}
             warning
             error="This is not a development environment. Interactive
               tasks can help debug issues, but note that these workers may be spot
@@ -277,7 +275,7 @@ export default class InteractiveConnect extends Component {
             warning
             error="You can not attach to an interactive task after it has stopped
           running."
-            className={classes.errorPanel}
+            className={classes.warningPanel}
           />
         )}
         <List>

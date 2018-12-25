@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Checkbox from '@material-ui/core/Checkbox';
+import classNames from 'classnames';
 import dotProp from 'dot-prop-immutable';
 import jsonSchemaDefaults from 'json-schema-defaults';
 import { safeDump } from 'js-yaml';
@@ -84,8 +85,8 @@ const getCachesFromTask = task =>
   tag: {
     margin: `${theme.spacing.unit}px ${theme.spacing.unit}px 0 0`,
   },
-  errorPanel: {
-    ...theme.mixins.errorPanel,
+  warningPanel: {
+    ...theme.mixins.warningPanel,
   },
   dialogListItem: {
     paddingTop: 0,
@@ -694,7 +695,9 @@ export default class ViewTask extends Component {
         <ErrorPanel
           error={error}
           warning={Boolean(task)}
-          className={classes.errorPanel}
+          className={classNames({
+            [this.classes.warningPanel]: Boolean(task),
+          })}
         />
         {task && (
           <Fragment>

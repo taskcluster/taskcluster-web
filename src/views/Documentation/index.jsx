@@ -13,8 +13,8 @@ import PageMeta from './PageMeta';
 
 @hot(module)
 @withStyles(theme => ({
-  errorPanel: {
-    ...theme.mixins.errorPanel,
+  warningPanel: {
+    ...theme.mixins.warningPanel,
   },
 }))
 export default class Documentation extends Component {
@@ -142,7 +142,7 @@ export default class Documentation extends Component {
           warning
           error="Please refer to [https://docs.taskcluster.net/docs](https://docs.taskcluster.net/docs)
         for the documentation. The following is work in progress."
-          className={this.classes.errorPanel}
+          className={this.classes.warningPanel}
         />
         <ErrorPanel error={error} />
         {Document && (

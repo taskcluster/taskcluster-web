@@ -100,7 +100,7 @@ const createTheme = isDarkTheme => ({
       paddingLeft: 4,
       paddingRight: 4,
     },
-    errorPanel: {
+    warningPanel: {
       '& code': {
         color: lighten('#fff', 0.2),
       },
