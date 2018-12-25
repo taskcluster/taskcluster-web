@@ -696,7 +696,7 @@ export default class ViewTask extends Component {
           error={error}
           warning={Boolean(task)}
           className={classNames({
-            [this.classes.warningPanel]: Boolean(task),
+            [classes.warningPanel]: Boolean(task),
           })}
         />
         {task && (

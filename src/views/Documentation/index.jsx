@@ -127,7 +127,7 @@ export default class Documentation extends Component {
   }
 
   render() {
-    const { history } = this.props;
+    const { classes, history } = this.props;
     const { error, Document, pageInfo } = this.state;
 
     return (
@@ -142,7 +142,7 @@ export default class Documentation extends Component {
           warning
           error="Please refer to [https://docs.taskcluster.net/docs](https://docs.taskcluster.net/docs)
         for the documentation. The following is work in progress."
-          className={this.classes.warningPanel}
+          className={classes.warningPanel}
         />
         <ErrorPanel error={error} />
         {Document && (

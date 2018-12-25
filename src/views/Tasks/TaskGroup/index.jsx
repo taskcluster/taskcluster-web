@@ -311,6 +311,7 @@ export default class TaskGroup extends Component {
         params: { taskGroupId },
       },
       data: { taskGroup, error, loading },
+      classes,
     } = this.props;
 
     return (
@@ -321,7 +322,7 @@ export default class TaskGroup extends Component {
           error={error}
           warning={Boolean(taskGroup)}
           className={classNames({
-            [this.classes.warningPanel]: Boolean(taskGroup),
+            [classes.warningPanel]: Boolean(taskGroup),
           })}
         />
         {taskGroup && (
