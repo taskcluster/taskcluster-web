@@ -84,6 +84,9 @@ const getCachesFromTask = task =>
   tag: {
     margin: `${theme.spacing.unit}px ${theme.spacing.unit}px 0 0`,
   },
+  errorPanel: {
+    ...theme.mixins.errorPanel,
+  },
   dialogListItem: {
     paddingTop: 0,
     paddingBottom: 0,
@@ -688,7 +691,11 @@ export default class ViewTask extends Component {
         helpView={<HelpView description={description} />}
         search={<Search onSubmit={this.handleTaskSearchSubmit} />}>
         {loading && <Spinner loading />}
-        <ErrorPanel error={error} warning={Boolean(task)} />
+        <ErrorPanel
+          error={error}
+          warning={Boolean(task)}
+          className={classes.errorPanel}
+        />
         {task && (
           <Fragment>
             <Typography variant="h5" className={classes.title}>

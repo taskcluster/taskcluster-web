@@ -5,6 +5,7 @@ import dotProp from 'dot-prop-immutable';
 import { isEmpty } from 'ramda';
 import jsonSchemaDefaults from 'json-schema-defaults';
 import { safeDump } from 'js-yaml';
+import { withStyles } from '@material-ui/core/styles';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import HammerIcon from 'mdi-react/HammerIcon';
 import SpeedDial from '../../../components/SpeedDial';
@@ -60,6 +61,11 @@ let previousCursor;
     },
   }),
 })
+@withStyles(theme => ({
+  errorPanel: {
+    ...theme.mixins.errorPanel,
+  },
+}))
 export default class TaskGroup extends Component {
   static getDerivedStateFromProps(props, state) {
     const taskGroupId = props.match.params.taskGroupId || '';
@@ -310,7 +316,11 @@ export default class TaskGroup extends Component {
       <Dashboard
         helpView={<HelpView description={description} />}
         search={<Search onSubmit={this.handleTaskGroupSearchSubmit} />}>
-        <ErrorPanel error={error} warning={Boolean(taskGroup)} />
+        <ErrorPanel
+          error={error}
+          warning={Boolean(taskGroup)}
+          className={this.classes.errorPanel}
+        />
         {taskGroup && (
           <TaskGroupProgress
             taskGroup={taskGroup}
