@@ -29,8 +29,6 @@ import Button from '../../../components/Button';
   createIcon: {
     ...theme.mixins.successIcon,
     ...theme.mixins.fab,
-    position: 'fixed',
-    bottom: theme.spacing.double,
     right: theme.spacing.unit * 11,
   },
 }))
