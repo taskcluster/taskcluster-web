@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { bool } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Emoticon from './Emoticon';
+import { DOCS_PATH_PREFIX } from '../../utils/constants';
 
 @withStyles(
   theme => ({
@@ -13,8 +13,8 @@ import Emoticon from './Emoticon';
     emoticon: {
       position: 'fixed',
       height: '50%',
-      right: 0,
       width: '100%',
+      right: 0,
       [theme.breakpoints.up('md')]: {
         width: `calc(100% - ${theme.drawerWidth}px)`,
       },
@@ -34,17 +34,9 @@ import Emoticon from './Emoticon';
   { withTheme: true }
 )
 export default class NotFound extends Component {
-  static propTypes = {
-    /** Set to true if this component is being used by the docs page. */
-    isDocs: bool,
-  };
-
-  static defaultProps = {
-    isDocs: false,
-  };
-
   render() {
-    const { classes, theme, isDocs } = this.props;
+    const { classes, theme } = this.props;
+    const isDocs = window.location.pathname.startsWith(DOCS_PATH_PREFIX);
 
     return (
       <div className={classes.root}>
