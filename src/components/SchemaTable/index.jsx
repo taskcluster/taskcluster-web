@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { string, object, oneOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import STable from 'react-schema-viewer/lib/SchemaTable';
 
@@ -12,15 +13,22 @@ import STable from 'react-schema-viewer/lib/SchemaTable';
  * Display a SchemaTable asynchronously
  */
 export default class SchemaTable extends Component {
+  defaultProps = {
+    schema: oneOf([string, object]).isRequired,
+  };
+
   state = {
     schema: null,
   };
 
   async componentDidMount() {
-    const { url } = this.props;
+    const { schema } = this.props;
 
-    if (!this.state.schema && url) {
-      const result = await (await fetch(url)).json();
+    if (!this.state.schema && schema) {
+      const result =
+        typeof schema === 'string'
+          ? await (await fetch(schema)).json()
+          : schema;
 
       this.setState({ schema: result });
     }

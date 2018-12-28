@@ -24,4 +24,8 @@ export default {
   WAITING: 'default',
   RESOLVED: 'success',
   READY: 'info',
+  GET: 'default',
+  POST: 'default',
+  PUT: 'default',
+  DELETE: 'default',
 };

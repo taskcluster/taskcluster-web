@@ -234,17 +234,17 @@ export default class Documentation extends Component {
       if (isJSON) {
         return import(/* webpackChunkName: 'Documentation.JSON' */ `../../../raw/${
           docsPathMappings[url]
-          }.json`);
+        }.json`);
       }
 
       return import(/* webpackChunkName: 'Documentation.page' */ `../../../raw/${
         docsPathMappings[doc]
-        }.md`).catch(() => {
+      }.md`).catch(() => {
         absolutePath = `/raw/${docsPathMappings[doc]}/index.md`;
 
         return import(/* webpackChunkName: 'Documentation.page' */ `../../../raw/${
           docsPathMappings[doc]
-          }/index.md`);
+        }/index.md`);
       });
     }
 
@@ -297,7 +297,7 @@ export default class Documentation extends Component {
                           // https://schemas.taskcluster.net/hooks/v1/hook-definition.json -> strip /hooks/ from
                           // the pathname
                           // eslint-disable-next-line no-useless-escape
-                        url.pathname.replace(/^\/[^\/]*\//, '')
+                          url.pathname.replace(/^\/[^\/]*\//, '')
                         : // e.g.,
                           // https://taskcluster.example.com/schemas/hooks/v1/hook-definition.json
                           // or
@@ -306,7 +306,7 @@ export default class Documentation extends Component {
                           // /schemas/hooks/v1/hook-definition.json
                           // -> strip /schemas/hooks/ from the pathname
                           // eslint-disable-next-line no-useless-escape
-                        url.pathname.replace(/^\/schemas\/[^\/]*\//, '');
+                          url.pathname.replace(/^\/schemas\/[^\/]*\//, '');
                     const {
                       default: schema,
                     } = await import(/* webpackChunkName: 'Documentation.Schema' */ `../../../raw/${projectName}/schemas/${schemaName}`);

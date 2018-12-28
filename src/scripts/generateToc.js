@@ -1,9 +1,11 @@
 const fs = require('fs');
 const md = require('md-directory');
+const readDirectory = require('read-directory');
 const { join } = require('path');
+const removeExtension = require('../utils/removeExtension');
 
-const rawDocsDirectoryName = 'raw';
-const rawDocsPath = join(__dirname, '..', '..', rawDocsDirectoryName);
+const FILES_TO_IGNORE = ['.gitignore'];
+const rawDocsPath = join(__dirname, '..', '..', 'raw');
 const pathMappings = {};
 const projectMetadata = {};
 const getProjectMetadata = projectName => {
@@ -32,30 +34,6 @@ const sort = (a, b) => {
   return first - second;
 };
 
-const referenceDocs = fs.readdirSync(rawDocsPath).reduce((acc, projectName) => {
-  const files = md.parseDirSync(
-    join(__dirname, '..', rawDocsDirectoryName, projectName),
-    { dirnames: true }
-  );
-  const metadata = getProjectMetadata(projectName);
-
-  // Rename key
-  Object.keys(files).forEach(oldKey => {
-    const path = `reference/${metadata.tier}/${projectName}/${oldKey}`;
-
-    delete Object.assign(files, { [path]: Object.assign(files[oldKey]) })[
-      oldKey
-    ];
-    Object.assign(pathMappings, { [path]: join(projectName, oldKey) });
-  });
-
-  return Object.assign(acc, files);
-}, {});
-const files = Object.assign(
-  md.parseDirSync('./src/docs', { dirnames: true }),
-  referenceDocs
-);
-
 function sortByOrder(children) {
   if (children && children.length) {
     children.map(child => sortByOrder(child.children));
@@ -64,6 +42,44 @@ function sortByOrder(children) {
   children.sort(sort);
 }
 
+const referenceDocs = fs.readdirSync(rawDocsPath).reduce((acc, projectName) => {
+  if (FILES_TO_IGNORE.includes(projectName)) {
+    return acc;
+  }
+
+  // Dig inside the micro-service markdown files
+  const mdFiles = md.parseDirSync(join(rawDocsPath, projectName), {
+    dirnames: true,
+  });
+  const referenceFiles = readDirectory.sync(join(rawDocsPath, projectName), {
+    filter: 'references/*.json',
+    transform: content => ({
+      content: JSON.parse(content),
+      data: { inline: true },
+    }),
+  });
+  const metadata = getProjectMetadata(projectName);
+  const allFiles = Object.assign({}, mdFiles, referenceFiles);
+
+  // Rename key
+  Object.keys(allFiles).forEach(oldKey => {
+    const path = `reference/${metadata.tier}/${projectName}/${oldKey}`;
+
+    delete Object.assign(allFiles, {
+      [removeExtension(path)]: Object.assign(allFiles[oldKey]),
+    })[oldKey];
+
+    Object.assign(pathMappings, {
+      [removeExtension(path)]: join(projectName, removeExtension(oldKey)),
+    });
+  });
+
+  return Object.assign(acc, allFiles);
+}, {});
+const files = Object.assign(
+  md.parseDirSync('./src/docs', { dirnames: true }),
+  referenceDocs
+);
 // Traverse the nodes in order, setting `up`, `next`, and
 // `prev` links.
 let prevNode = null;
