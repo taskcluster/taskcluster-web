@@ -96,6 +96,7 @@
     "taskcluster-lib-scopes": "^10.0.1",
     "taskcluster-lib-urls": "^10.0.0",
     "typeface-roboto": "^0.0.54",
+    "url-regex": "^4.1.1",
     "ws-shell": "^0.1.5"
   },
   "devDependencies": {
