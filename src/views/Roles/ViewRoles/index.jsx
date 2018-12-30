@@ -19,7 +19,7 @@ import { VIEW_ROLES_PAGE_SIZE } from '../../../utils/constants';
 @graphql(rolesQuery, {
   options: () => ({
     variables: {
-      clientsConnection: {
+      rolesConnection: {
         limit: VIEW_ROLES_PAGE_SIZE,
       },
     },
@@ -51,7 +51,7 @@ export default class ViewRoles extends PureComponent {
     return fetchMore({
       query: rolesQuery,
       variables: {
-        clientsConnection: {
+        rolesConnection: {
           limit: VIEW_ROLES_PAGE_SIZE,
           cursor,
           previousCursor,
@@ -97,7 +97,7 @@ export default class ViewRoles extends PureComponent {
             <RolesTable
               searchTerm={roleSearch}
               onPageChange={this.handlePageChange}
-              clientsConnection={listRoleIds}
+              rolesConnection={listRoleIds}
             />
           )}
           <Tooltip title="Create Role">
