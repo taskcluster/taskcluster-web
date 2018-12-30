@@ -5,6 +5,7 @@ import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import PlusIcon from 'mdi-react/PlusIcon';
+import dotProp from 'dot-prop-immutable';
 import Dashboard from '../../../components/Dashboard';
 import Search from '../../../components/Search';
 import Button from '../../../components/Button';
@@ -12,9 +13,18 @@ import RolesTable from '../../../components/RolesTable';
 import HelpView from '../../../components/HelpView';
 import ErrorPanel from '../../../components/ErrorPanel';
 import rolesQuery from './roles.graphql';
+import { VIEW_ROLES_PAGE_SIZE } from '../../../utils/constants';
 
 @hot(module)
-@graphql(rolesQuery)
+@graphql(rolesQuery, {
+  options: () => ({
+    variables: {
+      clientsConnection: {
+        limit: VIEW_ROLES_PAGE_SIZE,
+      },
+    },
+  }),
+})
 @withStyles(theme => ({
   plusIcon: {
     ...theme.mixins.fab,
@@ -33,11 +43,39 @@ export default class ViewRoles extends PureComponent {
     this.setState({ roleSearch });
   };
 
+  handlePageChange = ({ cursor, previousCursor }) => {
+    const {
+      data: { fetchMore },
+    } = this.props;
+
+    return fetchMore({
+      query: rolesQuery,
+      variables: {
+        clientsConnection: {
+          limit: VIEW_ROLES_PAGE_SIZE,
+          cursor,
+          previousCursor,
+        },
+      },
+      updateQuery(previousResult, { fetchMoreResult }) {
+        const { edges, pageInfo } = fetchMoreResult.listRoleIds;
+
+        return dotProp.set(previousResult, 'listRoleIds', listRoleIds =>
+          dotProp.set(
+            dotProp.set(listRoleIds, 'edges', edges),
+            'pageInfo',
+            pageInfo
+          )
+        );
+      },
+    });
+  };
+
   render() {
     const {
       classes,
       description,
-      data: { loading, error, roles },
+      data: { loading, error, listRoleIds },
     } = this.props;
     const { roleSearch } = this.state;
 
@@ -53,9 +91,15 @@ export default class ViewRoles extends PureComponent {
           />
         }>
         <Fragment>
-          {!roles && loading && <Spinner loading />}
+          {!listRoleIds && loading && <Spinner loading />}
           <ErrorPanel error={error} />
-          {roles && <RolesTable searchTerm={roleSearch} roles={roles} />}
+          {listRoleIds && (
+            <RolesTable
+              searchTerm={roleSearch}
+              onPageChange={this.handlePageChange}
+              clientsConnection={listRoleIds}
+            />
+          )}
           <Tooltip title="Create Role">
             <Button
               onClick={this.handleCreate}
