@@ -1,5 +1,16 @@
-query Roles {
-  roles {
-    roleId
+query RoleIds($clientsConnection: PageConnection, $filter: JSON) {
+  listRoleIds(connection: $clientsConnection, filter: $filter) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      cursor
+      previousCursor
+      nextCursor
+    }
+    edges {
+      node {
+        roleId
+      }
+    }
   }
 }
