@@ -1,5 +1,5 @@
-query RoleIds($clientsConnection: PageConnection, $filter: JSON) {
-  listRoleIds(connection: $clientsConnection, filter: $filter) {
+query RoleIds($rolesConnection: PageConnection, $filter: JSON) {
+  listRoleIds(connection: $rolesConnection, filter: $filter) {
     pageInfo {
       hasNextPage
       hasPreviousPage

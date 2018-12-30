@@ -12,11 +12,11 @@ import LinkIcon from 'mdi-react/LinkIcon';
 import sort from '../../utils/sort';
 import ConnectionDataTable from '../ConnectionDataTable';
 import { VIEW_ROLES_PAGE_SIZE } from '../../utils/constants';
-import { pageInfo, client } from '../../utils/prop-types';
+import { pageInfo, role } from '../../utils/prop-types';
 
 const sorted = pipe(
-  rSort((a, b) => sort(a.roleId, b.roleId)),
-  map(({ roleId }) => roleId)
+  rSort((a, b) => sort(a.node.roleId, b.node.roleId)),
+  map(({ node: { roleId } }) => roleId)
 );
 
 @withStyles(theme => ({
@@ -37,8 +37,8 @@ export default class RolesTable extends Component {
   };
 
   static propTypes = {
-    clientsConnection: shape({
-      edges: arrayOf(client),
+    rolesConnection: shape({
+      edges: arrayOf(role),
       pageInfo,
     }).isRequired,
     onPageChange: func.isRequired,
@@ -51,26 +51,26 @@ export default class RolesTable extends Component {
     sortDirection: null,
   };
 
-  createSortedClientsConnection = memoize(
-    (clientsConnection, sortBy, sortDirection, searchTerm) => {
+  createSortedRolesConnection = memoize(
+    (rolesConnection, sortBy, sortDirection, searchTerm) => {
       const sortByProperty = camelCase(sortBy);
 
       if (!sortBy) {
-        return clientsConnection;
+        return rolesConnection;
       }
 
-      const filteredClientsConnection = searchTerm
+      const filteredRolesConnection = searchTerm
         ? {
-            ...clientsConnection,
-            edges: [...clientsConnection.edges].filter(({ node }) =>
+            ...rolesConnection,
+            edges: [...rolesConnection.edges].filter(({ node }) =>
               node.roleId.includes(searchTerm)
             ),
           }
-        : clientsConnection;
+        : rolesConnection;
 
       return {
-        ...filteredClientsConnection,
-        edges: [...filteredClientsConnection.edges].sort((a, b) => {
+        ...filteredRolesConnection,
+        edges: [...filteredRolesConnection.edges].sort((a, b) => {
           const firstElement =
             sortDirection === 'desc'
               ? b.node[sortByProperty]
@@ -85,8 +85,8 @@ export default class RolesTable extends Component {
       };
     },
     {
-      serializer: ([filteredClientsConnection, sortBy, sortDirection]) => {
-        const ids = sorted(filteredClientsConnection.edges);
+      serializer: ([filteredRolesConnection, sortBy, sortDirection]) => {
+        const ids = sorted(filteredRolesConnection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;
       },
@@ -101,14 +101,14 @@ export default class RolesTable extends Component {
   };
 
   render() {
-    const { classes, onPageChange, clientsConnection, searchTerm } = this.props;
+    const { classes, onPageChange, rolesConnection, searchTerm } = this.props;
     const { sortBy, sortDirection } = this.state;
     const iconSize = 16;
 
     return (
       <ConnectionDataTable
-        connection={this.createSortedClientsConnection(
-          clientsConnection,
+        connection={this.createSortedRolesConnection(
+          rolesConnection,
           sortBy,
           sortDirection,
           searchTerm
