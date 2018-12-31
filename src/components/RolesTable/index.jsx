@@ -52,25 +52,16 @@ export default class RolesTable extends Component {
   };
 
   createSortedRolesConnection = memoize(
-    (rolesConnection, sortBy, sortDirection, searchTerm) => {
+    (rolesConnection, sortBy, sortDirection) => {
       const sortByProperty = camelCase(sortBy);
 
       if (!sortBy) {
         return rolesConnection;
       }
 
-      const filteredRolesConnection = searchTerm
-        ? {
-            ...rolesConnection,
-            edges: [...rolesConnection.edges].filter(({ node }) =>
-              node.roleId.includes(searchTerm)
-            ),
-          }
-        : rolesConnection;
-
       return {
-        ...filteredRolesConnection,
-        edges: [...filteredRolesConnection.edges].sort((a, b) => {
+        ...rolesConnection,
+        edges: [...rolesConnection.edges].sort((a, b) => {
           const firstElement =
             sortDirection === 'desc'
               ? b.node[sortByProperty]
@@ -85,8 +76,8 @@ export default class RolesTable extends Component {
       };
     },
     {
-      serializer: ([filteredRolesConnection, sortBy, sortDirection]) => {
-        const ids = sorted(filteredRolesConnection.edges);
+      serializer: ([rolesConnection, sortBy, sortDirection]) => {
+        const ids = sorted(rolesConnection.edges);
 
         return `${ids.join('-')}-${sortBy}-${sortDirection}`;
       },
@@ -101,7 +92,7 @@ export default class RolesTable extends Component {
   };
 
   render() {
-    const { classes, onPageChange, rolesConnection, searchTerm } = this.props;
+    const { classes, onPageChange, rolesConnection } = this.props;
     const { sortBy, sortDirection } = this.state;
     const iconSize = 16;
 
@@ -110,8 +101,7 @@ export default class RolesTable extends Component {
         connection={this.createSortedRolesConnection(
           rolesConnection,
           sortBy,
-          sortDirection,
-          searchTerm
+          sortDirection
         )}
         pageSize={VIEW_ROLES_PAGE_SIZE}
         onHeaderClick={this.handleHeaderClick}
