@@ -35,12 +35,34 @@ export default class ViewRoles extends PureComponent {
     roleSearch: '',
   };
 
-  handleCreate = () => {
-    this.props.history.push('/auth/roles/create');
-  };
+  static getDerivedStateFromProps(props, state) {
+    // Any time the current user changes,
+    // Reset state to reflect new user / log out and default clientSearch query
+
+    return {
+      roleSearch: state.roleSearch,
+    };
+  }
 
   handleRoleSearchSubmit = roleSearch => {
+    const {
+      data: { refetch },
+    } = this.props;
+
     this.setState({ roleSearch });
+
+    refetch({
+      filter: {
+        ...(roleSearch ? { roleId: { $regex: roleSearch } } : null),
+      },
+      rolesConnection: {
+        limit: VIEW_ROLES_PAGE_SIZE,
+      },
+    });
+  };
+
+  handleCreate = () => {
+    this.props.history.push('/auth/roles/create');
   };
 
   handlePageChange = ({ cursor, previousCursor }) => {
@@ -56,6 +78,15 @@ export default class ViewRoles extends PureComponent {
           cursor,
           previousCursor,
         },
+        ...(this.state.roleSearch
+          ? {
+              filter: {
+                roleId: {
+                  $regex: this.state.roleSearch,
+                },
+              },
+            }
+          : null),
       },
       updateQuery(previousResult, { fetchMoreResult }) {
         const { edges, pageInfo } = fetchMoreResult.listRoleIds;
@@ -77,7 +108,6 @@ export default class ViewRoles extends PureComponent {
       description,
       data: { loading, error, listRoleIds },
     } = this.props;
-    const { roleSearch } = this.state;
 
     return (
       <Dashboard
@@ -91,11 +121,10 @@ export default class ViewRoles extends PureComponent {
           />
         }>
         <Fragment>
-          {!listRoleIds && loading && <Spinner loading />}
+          {loading && <Spinner loading />}
           <ErrorPanel error={error} />
           {listRoleIds && (
             <RolesTable
-              searchTerm={roleSearch}
               onPageChange={this.handlePageChange}
               rolesConnection={listRoleIds}
             />
