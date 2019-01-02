@@ -13,9 +13,11 @@ import RolesTable from '../../../components/RolesTable';
 import HelpView from '../../../components/HelpView';
 import ErrorPanel from '../../../components/ErrorPanel';
 import rolesQuery from './roles.graphql';
+import { withAuth } from '../../../utils/Auth';
 import { VIEW_ROLES_PAGE_SIZE } from '../../../utils/constants';
 
 @hot(module)
+@withAuth
 @graphql(rolesQuery, {
   options: () => ({
     variables: {
@@ -33,6 +35,8 @@ import { VIEW_ROLES_PAGE_SIZE } from '../../../utils/constants';
 export default class ViewRoles extends PureComponent {
   state = {
     roleSearch: '',
+    // This needs to be initially null in order for the defaultValue to work
+    value: null,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -102,12 +106,20 @@ export default class ViewRoles extends PureComponent {
     });
   };
 
+  handleRoleSearchChange = ({ target: { value } }) => {
+    this.setState({ value });
+  };
+
   render() {
     const {
       classes,
       description,
       data: { loading, error, listRoleIds },
     } = this.props;
+    const { value } = this.state;
+    const searchDefaultValue = this.props.user
+      ? this.props.user.credentials.clientId
+      : null;
 
     return (
       <Dashboard
@@ -117,6 +129,9 @@ export default class ViewRoles extends PureComponent {
           <Search
             disabled={loading}
             onSubmit={this.handleRoleSearchSubmit}
+            onChange={this.handleRoleSearchChange}
+            defaultValue={searchDefaultValue}
+            value={value}
             placeholder="Role contains"
           />
         }>
