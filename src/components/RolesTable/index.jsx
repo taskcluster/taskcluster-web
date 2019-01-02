@@ -95,14 +95,15 @@ export default class RolesTable extends Component {
     const { classes, onPageChange, rolesConnection } = this.props;
     const { sortBy, sortDirection } = this.state;
     const iconSize = 16;
+    const sortedRolesConnection = this.createSortedRolesConnection(
+      rolesConnection,
+      sortBy,
+      sortDirection
+    );
 
     return (
       <ConnectionDataTable
-        connection={this.createSortedRolesConnection(
-          rolesConnection,
-          sortBy,
-          sortDirection
-        )}
+        connection={sortedRolesConnection}
         pageSize={VIEW_ROLES_PAGE_SIZE}
         onHeaderClick={this.handleHeaderClick}
         onPageChange={onPageChange}
