@@ -65,6 +65,23 @@ export default class ViewRoles extends PureComponent {
     });
   };
 
+  handleRoleSearchSubmit = roleSearch => {
+    const {
+      data: { refetch },
+    } = this.props;
+
+    this.setState({ roleSearch });
+
+    refetch({
+      filter: {
+        ...(roleSearch ? { roleId: { $regex: roleSearch } } : null),
+      },
+      rolesConnection: {
+        limit: VIEW_ROLES_PAGE_SIZE,
+      },
+    });
+  };
+
   handleCreate = () => {
     this.props.history.push('/auth/roles/create');
   };
