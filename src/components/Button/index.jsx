@@ -40,7 +40,8 @@ export default class Button extends Component {
     tooltipProps: object,
     /**
      * Properties applied to the span wrapper element
-     * This is only applicable when there `tooltipProps` is set.
+     * This is only applicable when the `tooltipProps` prop is set,
+     * otherwise there is no wrapper element.
      * This is useful for positioning the button.
      *
      * Note: We wrap a button with a span in order to
