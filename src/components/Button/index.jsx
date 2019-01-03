@@ -3,7 +3,7 @@ import ReactGA from 'react-ga';
 import MuiButton from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
-import { string, object, node, bool, oneOf } from 'prop-types';
+import { object, node, bool, oneOf } from 'prop-types';
 import { withAuth } from '../../utils/Auth';
 import { gaEvent } from '../../utils/prop-types';
 
@@ -38,8 +38,6 @@ export default class Button extends Component {
     variant: oneOf(['text', 'outlined', 'contained', 'round', 'extended']),
     /** Properties applied to the Tooltip component */
     tooltipProps: object,
-    /** Label to display in the tooltip. */
-    tooltipTitle: string,
     /**
      * Properties applied to the span wrapper element
      * This is only applicable when there `tooltipProps` is set.
