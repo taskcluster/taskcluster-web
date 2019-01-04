@@ -1,6 +1,14 @@
 import { lazy } from 'react';
+import { join } from 'path';
+import { DOCS_PATH_PREFIX } from '../utils/constants';
 
 export default [
+  {
+    component: lazy(() =>
+      import(/* webpackChunkName: 'Reload' */ '../utils/reload')
+    ),
+    path: join(DOCS_PATH_PREFIX, ':path*'),
+  },
   {
     component: lazy(() =>
       import(/* webpackChunkName: 'Tasks' */ '../views/Tasks')

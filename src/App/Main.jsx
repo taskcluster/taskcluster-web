@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
-import { array, object } from 'prop-types';
+import { object, arrayOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import RouteWithProps from '../components/RouteWithProps';
 import ErrorPanel from '../components/ErrorPanel';
+import { route } from '../utils/prop-types';
 
 @withStyles(theme => ({
   '@global': {
@@ -127,8 +128,7 @@ import ErrorPanel from '../components/ErrorPanel';
 export default class Main extends Component {
   static propTypes = {
     error: object,
-    /** React router routes */
-    routes: array,
+    routes: arrayOf(route).isRequired,
   };
 
   static defaultProps = {

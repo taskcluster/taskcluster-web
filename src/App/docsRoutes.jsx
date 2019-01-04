@@ -9,4 +9,11 @@ export default [
     ),
     path: join(DOCS_PATH_PREFIX, ':path*'),
   },
+  {
+    component: lazy(() =>
+      import(/* webpackChunkName: 'Reload' */ '../utils/reload')
+    ),
+    path: '/',
+    exact: true,
+  },
 ];

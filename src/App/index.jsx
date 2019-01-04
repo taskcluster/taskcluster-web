@@ -1,6 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { arrayOf } from 'prop-types';
 import storage from 'localforage';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -26,14 +26,14 @@ import db from '../utils/db';
 import reportError from '../utils/reportError';
 import theme from '../theme';
 import introspectionQueryResultData from '../fragments/fragmentTypes.json';
+import { route } from '../utils/prop-types';
 
 const AUTH_STORE = '@@TASKCLUSTER_WEB_AUTH';
 
 @hot(module)
 export default class App extends Component {
   static propTypes = {
-    /** React router routes */
-    routes: array.isRequired,
+    routes: arrayOf(route).isRequired,
   };
 
   fragmentMatcher = new IntrospectionFragmentMatcher({
