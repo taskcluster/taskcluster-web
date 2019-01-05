@@ -9,11 +9,11 @@ export default [
     ),
     path: join(DOCS_PATH_PREFIX, ':path*'),
   },
+  // Clicking on the logo for example should switch entry points
   {
     component: lazy(() =>
-      import(/* webpackChunkName: 'Reload' */ '../utils/reload')
+      import(/* webpackChunkName: 'SwitchEntryPoint' */ '../views/SwitchEntryPoint')
     ),
     path: '/',
-    exact: true,
   },
 ];

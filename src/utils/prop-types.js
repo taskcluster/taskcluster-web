@@ -9,7 +9,6 @@ import {
   oneOfType,
   shape,
   string,
-  func,
 } from 'prop-types';
 
 export const user = shape({
@@ -23,7 +22,7 @@ export const date = oneOfType([string, instanceOf(Date)]);
 
 export const route = shape({
   path: string,
-  component: func,
+  component: object,
 });
 
 export const pageInfo = shape({
