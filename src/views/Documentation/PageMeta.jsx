@@ -4,10 +4,10 @@ import classNames from 'classnames';
 import { isEmpty } from 'ramda';
 import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
-import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
-import ChevronLeftIcon from 'mdi-react/ChevronLeftIcon';
+import ArrowRightIcon from 'mdi-react/ArrowRightIcon';
+import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon';
 import AnchorOrLink from '../../components/Markdown/AnchorOrLink';
-import Button from '../../components/Button';
+import PageTransition from '../../components/PageTransition';
 import { docsPageInfo } from '../../utils/prop-types';
 
 @withStyles(theme => ({
@@ -32,6 +32,41 @@ import { docsPageInfo } from '../../utils/prop-types';
   },
   pageNavigationWithoutPrevious: {
     justifyContent: 'flex-end',
+  },
+  smallText: {
+    fontSize: '10px',
+    color: 'gray',
+  },
+  largeText: {
+    color: '#000',
+    fontSize: '14px',
+  },
+  rowFlex: {
+    display: 'flex',
+  },
+  rightIcon: {
+    marginLeft: '7px',
+    marginRight: '0px',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  rightButtonText: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    textAlign: 'left',
+  },
+  leftIcon: {
+    marginLeft: '0px',
+    marginRight: '7px',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  leftButtonText: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    textAlign: 'right',
   },
 }))
 export default class PageMeta extends Component {
@@ -112,26 +147,38 @@ export default class PageMeta extends Component {
               [classes.pageNavigationWithoutPrevious]: !hasPreviousPage,
             })}>
             {hasPreviousPage && (
-              <Button
+              <PageTransition
                 onClick={this.handlePreviousPage}
-                color="secondary"
                 variant="extended"
                 aria-label="Previous Page"
                 className={classes.navigationButton}>
-                <ChevronLeftIcon />
-                {pageInfo.prev.title}
-              </Button>
+                <ArrowLeftIcon color="#000" className={classes.leftIcon} />
+                <div className={classes.rowFlex}>
+                  <div className={classes.leftButtonText}>
+                    <span className={classes.smallText}>Prev</span>
+                    <span className={classes.largeText}>
+                      {pageInfo.prev.title}
+                    </span>
+                  </div>
+                </div>
+              </PageTransition>
             )}
             {hasNextPage && (
-              <Button
+              <PageTransition
                 onClick={this.handleNextPage}
-                color="secondary"
                 variant="extended"
                 aria-label="Next Page"
                 className={classes.navigationButton}>
-                {pageInfo.next.title}
-                <ChevronRightIcon />
-              </Button>
+                <div className={classes.rowFlex}>
+                  <div className={classes.rightButtonText}>
+                    <span className={classes.smallText}>Next</span>
+                    <span className={classes.largeText}>
+                      {pageInfo.next.title}
+                    </span>
+                  </div>
+                  <ArrowRightIcon color="#000" className={classes.rightIcon} />
+                </div>
+              </PageTransition>
             )}
           </footer>
         )}
