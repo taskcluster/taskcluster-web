@@ -4,6 +4,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import Typography from '@material-ui/core/Typography';
 import ArrowRightIcon from 'mdi-react/ArrowRightIcon';
 import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon';
+import { oneOf } from 'prop-types';
 import Button from '../Button';
 import { THEME } from '../../utils/constants';
 
@@ -13,14 +14,6 @@ import { THEME } from '../../utils/constants';
   },
   iconSmall: {
     fontSize: 20,
-  },
-  smallText: {
-    fontSize: '10px',
-    color: fade(THEME.PRIMARY_TEXT_LIGHT, 0.5),
-  },
-  largeText: {
-    color: fade(THEME.PRIMARY_TEXT_LIGHT, 0.8),
-    fontSize: '14px',
   },
   rowFlex: {
     display: 'flex',
@@ -53,6 +46,15 @@ import { THEME } from '../../utils/constants';
   },
 }))
 export default class PageTransition extends Component {
+  static defaultProps = {
+    variant: null,
+  };
+
+  static propTypes = {
+    /** The variant to use. */
+    variant: oneOf(['prev', 'next']),
+  };
+
   render() {
     const { classes, variant } = this.props;
 
@@ -70,8 +72,10 @@ export default class PageTransition extends Component {
                 ? classes.leftButtonText
                 : classes.rightButtonText
             }>
-            <Typography className={classes.smallText}>{variant}</Typography>
-            <Typography className={classes.largeText}>
+            <Typography variant="caption" color="inherit">
+              {variant}
+            </Typography>
+            <Typography variant="button" color="primary">
               {this.props.children}
             </Typography>
           </div>
