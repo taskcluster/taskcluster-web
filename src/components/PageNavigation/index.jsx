@@ -10,9 +10,6 @@ import Button from '../Button';
   button: {
     margin: theme.spacing.unit,
   },
-  iconSmall: {
-    fontSize: 20,
-  },
   rightIcon: {
     marginLeft: theme.spacing.unit,
   },
