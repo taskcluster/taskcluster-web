@@ -5,22 +5,19 @@ import { isEmpty } from 'ramda';
 import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import AnchorOrLink from '../../components/Markdown/AnchorOrLink';
-import PageTransition from '../../components/PageTransition';
+import PageNavigation from '../../components/PageNavigation';
 import { docsPageInfo } from '../../utils/prop-types';
 
 @withStyles(theme => ({
   divider: {
     margin: `${theme.spacing.triple}px 0`,
   },
-  navigationButton: {
-    ...theme.mixins.fabIcon,
-  },
   pageNavigation: {
     display: 'flex',
     justifyContent: 'space-between',
     bottom: theme.spacing.unit,
     left: theme.docsDrawerWidth + theme.spacing.triple,
-    position: 'fixed',
+    position: 'absolute',
     width: `calc(100% - ${theme.docsDrawerWidth}px - ${theme.spacing.unit *
       6}px)`,
     [theme.breakpoints.down('sm')]: {
@@ -110,22 +107,20 @@ export default class PageMeta extends Component {
               [classes.pageNavigationWithoutPrevious]: !hasPreviousPage,
             })}>
             {hasPreviousPage && (
-              <PageTransition
+              <PageNavigation
                 onClick={this.handlePreviousPage}
                 variant="prev"
-                aria-label="Previous Page"
-                className={classes.navigationButton}>
+                aria-label="Previous Page">
                 {pageInfo.prev.title}
-              </PageTransition>
+              </PageNavigation>
             )}
             {hasNextPage && (
-              <PageTransition
+              <PageNavigation
                 onClick={this.handleNextPage}
                 variant="next"
-                aria-label="Next Page"
-                className={classes.navigationButton}>
+                aria-label="Next Page">
                 {pageInfo.next.title}
-              </PageTransition>
+              </PageNavigation>
             )}
           </footer>
         )}
