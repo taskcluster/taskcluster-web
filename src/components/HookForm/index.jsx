@@ -596,11 +596,7 @@ export default class HookForm extends Component {
                   for more information.
                 </span>
               </Typography>
-              <CodeEditor
-                options={{ mode: 'json' }}
-                value={taskInput}
-                onChange={this.handleTaskChange}
-              />
+              <CodeEditor value={taskInput} onChange={this.handleTaskChange} />
             </ListItem>
           </List>
           <List
@@ -614,7 +610,6 @@ export default class HookForm extends Component {
                 The payload to <code>triggerHook</code> must match this schema.
               </Typography>
               <CodeEditor
-                options={{ mode: 'json' }}
                 value={triggerSchemaInput}
                 onChange={this.handleTriggerSchemaChange}
               />
@@ -694,8 +689,6 @@ export default class HookForm extends Component {
                     </Typography>
                     <CodeEditor
                       className={classes.codeEditor}
-                      options={{ mode: 'json' }}
-                      lint
                       value={triggerContextInput}
                       onChange={this.handleTriggerContextChange}
                     />
