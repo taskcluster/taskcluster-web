@@ -70,6 +70,12 @@ const initialHook = {
   actionButton: {
     ...theme.mixins.fab,
   },
+  saveHookSpan: {
+    ...theme.mixins.fab,
+    position: 'fixed',
+    bottom: theme.spacing.double,
+    right: theme.spacing.unit * 11,
+  },
   editorListItem: {
     paddingTop: 0,
     display: 'flex',
@@ -633,40 +639,42 @@ export default class HookForm extends Component {
             <ContentSaveIcon />
           </Button>
         ) : (
-          <SpeedDial>
-            <SpeedDialAction
+          <Fragment>
+            <Button
+              spanProps={{ className: classes.saveHookSpan }}
+              tooltipProps={{ title: 'Save Hook' }}
               requiresAuth
-              tooltipOpen
-              icon={<ContentSaveIcon />}
-              onClick={this.handleUpdateHook}
-              tooltipTitle="Save Hook"
-              ButtonProps={{
-                disabled: !this.validHook() || actionLoading,
-              }}
-            />
-            <SpeedDialAction
-              requiresAuth
-              tooltipOpen
-              icon={<DeleteIcon />}
-              onClick={this.handleDeleteHook}
-              className={classes.deleteIcon}
-              ButtonProps={{
-                disabled: actionLoading,
-              }}
-              tooltipTitle="Delete Hook"
-            />
-            <SpeedDialAction
-              requiresAuth
-              tooltipOpen
-              icon={<FlashIcon />}
-              onClick={onDialogOpen}
-              className={classes.successIcon}
-              ButtonProps={{
-                disabled: !this.validHook() || actionLoading,
-              }}
-              tooltipTitle="Trigger Hook"
-            />
-          </SpeedDial>
+              classes={{ root: classes.successIcon }}
+              variant="round"
+              disabled={!this.validHook() || actionLoading}
+              onClick={this.handleUpdateHook}>
+              <ContentSaveIcon />
+            </Button>
+            <SpeedDial>
+              <SpeedDialAction
+                requiresAuth
+                tooltipOpen
+                icon={<DeleteIcon />}
+                onClick={this.handleDeleteHook}
+                className={classes.deleteIcon}
+                ButtonProps={{
+                  disabled: actionLoading,
+                }}
+                tooltipTitle="Delete Hook"
+              />
+              <SpeedDialAction
+                requiresAuth
+                tooltipOpen
+                icon={<FlashIcon />}
+                onClick={onDialogOpen}
+                className={classes.successIcon}
+                ButtonProps={{
+                  disabled: !this.validHook() || actionLoading,
+                }}
+                tooltipTitle="Trigger Hook"
+              />
+            </SpeedDial>
+          </Fragment>
         )}
         {dialogOpen && (
           <DialogAction
