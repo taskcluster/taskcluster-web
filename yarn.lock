@@ -6824,10 +6824,10 @@ material-ui-pickers@^1.0.0-rc.9:
     react-text-mask "=5.4.1"
     react-transition-group "^2.5.0"
 
-material-ui-treeview@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/material-ui-treeview/-/material-ui-treeview-2.0.1.tgz#517b986500e1aee99a133949b7d0ccb35b2395e2"
-  integrity sha512-qdy1db0FJ5l2Ny3oGG8EMz+7w/iHIBIAb8pzXMOAjwMRcOel0iy6WHe+Ste11Ws7RhaPKnBivxueOGWOPPy74A==
+material-ui-treeview@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/material-ui-treeview/-/material-ui-treeview-3.0.4.tgz#3033795d96cda64533a0e7192845f7ac61b41e02"
+  integrity sha512-p26/v6lYwA+BmHI+Td8zAIHUsCoSyelUpRPse7NmCipH+2CegIL+/dDOcKFts71LClLFpEk8aHhLll+fUx6Epw==
   dependencies:
     "@material-ui/icons" "^1.1.0"
     classnames "^2.2.6"
