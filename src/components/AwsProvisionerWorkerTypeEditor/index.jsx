@@ -20,6 +20,7 @@ export default class AwsProvisionerCreateWorkerTypeEditor extends Component {
       <CodeEditor
         value={JSON.stringify(value, null, 2)}
         onChange={this.handleEditorChange}
+        lint
       />
     );
   }

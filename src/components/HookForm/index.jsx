@@ -596,7 +596,11 @@ export default class HookForm extends Component {
                   for more information.
                 </span>
               </Typography>
-              <CodeEditor value={taskInput} onChange={this.handleTaskChange} />
+              <CodeEditor
+                lint
+                value={taskInput}
+                onChange={this.handleTaskChange}
+              />
             </ListItem>
           </List>
           <List
@@ -611,6 +615,7 @@ export default class HookForm extends Component {
               </Typography>
               <CodeEditor
                 value={triggerSchemaInput}
+                lint
                 onChange={this.handleTriggerSchemaChange}
               />
             </ListItem>
@@ -688,6 +693,7 @@ export default class HookForm extends Component {
                       Context
                     </Typography>
                     <CodeEditor
+                      lint
                       className={classes.codeEditor}
                       value={triggerContextInput}
                       onChange={this.handleTriggerContextChange}
