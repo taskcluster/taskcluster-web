@@ -6,7 +6,7 @@ import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTreeView from 'material-ui-treeview';
 import PlusIcon from 'mdi-react/PlusIcon';
-import * as qs from 'query-string';
+import qs from 'qs';
 import Dashboard from '../../../components/Dashboard';
 import HelpView from '../../../components/HelpView';
 import Search from '../../../components/Search';
@@ -31,7 +31,9 @@ export default class ListHooks extends Component {
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const searchString = qs.parse(nextProps.location.search).search;
+    const searchString = qs.parse(nextProps.location.search, {
+      ignoreQueryPrefix: true,
+    }).search;
 
     if (prevState.hookSearch !== searchString) {
       return { hookSearch: searchString };
@@ -74,7 +76,7 @@ export default class ListHooks extends Component {
         helpView={<HelpView description={description} />}
         search={
           <Search
-            placeholder="Hook contains"
+            placeholder={hookSearch || `Hook contains`}
             onSubmit={this.handleHookSearchSubmit}
           />
         }>
