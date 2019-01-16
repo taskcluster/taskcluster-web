@@ -6,6 +6,7 @@ import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTreeView from 'material-ui-treeview';
 import PlusIcon from 'mdi-react/PlusIcon';
+import * as qs from 'query-string';
 import Dashboard from '../../../components/Dashboard';
 import HelpView from '../../../components/HelpView';
 import Search from '../../../components/Search';
@@ -29,12 +30,22 @@ export default class ListHooks extends Component {
     hookSearch: '',
   };
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const searchString = qs.parse(nextProps.location.search).search;
+
+    if (prevState.hookSearch !== searchString) {
+      return { hookSearch: searchString };
+    }
+
+    return null;
+  }
+
   handleCreateHook = () => {
     this.props.history.push('/hooks/create');
   };
 
   handleHookSearchSubmit = hookSearch => {
-    this.setState({ hookSearch });
+    this.props.history.push(`/hooks?search=${hookSearch}`);
   };
 
   handleLeafClick = ({ value, parent }) => {
