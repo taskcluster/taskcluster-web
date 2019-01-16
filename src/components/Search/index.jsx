@@ -114,8 +114,9 @@ export default class Search extends PureComponent {
 
   handleInputSubmit = e => {
     e.preventDefault();
+    const value = this.state.value || this.props.value;
 
-    this.props.onSubmit(this.state.value.trim());
+    this.props.onSubmit(value.trim());
   };
 
   render() {

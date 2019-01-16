@@ -183,6 +183,7 @@ export default class ViewTask extends Component {
     dialogError: null,
     caches: null,
     selectedCaches: null,
+    value: this.props.match.params.taskId,
   };
 
   handleActionClick = ({ target: { name } }) => {
@@ -664,6 +665,10 @@ export default class ViewTask extends Component {
     );
   };
 
+  handleTaskSearchChange = event => {
+    this.setState({ value: event.target.value });
+  };
+
   render() {
     const {
       classes,
@@ -680,6 +685,7 @@ export default class ViewTask extends Component {
       actionInputs,
       actionLoading,
       dialogError,
+      value,
     } = this.state;
     let tags;
 
@@ -690,7 +696,13 @@ export default class ViewTask extends Component {
     return (
       <Dashboard
         helpView={<HelpView description={description} />}
-        search={<Search onSubmit={this.handleTaskSearchSubmit} />}>
+        search={
+          <Search
+            value={value}
+            onChange={this.handleTaskSearchChange}
+            onSubmit={this.handleTaskSearchSubmit}
+          />
+        }>
         {loading && <Spinner loading />}
         <ErrorPanel
           error={error}
