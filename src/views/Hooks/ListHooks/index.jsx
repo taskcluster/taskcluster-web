@@ -76,7 +76,8 @@ export default class ListHooks extends Component {
         helpView={<HelpView description={description} />}
         search={
           <Search
-            placeholder={hookSearch || `Hook contains`}
+            placeholder="Hook contains"
+            defaultValue={hookSearch || null}
             onSubmit={this.handleHookSearchSubmit}
           />
         }>
