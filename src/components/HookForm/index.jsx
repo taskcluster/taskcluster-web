@@ -351,7 +351,6 @@ export default class HookForm extends Component {
     });
 
   handleOwnerChange = e =>{
-    debugger;
     this.setState({
       hook: assocPath(['metadata', 'owner'], e.target.value, this.state.hook),
       validation:{
