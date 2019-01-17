@@ -48,8 +48,9 @@ export default class ListHooks extends Component {
 
   handleHookSearchSubmit = hookSearch => {
     this.props.history.push(
-    `/hooks${hookSearch ? `?search=${hookSearch}` : ''}`
-  );
+      `/hooks${hookSearch ? `?search=${hookSearch}` : ''}`
+    );
+  };
 
   handleLeafClick = ({ value, parent }) => {
     this.props.history.push(
