@@ -14,9 +14,7 @@ import SpeedDial from '../SpeedDial';
 import SpeedDialAction from '../SpeedDialAction';
 import { role } from '../../utils/prop-types';
 import splitLines from '../../utils/splitLines';
-import withAlertOnClose from '../../utils/withAlertOnClose';
 
-@withAlertOnClose
 @withStyles(theme => ({
   fab: {
     ...theme.mixins.fab,
@@ -160,9 +158,9 @@ export default class RoleForm extends Component {
               label="Scopes"
               name="scopeText"
               onChange={this.handleInputChange}
+              spellCheck={false}
               fullWidth
               multiline
-              rows={5}
               placeholder={isNewRole ? 'new-scope:for-something:*' : null}
               value={scopeText}
             />
