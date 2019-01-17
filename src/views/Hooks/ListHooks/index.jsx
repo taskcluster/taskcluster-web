@@ -47,8 +47,9 @@ export default class ListHooks extends Component {
   };
 
   handleHookSearchSubmit = hookSearch => {
-    this.props.history.push(`/hooks?search=${hookSearch}`);
-  };
+    this.props.history.push(
+    `/hooks${hookSearch ? `?search=${hookSearch}` : ''}`
+  );
 
   handleLeafClick = ({ value, parent }) => {
     this.props.history.push(
@@ -77,7 +78,7 @@ export default class ListHooks extends Component {
         search={
           <Search
             placeholder="Hook contains"
-            defaultValue={hookSearch || null}
+            defaultValue={hookSearch}
             onSubmit={this.handleHookSearchSubmit}
           />
         }>
