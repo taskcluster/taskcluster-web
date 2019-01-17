@@ -168,12 +168,7 @@ export default class HookForm extends Component {
       scheduleTextField: '',
       taskValidJson: true,
       triggerSchemaValidJson: true,
-      validation: {
-        owner:  {
-          error: false,
-          message: "",
-        },
-      }
+      validation: {},
     };
   }
 
@@ -325,11 +320,17 @@ export default class HookForm extends Component {
   };
 
   validHook = () => {
-    const { hook, taskValidJson, triggerSchemaValidJson } = this.state;
+    const {
+      hook,
+      taskValidJson,
+      triggerSchemaValidJson,
+      validation,
+    } = this.state;
 
     return (
       hook.metadata.name &&
       hook.metadata.owner &&
+      (validation.owner !== undefined ? !validation.owner.error : true) &&
       taskValidJson &&
       triggerSchemaValidJson
     );
@@ -350,16 +351,16 @@ export default class HookForm extends Component {
       hook: assocPath(['metadata', 'name'], e.target.value, this.state.hook),
     });
 
-  handleOwnerChange = e =>{
+  handleOwnerChange = e => {
     this.setState({
       hook: assocPath(['metadata', 'owner'], e.target.value, this.state.hook),
-      validation:{
+      validation: {
         owner: {
           error: !e.currentTarget.validity.valid,
           message: e.currentTarget.validationMessage,
         },
       },
-    })
+    });
   };
 
   handleDescriptionChange = e =>
@@ -448,12 +449,16 @@ export default class HookForm extends Component {
           </ListItem>
           <ListItem>
             <TextField
-              error = {validation.owner.error}
+              error={
+                validation.owner !== undefined ? validation.owner.error : false
+              }
               required
               label="Owner Email"
               name="owner"
               type="email"
-              helperText={validation.owner.message}
+              helperText={
+                validation.owner !== undefined ? validation.owner.message : ''
+              }
               onChange={this.handleOwnerChange}
               fullWidth
               value={hook.metadata.owner}
