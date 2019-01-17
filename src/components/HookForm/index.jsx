@@ -161,6 +161,7 @@ export default class HookForm extends Component {
     scheduleTextField: '',
     taskValidJson: true,
     triggerSchemaValidJson: true,
+    validation: {},
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -183,7 +184,12 @@ export default class HookForm extends Component {
       scheduleTextField: '',
       taskValidJson: true,
       triggerSchemaValidJson: true,
-      validation: {},
+      validation: {
+        owner: {
+          error: false,
+          message: '',
+        },
+      },
     };
   }
 
@@ -347,7 +353,7 @@ export default class HookForm extends Component {
       hook.hookId &&
       hook.metadata.name &&
       hook.metadata.owner &&
-      (validation.owner !== undefined ? !validation.owner.error : true) &&
+      !validation.owner.error &&
       taskValidJson &&
       triggerSchemaValidJson
     );
@@ -466,16 +472,12 @@ export default class HookForm extends Component {
           </ListItem>
           <ListItem>
             <TextField
-              error={
-                validation.owner !== undefined ? validation.owner.error : false
-              }
+              error={validation.owner.error}
               required
               label="Owner Email"
               name="owner"
               type="email"
-              helperText={
-                validation.owner !== undefined ? validation.owner.message : ''
-              }
+              helperText={validation.owner.message}
               onChange={this.handleOwnerChange}
               fullWidth
               value={hook.metadata.owner}
