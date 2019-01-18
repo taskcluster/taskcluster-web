@@ -104,6 +104,11 @@ const getBindingsFromProps = props => {
   ccRoute: {
     whiteSpace: 'nowrap',
   },
+  startStopIconSpan:{
+    position: 'fixed',
+    bottom: theme.spacing.double,
+    right: theme.spacing.unit * 11,
+  },
 }))
 export default class PulseMessages extends Component {
   static getDerivedStateFromProps(props) {
@@ -362,25 +367,28 @@ export default class PulseMessages extends Component {
               headers={['Exchange', 'Routing Key']}
             />
           </List>
+          {listening ? (
+            <Button
+              requiresAuth
+              variant="round"
+              spanProps={{ className: classes.startStopIconSpan }}
+              tooltipProps={{ title: 'Stop Listening' }}
+              onClick={this.handleStopListening}
+              className={classes.stopIcon}>
+              <StopIcon />
+            </Button>
+          ) : (
+            <Button
+              requiresAuth
+              variant="round"
+              spanProps={{ className: classes.startStopIconSpan }}
+              tooltipProps={{ title: 'Start Listening' }}
+              onClick={this.handleStartListening}
+              className={classes.playIcon}>
+              <PlayIcon />
+            </Button>
+          )}
           <SpeedDial>
-            {listening ? (
-              <SpeedDialAction
-                tooltipOpen
-                icon={<StopIcon />}
-                onClick={this.handleStopListening}
-                className={classes.stopIcon}
-                tooltipTitle="Stop Listening"
-              />
-            ) : (
-              <SpeedDialAction
-                tooltipOpen
-                icon={<PlayIcon />}
-                onClick={this.handleStartListening}
-                className={classes.playIcon}
-                tooltipTitle="Start Listening"
-                ButtonProps={{ disabled: !bindings.length }}
-              />
-            )}
             <SpeedDialAction
               tooltipOpen
               icon={<DownloadIcon />}
