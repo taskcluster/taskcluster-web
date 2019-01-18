@@ -104,7 +104,7 @@ const getBindingsFromProps = props => {
   ccRoute: {
     whiteSpace: 'nowrap',
   },
-  startStopIconSpan:{
+  startStopIconSpan: {
     position: 'fixed',
     bottom: theme.spacing.double,
     right: theme.spacing.unit * 11,
@@ -384,7 +384,8 @@ export default class PulseMessages extends Component {
               spanProps={{ className: classes.startStopIconSpan }}
               tooltipProps={{ title: 'Start Listening' }}
               onClick={this.handleStartListening}
-              className={classes.playIcon}>
+              className={classes.playIcon}
+              disabled={!bindings.length}>
               <PlayIcon />
             </Button>
           )}
