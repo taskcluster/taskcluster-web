@@ -13,23 +13,23 @@ import Log from '../../../components/Log';
   fab: {
     position: 'absolute',
     right: theme.spacing.double,
-    top: theme.spacing.double,
+    bottom: theme.spacing.double,
     ...theme.mixins.fabIcon,
   },
   goToLineButton: {
     position: 'absolute',
     right: theme.spacing.unit * 10,
-    top: theme.spacing.triple,
+    bottom: theme.spacing.triple,
   },
   followButton: {
     position: 'absolute',
     right: theme.spacing.unit * 16,
-    top: theme.spacing.triple,
+    bottom: theme.spacing.triple,
   },
   rawLogButton: {
     position: 'absolute',
     right: theme.spacing.unit * 22,
-    top: theme.spacing.triple,
+    bottom: theme.spacing.triple,
   },
 }))
 export default class LiveTaskLog extends Component {

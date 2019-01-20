@@ -13,18 +13,18 @@ import Log from '../../../components/Log';
   fab: {
     position: 'absolute',
     right: theme.spacing.triple,
-    top: theme.spacing.triple,
+    bottom: theme.spacing.triple,
     ...theme.mixins.fabIcon,
   },
   miniFab: {
     position: 'absolute',
     right: theme.spacing.unit * 11,
-    top: theme.spacing.triple,
+    bottom: theme.spacing.triple,
   },
   rawLogButton: {
     position: 'absolute',
     right: theme.spacing.unit * 19,
-    top: theme.spacing.triple,
+    bottom: theme.spacing.triple,
   },
 }))
 export default class TaskLog extends Component {
