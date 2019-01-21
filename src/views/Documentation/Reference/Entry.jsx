@@ -49,6 +49,14 @@ const primaryTypographyProps = { variant: 'body1' };
     list: {
       width: '100%',
     },
+    routingKeyCell: {
+      '& span:not(:first-child)': {
+        marginLeft: theme.spacing.unit / 2,
+      },
+    },
+    summaryCell: {
+      whiteSpace: 'normal',
+    },
   }),
   { withTheme: true }
 )
@@ -247,13 +255,28 @@ export default class Entry extends Component {
                     <TableCell>
                       <Typography>{routingKey.name}</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={classes.summaryCell}>
                       <Markdown>{routingKey.summary}</Markdown>
                     </TableCell>
-                    <TableCell>
-                      {routingKey.constant && 'constant-key'}
-                      {routingKey.required && 'option-key'}
-                      {routingKey.multipleWords && 'multi-key'}
+                    <TableCell className={classes.routingKeyCell}>
+                      {routingKey.constant && (
+                        <span
+                          title={`This key always assume the value ${
+                            routingKey.constant
+                          }. Used to allow additional routing key formats.`}>
+                          <StatusLabel state="CONSTANT_KEY" />
+                        </span>
+                      )}
+                      {routingKey.required && (
+                        <span title="This key takes the value of `_`, if it does not make sense for the event reported.">
+                          <StatusLabel state="OPTION_KEY" />
+                        </span>
+                      )}
+                      {routingKey.multipleWords && (
+                        <span title="This key may container dots `.`, creating multiple sub-keys, match it with `#`">
+                          <StatusLabel state="MULTI_KEY" />
+                        </span>
+                      )}
                     </TableCell>
                   </TableRow>
                 )}

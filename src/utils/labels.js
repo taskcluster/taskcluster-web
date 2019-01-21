@@ -28,4 +28,7 @@ export default {
   POST: 'default',
   PUT: 'default',
   DELETE: 'default',
+  CONSTANT_KEY: 'default',
+  OPTION_KEY: 'info',
+  MULTI_KEY: 'error',
 };
