@@ -183,6 +183,9 @@ export default class Documentation extends Component {
       h1: this.headingFactory('h1'),
       h2: this.headingFactory('h2'),
       h3: this.headingFactory('h3'),
+      h4: this.headingFactory('h4'),
+      h5: this.headingFactory('h5'),
+      h6: this.headingFactory('h6'),
       img: this.imageFactory,
     };
   }

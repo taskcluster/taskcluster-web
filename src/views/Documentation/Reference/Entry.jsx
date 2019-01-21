@@ -46,6 +46,9 @@ const primaryTypographyProps = { variant: 'body1' };
         flex: 1,
       },
     },
+    list: {
+      width: '100%',
+    },
   }),
   { withTheme: true }
 )
@@ -139,10 +142,10 @@ export default class Entry extends Component {
   }
 
   renderFunctionExpansionDetails = () => {
-    const { entry } = this.props;
+    const { classes, entry } = this.props;
 
     return (
-      <List dense>
+      <List className={classes.list} dense>
         <ListItem>
           <ListItemText
             primaryTypographyProps={primaryTypographyProps}
@@ -196,11 +199,11 @@ export default class Entry extends Component {
   };
 
   renderExchangeExpansionDetails = () => {
-    const { entry, exchangePrefix } = this.props;
+    const { classes, entry, exchangePrefix } = this.props;
     const exchange = `${exchangePrefix}${entry.exchange}`;
 
     return (
-      <List dense>
+      <List className={classes.list} dense>
         <ListItem>
           <ListItemText
             primaryTypographyProps={primaryTypographyProps}

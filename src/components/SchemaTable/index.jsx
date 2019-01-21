@@ -1,10 +1,32 @@
 import React, { Component } from 'react';
 import { string, object, oneOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import STable from 'react-schema-viewer/lib/SchemaTable';
+import Table from 'react-schema-viewer/lib/SchemaTable';
 
 @withStyles(
-  {},
+  {
+    bootstrapTable: {
+      fontSize: 16,
+      overflowX: 'auto',
+      // Copied from https://github.com/twbs/bootstrap/blob/f7e8445f72875a49a909dc0af8e4cf43f19f535e/dist/css/bootstrap.css#L1515-L1536
+      '& .table': {
+        width: '100%',
+        marginBottom: '1rem',
+      },
+      '& .table th, & .table td': {
+        padding: '0.75rem',
+        verticalAlign: 'top',
+        borderTop: '1px solid #dee2e6',
+      },
+      '& .table thead th': {
+        verticalAlign: 'bottom',
+        borderBottom: '2px solid #dee2e6',
+      },
+      '& table tbody + tbody': {
+        borderTop: '2px solid #dee2e6',
+      },
+    },
+  },
   {
     withTheme: true,
   }
@@ -35,16 +57,20 @@ export default class SchemaTable extends Component {
   }
 
   render() {
-    const { theme } = this.props;
+    const { classes, theme } = this.props;
     const { schema } = this.state;
 
     return schema ? (
-      <STable
-        headerBackgroundColor={
-          theme.palette.type === 'light' ? 'rgb(240,240,240)' : 'rgb(43,57,69)'
-        }
-        schema={schema}
-      />
+      <div className={classes.bootstrapTable}>
+        <Table
+          headerBackgroundColor={
+            theme.palette.type === 'light'
+              ? 'rgb(240,240,240)'
+              : 'rgb(43,57,69)'
+          }
+          schema={schema}
+        />
+      </div>
     ) : (
       'Loading...'
     );
