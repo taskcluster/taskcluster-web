@@ -348,7 +348,7 @@ export default class Documentation extends Component {
         for the documentation. The following is work in progress."
         />
         {error ? (
-          <NotFound />
+          <NotFound isDocs />
         ) : (
           Document &&
           Document.map(
