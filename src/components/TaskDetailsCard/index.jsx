@@ -161,7 +161,9 @@ export default class TaskDetailsCard extends Component {
                 />
                 <ListItemSecondaryAction
                   className={classes.listItemSecondaryAction}>
-                  <CopyToClipboard text={task.taskGroupId}>
+                  <CopyToClipboard
+                    title={`${task.taskGroupId} (Copy)`}
+                    text={task.taskGroupId}>
                     <IconButton>
                       <ContentCopyIcon />
                     </IconButton>
@@ -180,7 +182,9 @@ export default class TaskDetailsCard extends Component {
                   secondary={<StatusLabel state={task.status.state} />}
                 />
               </ListItem>
-              <CopyToClipboard title={task.created} text={task.created}>
+              <CopyToClipboard
+                title={`${task.created} (Copy)`}
+                text={task.created}>
                 <ListItem button className={classes.listItemButton}>
                   <ListItemText
                     primary="Created"
@@ -202,7 +206,9 @@ export default class TaskDetailsCard extends Component {
                 />
                 <ListItemSecondaryAction
                   className={classes.listItemSecondaryAction}>
-                  <CopyToClipboard text={task.workerType}>
+                  <CopyToClipboard
+                    title={`${task.workerType} (Copy)`}
+                    text={task.workerType}>
                     <IconButton>
                       <ContentCopyIcon />
                     </IconButton>
@@ -255,7 +261,9 @@ export default class TaskDetailsCard extends Component {
                         <ListItemText primary={task.metadata.name} />
                         <ListItemSecondaryAction
                           className={classes.listItemSecondaryAction}>
-                          <CopyToClipboard text={task.metadata.name}>
+                          <CopyToClipboard
+                            title={`${task.metadata.name} (Copy)`}
+                            text={task.metadata.name}>
                             <IconButton>
                               <ContentCopyIcon />
                             </IconButton>
@@ -342,7 +350,9 @@ export default class TaskDetailsCard extends Component {
                     secondary={`${task.status.retriesLeft} of ${task.retries}`}
                   />
                 </ListItem>
-                <CopyToClipboard title={task.deadline} text={task.deadline}>
+                <CopyToClipboard
+                  title={`${task.deadline} (Copy)`}
+                  text={task.deadline}>
                   <ListItem button className={classes.listItemButton}>
                     <ListItemText
                       primary="Deadline"
@@ -356,7 +366,9 @@ export default class TaskDetailsCard extends Component {
                     <ContentCopyIcon />
                   </ListItem>
                 </CopyToClipboard>
-                <CopyToClipboard title={task.expires} text={task.expires}>
+                <CopyToClipboard
+                  title={`${task.expires} (Copy)`}
+                  text={task.expires}>
                   <ListItem button className={classes.listItemButton}>
                     <ListItemText
                       primary="Expires"
