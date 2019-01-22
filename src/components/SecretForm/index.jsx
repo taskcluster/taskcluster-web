@@ -16,13 +16,11 @@ import SpeedDial from '../SpeedDial';
 import DatePicker from '../DatePicker';
 import SpeedDialAction from '../SpeedDialAction';
 import { secret } from '../../utils/prop-types';
-import withAlertOnClose from '../../utils/withAlertOnClose';
 
 const newSecret = safeDump({
   foo: 'bar',
 });
 
-@withAlertOnClose
 @withStyles(theme => ({
   fab: {
     ...theme.mixins.fab,
@@ -163,6 +161,7 @@ export default class SecretForm extends Component {
               <CodeEditor
                 onChange={this.handleEditorChange}
                 mode="yaml"
+                lint
                 value={
                   typeof editorValue === 'object' ? newSecret : editorValue
                 }

@@ -28,7 +28,7 @@ import ErrorPanel from '../../components/ErrorPanel';
 import githubQuery from './github.graphql';
 
 const initialYaml = {
-  version: 0,
+  version: 1,
   tasks: [
     {
       provisionerId: '{{ taskcluster.docker.provisionerId }}',
@@ -124,6 +124,7 @@ const cmdDirectory = (type, org = '<YOUR_ORG>', repo = '<YOUR_REPO>') =>
   },
   resetButtonSpan: {
     ...theme.mixins.fab,
+    ...theme.mixins.actionButton,
   },
   errorPanels: {
     marginTop: theme.spacing.double,
@@ -307,7 +308,7 @@ export default class QuickStart extends Component {
                 to the{' '}
                 <a
                   href={urls.docs(
-                    'reference/integrations/taskcluster-github/docs/taskcluster-yml-v0'
+                    'reference/integrations/taskcluster-github/docs/taskcluster-yml-v1'
                   )}
                   target="_blank"
                   rel="noopener noreferrer">

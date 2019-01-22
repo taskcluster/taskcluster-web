@@ -24,9 +24,7 @@ import DatePicker from '../DatePicker';
 import Button from '../Button';
 import { client } from '../../utils/prop-types';
 import splitLines from '../../utils/splitLines';
-import withAlertOnClose from '../../utils/withAlertOnClose';
 
-@withAlertOnClose
 @withStyles(theme => ({
   fab: {
     ...theme.mixins.fab,
@@ -278,10 +276,11 @@ export default class ClientForm extends Component {
             <TextField
               label="Scopes"
               name="scopeText"
+              helperText="1 scope per line"
               onChange={this.handleInputChange}
               fullWidth
               multiline
-              rows={5}
+              spellCheck={false}
               placeholder={isNewClient ? 'new-scope:for-something:*' : null}
               value={scopeText}
             />
