@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { string, object, oneOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from 'react-schema-viewer/lib/SchemaTable';
+import { THEME } from '../../utils/constants';
 
 @withStyles(
-  {
+  theme => ({
     bootstrapTable: {
       fontSize: 16,
       overflowX: 'auto',
@@ -16,20 +17,30 @@ import Table from 'react-schema-viewer/lib/SchemaTable';
       '& .table th, & .table td': {
         padding: '0.75rem',
         verticalAlign: 'top',
-        borderTop: '1px solid #dee2e6',
+        borderTop: `1px solid ${
+          theme.palette.type === 'dark'
+            ? THEME.TEN_PERCENT_WHITE
+            : THEME.TEN_PERCENT_BLACK
+        }`,
       },
       '& .table thead th': {
         verticalAlign: 'bottom',
-        borderBottom: '2px solid #dee2e6',
+        borderBottom: `2px solid ${
+          theme.palette.type === 'dark'
+            ? THEME.TEN_PERCENT_WHITE
+            : THEME.TEN_PERCENT_BLACK
+        }`,
       },
       '& table tbody + tbody': {
-        borderTop: '2px solid #dee2e6',
+        borderTop: `2px solid ${
+          theme.palette.type === 'dark'
+            ? THEME.TEN_PERCENT_WHITE
+            : THEME.TEN_PERCENT_BLACK
+        }`,
       },
     },
-  },
-  {
-    withTheme: true,
-  }
+  }),
+  { withTheme: true }
 )
 /**
  * Display a SchemaTable asynchronously
@@ -59,20 +70,15 @@ export default class SchemaTable extends Component {
   render() {
     const { classes, theme } = this.props;
     const { schema } = this.state;
+    const headerBackground =
+      theme.palette.type === 'light' ? 'rgb(240,240,240)' : 'rgb(43,57,69)';
 
     return schema ? (
       <div className={classes.bootstrapTable}>
-        <Table
-          headerBackgroundColor={
-            theme.palette.type === 'light'
-              ? 'rgb(240,240,240)'
-              : 'rgb(43,57,69)'
-          }
-          schema={schema}
-        />
+        <Table headerBackgroundColor={headerBackground} schema={schema} />
       </div>
     ) : (
-      'Loading...'
+      'Loading Schema...'
     );
   }
 }
