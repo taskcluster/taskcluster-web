@@ -105,8 +105,7 @@ const getBindingsFromProps = props => {
     whiteSpace: 'nowrap',
   },
   startStopIconSpan: {
-    position: 'fixed',
-    bottom: theme.spacing.double,
+    ...theme.mixins.fab,
     right: theme.spacing.unit * 11,
   },
 }))
