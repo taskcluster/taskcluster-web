@@ -74,6 +74,10 @@ export default class Entry extends Component {
     exchangePrefix: null,
   };
 
+  state = {
+    expanded: false,
+  };
+
   getSignatureFromEntry(entry) {
     const parameters = entry.query.length
       ? entry.args.concat(`{${entry.query.join(', ')}}`)
@@ -153,7 +157,7 @@ export default class Entry extends Component {
     const { classes, entry } = this.props;
 
     return (
-      <List className={classes.list} dense>
+      <List className={classes.list}>
         <ListItem>
           <ListItemText
             primaryTypographyProps={primaryTypographyProps}
@@ -208,86 +212,96 @@ export default class Entry extends Component {
 
   renderExchangeExpansionDetails = () => {
     const { classes, entry, exchangePrefix } = this.props;
+    const { expanded } = this.state;
     const exchange = `${exchangePrefix}${entry.exchange}`;
 
     return (
-      <List className={classes.list} dense>
-        <ListItem>
-          <ListItemText
-            primaryTypographyProps={primaryTypographyProps}
-            primary="Exchange"
-            secondary={exchange}
-          />
-        </ListItem>
-        {entry.description ? (
+      expanded && (
+        <List className={classes.list}>
           <ListItem>
             <ListItemText
               primaryTypographyProps={primaryTypographyProps}
-              primary="Description"
-              secondary={<Markdown>{entry.description}</Markdown>}
+              primary="Exchange"
+              secondary={exchange}
             />
           </ListItem>
-        ) : (
-          <ListItem>
-            <ListItemText
-              primaryTypographyProps={primaryTypographyProps}
-              primary="Description"
-              secondary="n/a"
-            />
-          </ListItem>
-        )}
-        {entry.input && this.renderSchemaTable(entry.input, 'Request Payload')}
-        {entry.output &&
-          this.renderSchemaTable(entry.output, 'Response Payload')}
-        <ListItem>
-          <ListItemText
-            primaryTypographyProps={primaryTypographyProps}
-            primary="Routing Keys"
-            secondary={
-              <DataTable
-                headers={['Index', 'Name', 'Summary', '']}
-                items={entry.routingKey}
-                renderRow={(routingKey, idx) => (
-                  <TableRow key={routingKey.name}>
-                    <TableCell>
-                      <Typography>{idx}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{routingKey.name}</Typography>
-                    </TableCell>
-                    <TableCell className={classes.summaryCell}>
-                      <Markdown>{routingKey.summary}</Markdown>
-                    </TableCell>
-                    <TableCell className={classes.routingKeyCell}>
-                      {routingKey.constant && (
-                        <span
-                          title={`This key always assume the value ${
-                            routingKey.constant
-                          }. Used to allow additional routing key formats.`}>
-                          <StatusLabel state="CONSTANT_KEY" />
-                        </span>
-                      )}
-                      {routingKey.required && (
-                        <span title="This key takes the value of `_`, if it does not make sense for the event reported.">
-                          <StatusLabel state="OPTION_KEY" />
-                        </span>
-                      )}
-                      {routingKey.multipleWords && (
-                        <span title="This key may container dots `.`, creating multiple sub-keys, match it with `#`">
-                          <StatusLabel state="MULTI_KEY" />
-                        </span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                )}
+          {entry.description ? (
+            <ListItem>
+              <ListItemText
+                primaryTypographyProps={primaryTypographyProps}
+                primary="Description"
+                secondary={<Markdown>{entry.description}</Markdown>}
               />
-            }
-          />
-        </ListItem>
-        {entry.schema &&
-          this.renderSchemaTable(entry.schema, 'Message Payload')}
-      </List>
+            </ListItem>
+          ) : (
+            <ListItem>
+              <ListItemText
+                primaryTypographyProps={primaryTypographyProps}
+                primary="Description"
+                secondary="n/a"
+              />
+            </ListItem>
+          )}
+          {entry.input &&
+            this.renderSchemaTable(entry.input, 'Request Payload')}
+          {entry.output &&
+            this.renderSchemaTable(entry.output, 'Response Payload')}
+          <ListItem>
+            <ListItemText
+              primaryTypographyProps={primaryTypographyProps}
+              primary="Routing Keys"
+              secondary={
+                <DataTable
+                  headers={['Index', 'Name', 'Summary', '']}
+                  items={entry.routingKey}
+                  renderRow={(routingKey, idx) => (
+                    <TableRow key={routingKey.name}>
+                      <TableCell>
+                        <Typography>{idx}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography>{routingKey.name}</Typography>
+                      </TableCell>
+                      <TableCell className={classes.summaryCell}>
+                        <Markdown>{routingKey.summary}</Markdown>
+                      </TableCell>
+                      <TableCell className={classes.routingKeyCell}>
+                        {routingKey.constant && (
+                          <span
+                            title={`This key always assume the value ${
+                              routingKey.constant
+                            }. Used to allow additional routing key formats.`}>
+                            <StatusLabel state="CONSTANT_KEY" />
+                          </span>
+                        )}
+                        {routingKey.required && (
+                          <span title="This key takes the value of `_`, if it does not make sense for the event reported.">
+                            <StatusLabel state="OPTION_KEY" />
+                          </span>
+                        )}
+                        {routingKey.multipleWords && (
+                          <span title="This key may container dots `.`, creating multiple sub-keys, match it with `#`">
+                            <StatusLabel state="MULTI_KEY" />
+                          </span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                />
+              }
+            />
+          </ListItem>
+          {entry.schema &&
+            this.renderSchemaTable(entry.schema, 'Message Payload')}
+        </List>
+      )
     );
+  };
+
+  handlePanelChange = () => {
+    this.setState({
+      expanded: !this.state.expanded,
+    });
   };
 
   render() {
@@ -296,6 +310,7 @@ export default class Entry extends Component {
 
     return (
       <ExpansionPanel
+        onChange={this.handlePanelChange}
         CollapseProps={{
           classes: {
             container: classes.collapseContainer,

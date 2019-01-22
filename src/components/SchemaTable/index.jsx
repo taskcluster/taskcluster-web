@@ -5,41 +5,64 @@ import Table from 'react-schema-viewer/lib/SchemaTable';
 import { THEME } from '../../utils/constants';
 
 @withStyles(
-  theme => ({
-    bootstrapTable: {
-      fontSize: 16,
-      overflowX: 'auto',
-      // Copied from https://github.com/twbs/bootstrap/blob/f7e8445f72875a49a909dc0af8e4cf43f19f535e/dist/css/bootstrap.css#L1515-L1536
-      '& .table': {
-        width: '100%',
-        marginBottom: '1rem',
+  theme => {
+    const borderColor =
+      theme.palette.type === 'dark'
+        ? THEME.TEN_PERCENT_WHITE
+        : THEME.TEN_PERCENT_BLACK;
+
+    return {
+      bootstrapTable: {
+        fontSize: 16,
+        overflowX: 'auto',
+        /* eslint-disable no-dupe-keys */
+        // Copied from https://github.com/twbs/bootstrap/blob/f7e8445f72875a49a909dc0af8e4cf43f19f535e/dist/css/bootstrap.css#L1515-L1536
+        '& .table': {
+          width: '100%',
+          marginBottom: '1rem',
+        },
+        '& .table th, & .table td': {
+          padding: '0.75rem',
+          verticalAlign: 'top',
+          borderTop: `1px solid ${borderColor}`,
+        },
+        '& .table thead th': {
+          verticalAlign: 'bottom',
+          borderBottom: `2px solid ${borderColor}`,
+          '& table tbody + tbody': {
+            borderTop: `2px solid ${borderColor}`,
+          },
+        },
+        '& .table': {
+          width: '100%',
+          marginBottom: '1rem',
+        },
+        '& .table th, & .table td': {
+          padding: '0.75rem',
+          verticalAlign: 'top',
+          borderTop: `1px solid ${borderColor}`,
+        },
+        '& .table thead th': {
+          verticalAlign: 'bottom',
+          borderBottom: `2px solid ${borderColor}`,
+          '& table tbody + tbody': {
+            borderTop: `2px solid ${borderColor}`,
+          },
+        },
+        // Copied from https://github.com/twbs/bootstrap/blob/f7e8445f72875a49a909dc0af8e4cf43f19f535e/dist/css/bootstrap.css#L1547-L1559
+        '& .table-bordered': {
+          border: `1px solid ${borderColor}`,
+        },
+        '& .table-bordered th': {
+          border: `1px solid ${borderColor}`,
+        },
+        '& .table-bordered thead th, & .table-bordered thead td': {
+          borderBottomWidth: 2,
+        },
+        /* eslint-enable no-dupe-keys */
       },
-      '& .table th, & .table td': {
-        padding: '0.75rem',
-        verticalAlign: 'top',
-        borderTop: `1px solid ${
-          theme.palette.type === 'dark'
-            ? THEME.TEN_PERCENT_WHITE
-            : THEME.TEN_PERCENT_BLACK
-        }`,
-      },
-      '& .table thead th': {
-        verticalAlign: 'bottom',
-        borderBottom: `2px solid ${
-          theme.palette.type === 'dark'
-            ? THEME.TEN_PERCENT_WHITE
-            : THEME.TEN_PERCENT_BLACK
-        }`,
-      },
-      '& table tbody + tbody': {
-        borderTop: `2px solid ${
-          theme.palette.type === 'dark'
-            ? THEME.TEN_PERCENT_WHITE
-            : THEME.TEN_PERCENT_BLACK
-        }`,
-      },
-    },
-  }),
+    };
+  },
   { withTheme: true }
 )
 /**
