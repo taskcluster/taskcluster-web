@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import { string, bool, func, oneOfType, object } from 'prop-types';
+import { string, bool, func, oneOfType, object, array } from 'prop-types';
 import classNames from 'classnames';
 import { equals, assocPath } from 'ramda';
 import cloneDeep from 'lodash.clonedeep';
@@ -11,6 +10,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from '@material-ui/core/TextField';
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -21,15 +24,14 @@ import Typography from '@material-ui/core/Typography';
 import FlashIcon from 'mdi-react/FlashIcon';
 import PlusIcon from 'mdi-react/PlusIcon';
 import DeleteIcon from 'mdi-react/DeleteIcon';
-import LinkIcon from 'mdi-react/LinkIcon';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import { docs } from 'taskcluster-lib-urls';
+import ErrorPanel from '../ErrorPanel';
 import Button from '../Button';
 import SpeedDial from '../SpeedDial';
 import SpeedDialAction from '../SpeedDialAction';
 import DialogAction from '../DialogAction';
 import DateDistance from '../DateDistance';
-import { HOOKS_LAST_FIRE_TYPE } from '../../utils/constants';
 import { hook } from '../../utils/prop-types';
 import removeKeys from '../../utils/removeKeys';
 
@@ -120,6 +122,7 @@ export default class HookForm extends Component {
   static defaultProps = {
     isNewHook: false,
     hook: initialHook,
+    hookLastFires: null,
     onTriggerHook: null,
     onCreateHook: null,
     onUpdateHook: null,
@@ -131,6 +134,8 @@ export default class HookForm extends Component {
   static propTypes = {
     /** A GraphQL hook response. Not needed when creating a new hook  */
     hook: hook.isRequired,
+    /** Object */
+    hookLastFires: array,
     /** Set to `true` when creating a new hook. */
     isNewHook: bool,
     /** Callback function fired when a hook is triggered. */
@@ -153,6 +158,8 @@ export default class HookForm extends Component {
 
   state = {
     hook: null,
+    hookLastFires: null,
+    lastFirePanelExpanded: '',
     // eslint-disable-next-line react/no-unused-state
     previousHook: null,
     taskInput: '',
@@ -165,7 +172,10 @@ export default class HookForm extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (equals(props.hook, state.previousHook)) {
+    if (
+      equals(props.hook, state.previousHook) &&
+      equals(props.hookLastFires, state.hookLastFires)
+    ) {
       return null;
     }
 
@@ -173,6 +183,7 @@ export default class HookForm extends Component {
 
     return {
       hook: props.hook,
+      hookLastFires: props.hookLastFires,
       previousHook: props.hook,
       taskInput: JSON.stringify(
         removeKeys(cloneDeep(hook.task), ['__typename']),
@@ -395,6 +406,12 @@ export default class HookForm extends Component {
       ),
     });
 
+  handleLastFirePanelChange = panel => (event, expanded) => {
+    this.setState({
+      lastFirePanelExpanded: expanded ? panel : false,
+    });
+  };
+
   render() {
     const {
       actionLoading,
@@ -412,10 +429,11 @@ export default class HookForm extends Component {
       triggerSchemaInput,
       triggerContextInput,
       hook,
+      hookLastFires,
       validation,
+      lastFirePanelExpanded,
     } = this.state;
     /* eslint-disable-next-line no-underscore-dangle */
-    const lastFireTypeName = !isNewHook && hook.status.lastFire.__typename;
 
     return (
       <Fragment>
@@ -508,62 +526,49 @@ export default class HookForm extends Component {
               />
             </FormGroup>
           </ListItem>
-          {!isNewHook && (
-            <Fragment>
-              <ListItem>
+          <ListItem>
+            {hookLastFires ? (
+              <List>
                 <ListItemText
-                  primary="Last Fired"
-                  secondary={
-                    lastFireTypeName === HOOKS_LAST_FIRE_TYPE.NO_FIRE ? (
-                      'n/a'
-                    ) : (
-                      <DateDistance from={hook.status.lastFire.time} />
-                    )
+                  primary={
+                    <Typography variant="subtitle1">
+                      Last Fired Hooks
+                    </Typography>
                   }
                 />
-              </ListItem>
-              {lastFireTypeName === HOOKS_LAST_FIRE_TYPE.SUCCESSFUL_FIRE ? (
-                <ListItem
-                  button
-                  component={Link}
-                  className={classes.listItemButton}
-                  to={`/tasks/${hook.status.lastFire.taskId}`}>
-                  <ListItemText
-                    primary="Last Fired Result"
-                    secondary={hook.status.lastFire.taskId}
-                  />
-                  <LinkIcon />
-                </ListItem>
-              ) : (
-                <ListItem>
-                  <ListItemText
-                    primary="Last Fired Result"
-                    secondary={
-                      lastFireTypeName === HOOKS_LAST_FIRE_TYPE.NO_FIRE ? (
-                        'n/a'
-                      ) : (
-                        <pre>
-                          {JSON.stringify(hook.status.lastFire.error, null, 2)}
-                        </pre>
-                      )
-                    }
-                  />
-                </ListItem>
-              )}
-              <ListItem>
-                <ListItemText
-                  primary="Next Scheduled Fire"
-                  secondary={
-                    hook.status.nextScheduledDate ? (
-                      <DateDistance from={hook.status.nextScheduledDate} />
-                    ) : (
-                      'n/a'
-                    )
-                  }
-                />
-              </ListItem>
-            </Fragment>
-          )}
+                {hookLastFires.map(
+                  ({ taskId, taskCreateTime, result, error }) => (
+                    <ListItem key={taskId}>
+                      <ExpansionPanel
+                        expanded={
+                          result === 'ERROR' && lastFirePanelExpanded === taskId
+                        }
+                        onChange={this.handleLastFirePanelChange(taskId)}>
+                        <ExpansionPanelSummary
+                          expandIcon={error && <ExpandMoreIcon />}>
+                          <Typography className={classes.heading}>
+                            {taskId}
+                          </Typography>
+                          <Typography className={classes.secondaryHeading}>
+                            {result}
+                          </Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                          <ErrorPanel error={error} onClose={null} />
+                        </ExpansionPanelDetails>
+                      </ExpansionPanel>
+                      <code>
+                        {' '}
+                        <DateDistance from={taskCreateTime} />
+                      </code>
+                    </ListItem>
+                  )
+                )}
+              </List>
+            ) : (
+              ''
+            )}
+          </ListItem>
           <List>
             <ListItem>
               <ListItemText

@@ -1,0 +1,9 @@
+query HookLastFires($hookGroupId: ID!, $hookId: ID!) {
+    hookLastFires(hookGroupId: $hookGroupId, hookId: $hookId) {
+        taskId
+        firedBy
+        taskCreateTime
+        result
+        error
+    }
+}

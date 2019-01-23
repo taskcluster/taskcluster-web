@@ -1,6 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, { Component, Fragment } from 'react';
-import { graphql, withApollo } from 'react-apollo';
+import { graphql, withApollo, compose } from 'react-apollo';
 import Spinner from '@mozilla-frontend-infra/components/Spinner';
 import Dashboard from '../../../components/Dashboard';
 import HookForm from '../../../components/HookForm';
@@ -10,18 +10,32 @@ import createHookQuery from './createHook.graphql';
 import deleteHookQuery from './deleteHook.graphql';
 import updateHookQuery from './updateHook.graphql';
 import triggerHookQuery from './triggerHook.graphql';
+import hookLastFiresQuery from './hookLastFires.graphql';
 
 @hot(module)
 @withApollo
-@graphql(hookQuery, {
-  skip: ({ match: { params } }) => !params.hookId,
-  options: ({ match: { params } }) => ({
-    variables: {
-      hookGroupId: params.hookGroupId,
-      hookId: decodeURIComponent(params.hookId),
-    },
+@compose(
+  graphql(hookLastFiresQuery, {
+    skip: ({ match: { params } }) => !params.hookId,
+    options: ({ match: { params } }) => ({
+      variables: {
+        hookGroupId: params.hookGroupId,
+        hookId: decodeURIComponent(params.hookId),
+      },
+    }),
+    name: 'lastFiresData',
   }),
-})
+  graphql(hookQuery, {
+    skip: ({ match: { params } }) => !params.hookId,
+    options: ({ match: { params } }) => ({
+      variables: {
+        hookGroupId: params.hookGroupId,
+        hookId: decodeURIComponent(params.hookId),
+      },
+    }),
+    name: 'hookData',
+  })
+)
 export default class ViewHook extends Component {
   state = {
     actionLoading: false,
@@ -128,13 +142,13 @@ export default class ViewHook extends Component {
   };
 
   render() {
-    const { isNewHook, data } = this.props;
+    const { isNewHook, hookData, lastFiresData } = this.props;
     const { error: err, dialogError, actionLoading, dialogOpen } = this.state;
-    const error = (data && data.error) || err;
+    const hookDataError = (hookData && hookData.error) || err;
 
     return (
       <Dashboard title={isNewHook ? 'Create Hook' : 'Hook'}>
-        <ErrorPanel error={error} />
+        <ErrorPanel error={hookDataError} />
         {isNewHook ? (
           <Fragment>
             <HookForm
@@ -146,12 +160,16 @@ export default class ViewHook extends Component {
           </Fragment>
         ) : (
           <Fragment>
-            {!data.hook && data.loading && <Spinner loading />}
-            {data.hook && (
+            {!hookData.hook && hookData.loading && <Spinner loading />}
+            {hookData.hook && (
               <HookForm
                 dialogError={dialogError}
                 actionLoading={actionLoading}
-                hook={data.hook}
+                hook={hookData.hook}
+                hookLastFires={lastFiresData.hookLastFires.sort(
+                  (a, b) =>
+                    new Date(b.taskCreateTime) - new Date(a.taskCreateTime)
+                )}
                 dialogOpen={dialogOpen}
                 onTriggerHook={this.handleTriggerHook}
                 onUpdateHook={this.handleUpdateHook}
