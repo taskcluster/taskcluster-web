@@ -227,7 +227,7 @@ const createTheme = isDarkTheme => {
         '& pre, & pre[class*="language-"]': {
           margin: `${SPACING.TRIPLE}px 0`,
           padding: '12px 18px',
-          backgroundColor: primaryMain,
+          backgroundColor: THEME.PRIMARY_DARK,
           borderRadius: 3,
           overflow: 'auto',
         },
@@ -236,7 +236,6 @@ const createTheme = isDarkTheme => {
           lineHeight: 1.6,
           fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
           color: textPrimary,
-          backgroundColor: primaryMain,
           fontSize: 14,
           '&[class*="language-"]': {
             textShadow: 'none',
@@ -369,7 +368,7 @@ const createTheme = isDarkTheme => {
         },
         '& blockquote': {
           borderLeft: `5px solid ${textHint}`,
-          backgroundColor: primaryMain,
+          backgroundColor: THEME.PRIMARY_DARK,
           padding: `${SPACING.UNIT / 2}px ${SPACING.TRIPLE}px`,
           margin: `${SPACING.TRIPLE}px 0`,
         },
