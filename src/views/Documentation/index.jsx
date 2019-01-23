@@ -7,6 +7,7 @@ import { lowerCase } from 'change-case';
 import path from 'path';
 import resolve from 'resolve-pathname';
 import RefParser from 'json-schema-ref-parser';
+import catchLinks from 'catch-links';
 import 'prismjs';
 import 'prismjs/themes/prism.css';
 import 'prism-themes/themes/prism-atom-dark.css';
@@ -54,8 +55,14 @@ export default class Documentation extends Component {
     referenceJson: null,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this.load();
+
+    // Clicking a link from markdown opens a new page.
+    // We need to make sure react-router is still used for local routes.
+    catchLinks(window, href => {
+      this.props.history.push(href);
+    });
   }
 
   componentDidUpdate(prevProps) {

@@ -2870,6 +2870,11 @@ caniuse-lite@^1.0.30000921:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000921.tgz#7a607c1623444b22351d834e093aedda3c42fbe8"
   integrity sha512-Bu09ciy0lMWLgpYC77I0YGuI8eFRBPPzaSOYJK1jTI64txCphYCqnWbxJYjHABYVt/TYX/p3jNjLBR87u1Bfpw==
 
+catch-links@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/catch-links/-/catch-links-2.0.1.tgz#ed7a78abeb3f4b3d3adea3b5bbf9ef9c24fe4a8d"
+  integrity sha1-7Xp4q+s/Sz063qO1u/nvnCT+So0=
+
 ccount@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.0.3.tgz#f1cec43f332e2ea5a569fd46f9f5bde4e6102aff"

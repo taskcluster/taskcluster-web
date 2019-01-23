@@ -42,6 +42,7 @@
     "apollo-link-http": "^1.5.8",
     "apollo-link-ws": "^1.0.11",
     "apollo-utilities": "^1.0.26",
+    "catch-links": "^2.0.1",
     "change-case": "^3.0.2",
     "classnames": "^2.2.6",
     "codemirror": "^5.39.0",
