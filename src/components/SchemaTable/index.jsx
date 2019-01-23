@@ -69,7 +69,7 @@ import { THEME } from '../../utils/constants';
  * Display a SchemaTable asynchronously
  */
 export default class SchemaTable extends Component {
-  defaultProps = {
+  static defaultProps = {
     schema: oneOf([string, object]).isRequired,
   };
 

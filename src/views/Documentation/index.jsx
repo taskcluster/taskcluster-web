@@ -32,11 +32,15 @@ let absolutePath = null;
   innerHtml: {
     ...theme.mixins.markdown,
   },
+  imageWrapper: {
+    textAlign: 'center',
+    background: theme.palette.type === 'dark' ? '#cfd8e8' : 'none',
+  },
 }))
 export default class Documentation extends Component {
   state = {
     error: null,
-    Document: null,
+    Page: null,
     pageInfo: null,
     referenceJson: null,
   };
@@ -84,13 +88,24 @@ export default class Documentation extends Component {
     );
 
   imageFactory = ({ src, ...props }) => {
+    const { classes } = this.props;
     const currentFileName = path.basename(absolutePath);
-    const imgSrc = src.startsWith('http')
+    const startsWithHttp = src.startsWith('http');
+    const imgSrc = startsWithHttp
       ? src
       : path.join(absolutePath.replace(`/${currentFileName}`, ''), src);
 
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <img {...props} src={imgSrc} />;
+    // Some local images have black text making it hard to see
+    // when viewing the page with the dark theme
+    /* eslint-disable jsx-a11y/alt-text */
+    return startsWithHttp ? (
+      <img {...props} src={imgSrc} />
+    ) : (
+      <div className={classes.imageWrapper}>
+        <img {...props} src={imgSrc} />
+      </div>
+    );
+    /* eslint-enable jsx-a11y/alt-text */
   };
 
   handlePageChange = url =>
@@ -201,7 +216,7 @@ export default class Documentation extends Component {
         const entries = await this.getReferenceEntries(Page.entries);
 
         return this.setState({
-          Document: null,
+          Page: null,
           pageInfo: null,
           error: null,
           referenceJson: Object.assign({}, Page, { entries }),
@@ -209,19 +224,27 @@ export default class Documentation extends Component {
       }
 
       const pageInfo = this.getPageInfo();
-      const page = renderToString(
-        <BrowserRouter>
-          <Page components={this.components()} />
-        </BrowserRouter>
-      );
-      const Document = page
-        .split(DOCS_SCHEMA_REGEX)
-        .map(html => (isUrl(html) ? <SchemaTable schema={html} /> : html));
 
-      this.setState({ Document, pageInfo, error: null, referenceJson: null });
+      this.setState({ Page, pageInfo, error: null, referenceJson: null });
     } catch (error) {
       this.setState({ error });
     }
+  }
+
+  getDocument(Page) {
+    if (!Page) {
+      return null;
+    }
+
+    const page = renderToString(
+      <BrowserRouter>
+        <Page components={this.components()} />
+      </BrowserRouter>
+    );
+
+    return page
+      .split(DOCS_SCHEMA_REGEX)
+      .map(html => (isUrl(html) ? <SchemaTable schema={html} /> : html));
   }
 
   async handleImport(url) {
@@ -335,7 +358,8 @@ export default class Documentation extends Component {
 
   render() {
     const { classes, history } = this.props;
-    const { error, Document, pageInfo, referenceJson } = this.state;
+    const { error, Page, pageInfo, referenceJson } = this.state;
+    const Document = this.getDocument(Page);
 
     return (
       <Dashboard

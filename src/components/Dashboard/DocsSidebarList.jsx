@@ -116,7 +116,10 @@ export default class DocsSidebarList extends Component {
   }
 
   renderInlineNodes = nodes => {
-    const { classes } = this.props;
+    const {
+      classes,
+      history: { location },
+    } = this.props;
 
     if (!nodes.length) {
       return null;
@@ -125,18 +128,25 @@ export default class DocsSidebarList extends Component {
     return (
       <div className={classes.inlineLinksWrapper}>
         <Typography component="span">(</Typography>
-        {nodes.map((node, idx) => (
-          <Fragment key={node.name}>
-            <Link
-              className={classNames(classes.inlineLink, classes.hover)}
-              to={`${DOCS_PATH_PREFIX}/${node.path}`}>
-              <Typography component="span">
-                {removeExtension(node.name)}
-              </Typography>
-            </Link>
-            {idx === 0 && <span>|</span>}
-          </Fragment>
-        ))}
+        {nodes.map((node, idx) => {
+          const href = `${DOCS_PATH_PREFIX}/${node.path}`;
+          const isLinkActive = location.pathname === href;
+
+          return (
+            <Fragment key={node.name}>
+              <Link
+                className={classNames(classes.inlineLink, classes.hover)}
+                to={href}>
+                <Typography
+                  className={classNames({ [classes.linkActive]: isLinkActive })}
+                  component="span">
+                  {removeExtension(node.name)}
+                </Typography>
+              </Link>
+              {idx === 0 && <span>|</span>}
+            </Fragment>
+          );
+        })}
         <Typography component="span">)</Typography>
       </div>
     );
