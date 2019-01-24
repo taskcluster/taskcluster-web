@@ -16,6 +16,7 @@ import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-markup';
 import Dashboard from '../../components/Dashboard';
+import HeaderWithAnchor from '../../components/HeaderWithAnchor';
 import ScrollToTop from '../../components/ScrollToTop';
 import NotFound from '../../components/NotFound';
 import ErrorPanel from '../../components/ErrorPanel';
@@ -123,16 +124,11 @@ export default class Documentation extends Component {
     );
   };
 
-  headingFactory = type => ({ children, ...props }) =>
-    React.createElement(
-      type,
-      { ...props },
-      ...children,
-      <span>&nbsp;</span>,
-      <a className="anchor-link-style" href={`#${props.id}`}>
-        #
-      </a>
-    );
+  headingFactory = type => ({ children, id, ...props }) => (
+    <HeaderWithAnchor type={type} id={id} {...props}>
+      {children}
+    </HeaderWithAnchor>
+  );
 
   imageFactory = ({ src, ...props }) => {
     const { classes } = this.props;
@@ -410,6 +406,7 @@ export default class Documentation extends Component {
 
     return (
       <Dashboard
+        className={classes.innerHtml}
         docs
         title={
           pageInfo && pageInfo.data.title
@@ -432,11 +429,7 @@ export default class Documentation extends Component {
                   <Fragment key={elem.props.url}>{elem}</Fragment>
                 ) : (
                   /* eslint-disable react/no-danger */
-                  <div
-                    className={classes.innerHtml}
-                    key={elem}
-                    dangerouslySetInnerHTML={{ __html: elem }}
-                  />
+                  <div key={elem} dangerouslySetInnerHTML={{ __html: elem }} />
                   /* eslint-enable react/no-danger */
                 )
             )

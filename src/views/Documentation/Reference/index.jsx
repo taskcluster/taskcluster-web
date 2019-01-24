@@ -7,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Entry from './Entry';
 import Markdown from '../../../components/Markdown';
+import HeaderWithAnchor from '../../../components/HeaderWithAnchor';
 
 @withRouter
 export default class Reference extends Component {
@@ -26,9 +27,7 @@ export default class Reference extends Component {
 
     return (
       <div>
-        <Typography component="h1" gutterBottom variant="h4">
-          {title}
-        </Typography>
+        <HeaderWithAnchor>{title}</HeaderWithAnchor>
         <Markdown>{description}</Markdown>
         {baseUrl && (
           <List>

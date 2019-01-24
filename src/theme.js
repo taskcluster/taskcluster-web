@@ -222,7 +222,7 @@ const createTheme = isDarkTheme => {
         paddingLeft: 32,
       },
       markdown: {
-        fontFamily: Roboto400,
+        fontFamily: Roboto400.fontFamily,
         color: textPrimary,
         '& pre, & pre[class*="language-"]': {
           margin: `${SPACING.TRIPLE}px 0`,

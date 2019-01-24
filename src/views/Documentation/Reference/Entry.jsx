@@ -46,6 +46,9 @@ const primaryTypographyProps = { variant: 'body1' };
         flex: 1,
       },
     },
+    expansionPanelSummary: {
+      margin: 0,
+    },
     list: {
       width: '100%',
     },
@@ -56,6 +59,11 @@ const primaryTypographyProps = { variant: 'body1' };
     },
     summaryCell: {
       whiteSpace: 'normal',
+    },
+    gridContainer: {
+      '& > div': {
+        margin: 'auto',
+      },
     },
   }),
   { withTheme: true }
@@ -93,7 +101,7 @@ export default class Entry extends Component {
     const signature = this.getSignatureFromEntry(entry);
 
     return (
-      <Grid container spacing={8}>
+      <Grid className={classes.gridContainer} container spacing={8}>
         <Grid item xs={6}>
           <div>
             <Typography id={entry.name} component="h3">
@@ -116,10 +124,10 @@ export default class Entry extends Component {
   };
 
   renderExchangeExpansionPanelSummary = () => {
-    const { entry } = this.props;
+    const { entry, classes } = this.props;
 
     return (
-      <Grid container spacing={8}>
+      <Grid className={classes.gridContainer} container spacing={8}>
         <Grid item xs={5}>
           <div>
             <Typography id={entry.name} component="h3">
@@ -319,7 +327,7 @@ export default class Entry extends Component {
         }}>
         <ExpansionPanelSummary
           classes={{
-            content: classNames({
+            content: classNames(classes.expansionPanelSummary, {
               [classes.expansionPanelSummaryContent]: !isEntryExchange,
             }),
           }}
