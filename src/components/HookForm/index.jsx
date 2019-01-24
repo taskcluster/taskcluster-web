@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import { string, bool, func, oneOfType, object, array } from 'prop-types';
 import classNames from 'classnames';
 import { equals, assocPath } from 'ramda';
@@ -26,6 +27,7 @@ import PlusIcon from 'mdi-react/PlusIcon';
 import DeleteIcon from 'mdi-react/DeleteIcon';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import { docs } from 'taskcluster-lib-urls';
+import Label from '@mozilla-frontend-infra/components/Label';
 import ErrorPanel from '../ErrorPanel';
 import Button from '../Button';
 import SpeedDial from '../SpeedDial';
@@ -115,6 +117,12 @@ const initialHook = {
   },
   subheader: {
     fontSize: theme.typography.pxToRem(16),
+  },
+  hookLastFires: {
+    width: '100%',
+  },
+  scrollX: {
+    overflowX: 'scroll',
   },
 }))
 /** A form to view/edit/create a hook */
@@ -528,39 +536,62 @@ export default class HookForm extends Component {
           </ListItem>
           <ListItem>
             {hookLastFires ? (
-              <List>
+              <List className={classes.hookLastFires}>
                 <ListItemText
                   primary={
                     <Typography variant="subtitle1">
-                      Last Fired Hooks
+                      Last Hook Fire Attempts
                     </Typography>
                   }
                 />
                 {hookLastFires.map(
-                  ({ taskId, taskCreateTime, result, error }) => (
+                  ({ taskId, taskCreateTime, firedBy, result, error }) => (
                     <ListItem key={taskId}>
-                      <ExpansionPanel
-                        expanded={
-                          result === 'ERROR' && lastFirePanelExpanded === taskId
-                        }
-                        onChange={this.handleLastFirePanelChange(taskId)}>
-                        <ExpansionPanelSummary
-                          expandIcon={error && <ExpandMoreIcon />}>
-                          <Typography className={classes.heading}>
-                            {taskId}
-                          </Typography>
-                          <Typography className={classes.secondaryHeading}>
-                            {result}
-                          </Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                          <ErrorPanel error={error} onClose={null} />
-                        </ExpansionPanelDetails>
-                      </ExpansionPanel>
-                      <code>
-                        {' '}
-                        <DateDistance from={taskCreateTime} />
-                      </code>
+                      <Grid container direction="column">
+                        <Grid
+                          item
+                          container
+                          direction="row"
+                          justify="space-between">
+                          <Grid item>
+                            <pre>{firedBy}</pre>
+                          </Grid>
+                          <Grid item>
+                            <pre>
+                              <DateDistance from={taskCreateTime} />
+                            </pre>
+                          </Grid>
+                        </Grid>
+                        <Grid item>
+                          <ExpansionPanel
+                            expanded={
+                              result === 'ERROR' &&
+                              lastFirePanelExpanded === taskId
+                            }
+                            onChange={this.handleLastFirePanelChange(taskId)}>
+                            <ExpansionPanelSummary
+                              expandIcon={error && <ExpandMoreIcon />}>
+                              <Grid container justify="space-between">
+                                <Grid item>
+                                  {(result === 'SUCCESS' && (
+                                    <Link to={`/tasks/${taskId}`}>
+                                      <Typography>{taskId}</Typography>
+                                    </Link>
+                                  )) || <Typography>{taskId}</Typography>}
+                                </Grid>
+                                <Grid item>
+                                  <Label mini status={result.toLowerCase()}>
+                                    {result}
+                                  </Label>
+                                </Grid>
+                              </Grid>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                              <ErrorPanel error={error} onClose={null} />
+                            </ExpansionPanelDetails>
+                          </ExpansionPanel>
+                        </Grid>
+                      </Grid>
                     </ListItem>
                   )
                 )}
@@ -569,6 +600,20 @@ export default class HookForm extends Component {
               ''
             )}
           </ListItem>
+          {!isNewHook && (
+            <ListItem>
+              <ListItemText
+                primary="Next Scheduled Fire"
+                secondary={
+                  hook.status.nextScheduledDate ? (
+                    <DateDistance from={hook.status.nextScheduledDate} />
+                  ) : (
+                    'n/a'
+                  )
+                }
+              />
+            </ListItem>
+          )}
           <List>
             <ListItem>
               <ListItemText
