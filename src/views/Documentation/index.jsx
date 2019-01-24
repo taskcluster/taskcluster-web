@@ -192,12 +192,6 @@ export default class Documentation extends Component {
     return this.findChildFromRootNode(rootNode) || rootNode;
   }
 
-  getProjectName() {
-    const { path } = this.props.match.params;
-
-    return docsPathMappings[path].split('/')[0];
-  }
-
   buildSchemaId(schemaId) {
     if (schemaId.startsWith('/')) {
       if (
@@ -296,25 +290,35 @@ export default class Documentation extends Component {
       url &&
       url.startsWith('reference') &&
       (url.endsWith('api') || url.endsWith('events'));
+    const docPath = url
+      .split('/')
+      .slice(2)
+      .join('/');
 
-    if (docsPathMappings[doc]) {
-      absolutePath = `/raw/${docsPathMappings[doc]}.${isJSON ? 'json' : 'md'}`;
+    console.log('docPath: ', docPath);
+    console.log('doc: ', doc);
+    console.log('url: ', url);
+    console.log('docsPathMapping[doc]: ', docsPathMappings[doc]);
+
+    const myContext = require.context('../../docs', true, /.*(.md|.json)$/);
+    const fff = myContext.keys().filter(key => key.includes(doc));
+
+    if (!fff.length) {
+      // if (docsPathMappings[doc]) {
+      //   absolutePath = `/raw/${docsPathMappings[doc]}.${isJSON ? 'json' : 'md'}`;
+      absolutePath = `/raw/${docPath}.${isJSON ? 'json' : 'md'}`;
 
       if (isJSON) {
-        return import(/* webpackChunkName: 'Documentation.JSON' */ `../../../raw/${
-          docsPathMappings[url]
-        }.json`);
+        return import(/* webpackChunkName: 'Documentation.JSON' */ `../../../raw/${docPath}.json`);
       }
 
-      return import(/* webpackChunkName: 'Documentation.page' */ `../../../raw/${
-        docsPathMappings[doc]
-      }.md`).catch(() => {
-        absolutePath = `/raw/${docsPathMappings[doc]}/index.md`;
+      return import(/* webpackChunkName: 'Documentation.page' */ `../../../raw/${docPath}.md`).catch(
+        () => {
+          absolutePath = `/raw/${docPath}/index.md`;
 
-        return import(/* webpackChunkName: 'Documentation.page' */ `../../../raw/${
-          docsPathMappings[doc]
-        }/index.md`);
-      });
+          return import(/* webpackChunkName: 'Documentation.page' */ `../../../raw/${docPath}/index.md`);
+        }
+      );
     }
 
     absolutePath = `/src/docs/${doc}.md`;
@@ -329,7 +333,7 @@ export default class Documentation extends Component {
   }
 
   getReferenceEntries = entries => {
-    const projectName = this.getProjectName();
+    const projectName = this.props.match.params.path.split('/')[2];
 
     return Promise.all(
       entries.map(entry =>
