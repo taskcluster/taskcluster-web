@@ -121,9 +121,6 @@ const initialHook = {
   hookLastFires: {
     width: '100%',
   },
-  scrollX: {
-    overflowX: 'scroll',
-  },
 }))
 /** A form to view/edit/create a hook */
 export default class HookForm extends Component {
