@@ -16,6 +16,7 @@ import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-markup';
 import Dashboard from '../../components/Dashboard';
+import ScrollToTop from '../../components/ScrollToTop';
 import NotFound from '../../components/NotFound';
 import ErrorPanel from '../../components/ErrorPanel';
 import {
@@ -34,19 +35,22 @@ import Reference from './Reference';
 let absolutePath = null;
 
 @hot(module)
-@withStyles(theme => ({
-  innerHtml: {
-    ...theme.mixins.markdown,
-    '& .token.operator': {
-      color: 'none',
-      background: 'none',
+@withStyles(
+  theme => ({
+    innerHtml: {
+      ...theme.mixins.markdown,
+      '& .token.operator': {
+        color: 'none',
+        background: 'none',
+      },
     },
-  },
-  imageWrapper: {
-    textAlign: 'center',
-    background: theme.palette.type === 'dark' ? '#ffffffcc' : 'none',
-  },
-}))
+    imageWrapper: {
+      textAlign: 'center',
+      background: theme.palette.type === 'dark' ? '#ffffffcc' : 'none',
+    },
+  }),
+  { withTheme: true }
+)
 export default class Documentation extends Component {
   state = {
     error: null,
@@ -62,7 +66,34 @@ export default class Documentation extends Component {
     // We need to make sure react-router is still used for local routes.
     catchLinks(window, href => {
       this.props.history.push(href);
+
+      if (href.includes('#')) {
+        this.hashLinkScroll();
+      }
     });
+  }
+
+  hashLinkScroll() {
+    const { theme } = this.props;
+    const { hash } = window.location;
+    const appBarHeight = document.querySelector('header').offsetHeight;
+
+    if (hash !== '') {
+      // Push onto callback queue so it runs after the DOM is updated,
+      // this is required when navigating from a different page so that
+      // the element is rendered on the page before trying to getElementById.
+      setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+
+        if (element) {
+          window.scrollTo({
+            top: element.offsetTop - appBarHeight - theme.spacing.double,
+            behavior: 'smooth',
+          });
+        }
+      }, 0);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -385,38 +416,40 @@ export default class Documentation extends Component {
             ? pageInfo.data.title
             : 'Documentation'
         }>
-        <ErrorPanel
-          warning
-          error="Please refer to [https://docs.taskcluster.net/docs](https://docs.taskcluster.net/docs)
-        for the documentation. The following is work in progress."
-        />
-        {error ? (
-          <NotFound isDocs />
-        ) : (
-          Document &&
-          Document.map(
-            elem =>
-              isValidElement(elem) ? (
-                <Fragment key={elem.props.url}>{elem}</Fragment>
-              ) : (
-                /* eslint-disable react/no-danger */
-                <div
-                  className={classes.innerHtml}
-                  key={elem}
-                  dangerouslySetInnerHTML={{ __html: elem }}
-                />
-                /* eslint-enable react/no-danger */
-              )
-          )
-        )}
-        {!error && referenceJson && <Reference json={referenceJson} />}
-        {pageInfo && (
-          <PageMeta
-            pageInfo={pageInfo}
-            history={history}
-            onPageChange={this.handlePageChange}
+        <ScrollToTop>
+          <ErrorPanel
+            warning
+            error="Please refer to [https://docs.taskcluster.net/docs](https://docs.taskcluster.net/docs)
+          for the documentation. The following is work in progress."
           />
-        )}
+          {error ? (
+            <NotFound isDocs />
+          ) : (
+            Document &&
+            Document.map(
+              elem =>
+                isValidElement(elem) ? (
+                  <Fragment key={elem.props.url}>{elem}</Fragment>
+                ) : (
+                  /* eslint-disable react/no-danger */
+                  <div
+                    className={classes.innerHtml}
+                    key={elem}
+                    dangerouslySetInnerHTML={{ __html: elem }}
+                  />
+                  /* eslint-enable react/no-danger */
+                )
+            )
+          )}
+          {!error && referenceJson && <Reference json={referenceJson} />}
+          {pageInfo && (
+            <PageMeta
+              pageInfo={pageInfo}
+              history={history}
+              onPageChange={this.handlePageChange}
+            />
+          )}
+        </ScrollToTop>
       </Dashboard>
     );
   }
