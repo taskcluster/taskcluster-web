@@ -11,10 +11,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -29,6 +27,7 @@ import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import { docs } from 'taskcluster-lib-urls';
 import Label from '@mozilla-frontend-infra/components/Label';
 import ErrorPanel from '../ErrorPanel';
+import DataTable from '../DataTable';
 import Button from '../Button';
 import SpeedDial from '../SpeedDial';
 import SpeedDialAction from '../SpeedDialAction';
@@ -118,8 +117,16 @@ const initialHook = {
   subheader: {
     fontSize: theme.typography.pxToRem(16),
   },
-  hookLastFires: {
-    width: '100%',
+  displayBlock: {
+    display: 'block',
+  },
+  errorTableCell: {
+    whiteSpace: 'normal',
+  },
+  errorPanel: {
+    maxHeight: '300px',
+    maxWidth: '75ch',
+    overflowY: 'scroll',
   },
 }))
 /** A form to view/edit/create a hook */
@@ -166,7 +173,6 @@ export default class HookForm extends Component {
   state = {
     hook: null,
     hookLastFires: null,
-    lastFirePanelExpanded: '',
     // eslint-disable-next-line react/no-unused-state
     previousHook: null,
     taskInput: '',
@@ -413,12 +419,6 @@ export default class HookForm extends Component {
       ),
     });
 
-  handleLastFirePanelChange = panel => (event, expanded) => {
-    this.setState({
-      lastFirePanelExpanded: expanded ? panel : false,
-    });
-  };
-
   render() {
     const {
       actionLoading,
@@ -438,7 +438,6 @@ export default class HookForm extends Component {
       hook,
       hookLastFires,
       validation,
-      lastFirePanelExpanded,
     } = this.state;
     /* eslint-disable-next-line no-underscore-dangle */
 
@@ -533,70 +532,50 @@ export default class HookForm extends Component {
               />
             </FormGroup>
           </ListItem>
-          <ListItem>
-            {hookLastFires ? (
-              <List className={classes.hookLastFires}>
-                <ListItemText
-                  primary={
-                    <Typography variant="subtitle1">
-                      Last Hook Fire Attempts
-                    </Typography>
-                  }
-                />
-                {hookLastFires.map(
-                  ({ taskId, taskCreateTime, firedBy, result, error }) => (
-                    <ListItem key={taskId}>
-                      <Grid container direction="column">
-                        <Grid
-                          item
-                          container
-                          direction="row"
-                          justify="space-between">
-                          <Grid item>
-                            <pre>{firedBy}</pre>
-                          </Grid>
-                          <Grid item>
-                            <pre>
-                              <DateDistance from={taskCreateTime} />
-                            </pre>
-                          </Grid>
-                        </Grid>
-                        <Grid item>
-                          <ExpansionPanel
-                            expanded={
-                              result === 'ERROR' &&
-                              lastFirePanelExpanded === taskId
-                            }
-                            onChange={this.handleLastFirePanelChange(taskId)}>
-                            <ExpansionPanelSummary
-                              expandIcon={error && <ExpandMoreIcon />}>
-                              <Grid container justify="space-between">
-                                <Grid item>
-                                  {(result === 'SUCCESS' && (
-                                    <Link to={`/tasks/${taskId}`}>
-                                      <Typography>{taskId}</Typography>
-                                    </Link>
-                                  )) || <Typography>{taskId}</Typography>}
-                                </Grid>
-                                <Grid item>
-                                  <Label mini status={result.toLowerCase()}>
-                                    {result}
-                                  </Label>
-                                </Grid>
-                              </Grid>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                              <ErrorPanel error={error} onClose={null} />
-                            </ExpansionPanelDetails>
-                          </ExpansionPanel>
-                        </Grid>
-                      </Grid>
-                    </ListItem>
-                  )
+          <ListItem className={classes.displayBlock}>
+            <ListItemText
+              primary={
+                <Typography variant="subtitle1">
+                  Last Hook Fire Attempts
+                </Typography>
+              }
+            />
+            {hookLastFires && (
+              <DataTable
+                items={hookLastFires}
+                headers={['Task ID', 'FiredBy', 'Result', 'Attempted', 'Error']}
+                renderRow={hookFire => (
+                  <TableRow key={hookFire.taskId}>
+                    <TableCell>
+                      {(hookFire.result === 'SUCCESS' && (
+                        <Link to={`/tasks/${hookFire.taskId}`}>
+                          <Typography>{hookFire.taskId}</Typography>
+                        </Link>
+                      )) || <Typography>{hookFire.taskId}</Typography>}
+                    </TableCell>
+                    <TableCell>
+                      <Typography>{hookFire.firedBy}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Label mini status={hookFire.result.toLowerCase()}>
+                        {hookFire.result}
+                      </Label>
+                    </TableCell>
+                    <TableCell>
+                      <DateDistance from={hookFire.taskCreateTime} />
+                    </TableCell>
+                    <TableCell className={classes.errorTableCell}>
+                      {(hookFire.result === 'ERROR' && (
+                        <ErrorPanel
+                          className={classes.errorPanel}
+                          error={hookFire.error}
+                          onClose={null}
+                        />
+                      )) || <Typography>N/A</Typography>}
+                    </TableCell>
+                  </TableRow>
                 )}
-              </List>
-            ) : (
-              ''
+              />
             )}
           </ListItem>
           {!isNewHook && (
