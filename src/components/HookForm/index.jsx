@@ -137,9 +137,11 @@ export default class HookForm extends Component {
   };
 
   static propTypes = {
-    /** A GraphQL hook response. Not needed when creating a new hook  */
+    /** Part of a GraphQL hook response containing info about that hook.
+     Not needed when creating a new hook */
     hook: hook.isRequired,
-    /** Object */
+    /** Part of the same Grahql hook response as above containing info
+     about some last hook fired attempts */
     hookLastFires: array,
     /** Set to `true` when creating a new hook. */
     isNewHook: bool,

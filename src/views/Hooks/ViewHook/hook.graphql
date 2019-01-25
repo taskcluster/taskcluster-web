@@ -45,5 +45,12 @@ query Hook($hookGroupId: ID!, $hookId: ID!) {
       tags
       extra
     }
+  },
+  hookLastFires(hookGroupId: $hookGroupId, hookId: $hookId) {
+        taskId
+        firedBy
+        taskCreateTime
+        result
+        error
   }
 }
