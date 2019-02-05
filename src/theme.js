@@ -241,6 +241,9 @@ const createTheme = isDarkTheme => {
             textShadow: 'none',
           },
         },
+        '& pre:not([class]) code:not([class])': {
+          color: THEME.PRIMARY_TEXT_DARK,
+        },
         '& p code, & ul code, & pre code': {
           fontSize: 14,
           lineHeight: 1.6,
@@ -368,7 +371,6 @@ const createTheme = isDarkTheme => {
         },
         '& blockquote': {
           borderLeft: `5px solid ${textHint}`,
-          backgroundColor: THEME.PRIMARY_DARK,
           padding: `${SPACING.UNIT / 2}px ${SPACING.TRIPLE}px`,
           margin: `${SPACING.TRIPLE}px 0`,
         },
