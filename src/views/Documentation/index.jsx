@@ -150,9 +150,6 @@ export default class Documentation extends Component {
     /* eslint-enable jsx-a11y/alt-text */
   };
 
-  handlePageChange = url =>
-    this.props.history.push(`${DOCS_PATH_PREFIX}/${url}`);
-
   findChildFromRootNode(node) {
     const currentPath = window.location.pathname.replace(
       `${DOCS_PATH_PREFIX}/`,
@@ -434,13 +431,7 @@ export default class Documentation extends Component {
             )
           )}
           {!error && referenceJson && <Reference json={referenceJson} />}
-          {pageInfo && (
-            <PageMeta
-              pageInfo={pageInfo}
-              history={history}
-              onPageChange={this.handlePageChange}
-            />
-          )}
+          {pageInfo && <PageMeta pageInfo={pageInfo} history={history} />}
         </ScrollToTop>
       </Dashboard>
     );

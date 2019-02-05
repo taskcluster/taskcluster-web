@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { join } from 'path';
 import { func } from 'prop-types';
 import classNames from 'classnames';
 import { isEmpty } from 'ramda';
@@ -7,6 +8,7 @@ import Divider from '@material-ui/core/Divider';
 import AnchorOrLink from '../../components/Markdown/AnchorOrLink';
 import PageNavigation from '../../components/PageNavigation';
 import { docsPageInfo } from '../../utils/prop-types';
+import { DOCS_PATH_PREFIX } from '../../utils/constants';
 
 @withStyles(theme => ({
   divider: {
@@ -73,18 +75,6 @@ export default class PageMeta extends Component {
     return <span>{data.followup.subtext}</span>;
   };
 
-  handlePreviousPage = () => {
-    const { pageInfo, onPageChange } = this.props;
-
-    onPageChange(pageInfo.prev.path);
-  };
-
-  handleNextPage = () => {
-    const { pageInfo, onPageChange } = this.props;
-
-    onPageChange(pageInfo.next.path);
-  };
-
   render() {
     const { classes, pageInfo } = this.props;
     const hasPreviousPage = pageInfo.prev && !isEmpty(pageInfo.prev);
@@ -108,7 +98,7 @@ export default class PageMeta extends Component {
             })}>
             {hasPreviousPage && (
               <PageNavigation
-                onClick={this.handlePreviousPage}
+                to={join(DOCS_PATH_PREFIX, pageInfo.prev.path)}
                 variant="prev"
                 aria-label="Previous Page">
                 {pageInfo.prev.title}
@@ -116,7 +106,7 @@ export default class PageMeta extends Component {
             )}
             {hasNextPage && (
               <PageNavigation
-                onClick={this.handleNextPage}
+                to={join(DOCS_PATH_PREFIX, pageInfo.next.path)}
                 variant="next"
                 aria-label="Next Page">
                 {pageInfo.next.title}
