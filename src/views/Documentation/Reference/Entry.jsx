@@ -30,12 +30,6 @@ const primaryTypographyProps = { variant: 'body1' };
       textOverflow: 'ellipsis',
       overflow: 'hidden',
     },
-    collapseContainer: {
-      display: 'none',
-    },
-    collapseEntered: {
-      display: 'block',
-    },
     expansionPanelSummaryContent: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -319,12 +313,7 @@ export default class Entry extends Component {
     return (
       <ExpansionPanel
         onChange={this.handlePanelChange}
-        CollapseProps={{
-          classes: {
-            container: classes.collapseContainer,
-            entered: classes.collapseEntered,
-          },
-        }}>
+        CollapseProps={{ unmountOnExit: true }}>
         <ExpansionPanelSummary
           classes={{
             content: classNames(classes.expansionPanelSummary, {
