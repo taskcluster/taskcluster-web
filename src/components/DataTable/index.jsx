@@ -7,6 +7,7 @@ import {
   oneOf,
   oneOfType,
   object,
+  bool,
 } from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,6 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableRow from '@material-ui/core/TableRow';
+import TablePagination from '@material-ui/core/TablePagination';
 
 /**
  * A table to display a set of data elements.
@@ -26,6 +28,12 @@ export default class DataTable extends Component {
     sortByHeader: null,
     sortDirection: 'desc',
     noItemsMessage: 'No items for this page.',
+    isPaginate: false,
+  };
+
+  state = {
+    page: 0,
+    rowsPerPage: 10,
   };
 
   static propTypes = {
@@ -66,6 +74,10 @@ export default class DataTable extends Component {
      * A message to display when there is no items to display.
      */
     noItemsMessage: string,
+    /**
+     * Whether to paginate the table
+     */
+    isPaginate: bool,
   };
 
   handleHeaderClick = ({ target }) => {
@@ -74,6 +86,14 @@ export default class DataTable extends Component {
     if (onHeaderClick) {
       onHeaderClick(target.id);
     }
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
+  handleChangeRowsPerPage = event => {
+    this.setState({ rowsPerPage: event.target.value });
   };
 
   render() {
@@ -85,8 +105,10 @@ export default class DataTable extends Component {
       sortByHeader,
       sortDirection,
       noItemsMessage,
+      isPaginate,
     } = this.props;
     const colSpan = columnsSize || (headers && headers.length) || 0;
+    const { page, rowsPerPage } = this.state;
 
     return (
       <Table>
@@ -115,9 +137,28 @@ export default class DataTable extends Component {
               </TableCell>
             </TableRow>
           ) : (
-            items.map(renderRow)
+            items
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map(renderRow)
           )}
         </TableBody>
+        {isPaginate && (
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={items.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+        )}
       </Table>
     );
   }
