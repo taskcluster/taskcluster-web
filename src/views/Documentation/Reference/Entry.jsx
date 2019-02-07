@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import classNames from 'classnames';
 import { oneOf, object, string } from 'prop-types';
 import { upperCase } from 'change-case';
+import { toString } from 'ramda';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
@@ -59,6 +60,27 @@ const primaryTypographyProps = { variant: 'body1' };
         margin: 'auto',
       },
     },
+    boxTop: {
+      display: 'inline-block',
+      padding: `0 ${theme.spacing.unit / 2}px 0 0`,
+    },
+    subScopeBox: {
+      borderLeft: '1px solid #888',
+      padding: '2px 10px',
+      paddingLeft: 24,
+    },
+    scopeItself: {
+      margin: `${theme.spacing.unit}px 0`,
+    },
+    statusLabel: {
+      display: 'block',
+      fontSize: '0.6rem',
+      margin: `${theme.spacing.unit}px 0 ${theme.spacing.unit}px ${-theme
+        .spacing.double}px`,
+    },
+    scopesWrapper: {
+      padding: theme.spacing.triple,
+    },
   }),
   { withTheme: true }
 )
@@ -109,7 +131,7 @@ export default class Entry extends Component {
           </div>
         </Grid>
         <Grid item xs={2}>
-          <div className={classes.statusLabel}>
+          <div>
             <StatusLabel state={upperCase(entry.stability)} />
           </div>
         </Grid>
@@ -155,8 +177,95 @@ export default class Entry extends Component {
     );
   }
 
+  renderScopes(scopes) {
+    const { classes } = this.props;
+
+    if (typeof scopes === 'string') {
+      return (
+        <div>
+          <code className={classes.scopeItself}>{scopes}</code>
+        </div>
+      );
+    }
+
+    if (['if', 'then'].every(prop => prop in scopes)) {
+      return (
+        <Fragment>
+          <Typography className={classes.boxTop} component="span">
+            if{' '}
+            <strong>
+              <em>{scopes.if}</em>
+            </strong>
+          </Typography>
+          <div className={classes.subScopeBox}>
+            {this.renderScopes(scopes.then)}
+          </div>
+          {scopes.else && (
+            <Fragment>
+              <Typography className={classes.boxTop} component="span">
+                else
+              </Typography>
+              <div className={classes.subScopeBox}>
+                {this.renderScopes(scopes.else)}
+              </div>
+            </Fragment>
+          )}
+        </Fragment>
+      );
+    }
+
+    if (['for', 'each', 'in'].every(prop => prop in scopes)) {
+      return (
+        <Fragment>
+          <Typography className={classes.boxTop} component="span">
+            for each{' '}
+            <strong>
+              <em>{scopes.for}</em>
+            </strong>
+          </Typography>
+          <Typography className={classes.boxTop} component="span">
+            in{' '}
+            <strong>
+              <em>{scopes.in}</em>
+            </strong>
+          </Typography>
+          <div className={classes.subScopeBox}>
+            {this.renderScopes(scopes.each)}
+          </div>
+        </Fragment>
+      );
+    }
+
+    if (['AllOf', 'AnyOf'].some(prop => prop in scopes)) {
+      const operator = Object.keys(scopes)[0];
+
+      return (
+        <Fragment>
+          <Typography className={classes.boxTop} component="span">
+            {'AllOf' in scopes ? 'all of' : 'any of'}
+          </Typography>
+          <div className={classes.subScopeBox}>
+            {scopes[operator].map((scope, index) => (
+              <Fragment key={toString(scope)}>
+                {this.renderScopes(scope)}
+                {index < scopes[operator].length - 1 && (
+                  <StatusLabel
+                    className={classes.statusLabel}
+                    mini
+                    state={upperCase('AllOf' in scopes ? 'and' : 'or')}
+                  />
+                )}
+              </Fragment>
+            ))}
+          </div>
+        </Fragment>
+      );
+    }
+  }
+
   renderFunctionExpansionDetails = () => {
     const { classes, entry } = this.props;
+    const signature = this.getSignatureFromEntry(entry);
 
     return (
       <List className={classes.list}>
@@ -174,11 +283,21 @@ export default class Entry extends Component {
             secondary={entry.route}
           />
         </ListItem>
+        {entry.scopes && (
+          <ListItem>
+            <ListItemText
+              primaryTypographyProps={primaryTypographyProps}
+              secondaryTypographyProps={{ className: classes.scopesWrapper }}
+              primary="Scopes"
+              secondary={this.renderScopes(entry.scopes)}
+            />
+          </ListItem>
+        )}
         <ListItem>
           <ListItemText
             primaryTypographyProps={primaryTypographyProps}
             primary="Signature"
-            secondary={entry.signature}
+            secondary={signature}
           />
         </ListItem>
         <ListItem>

@@ -31,4 +31,6 @@ export default {
   CONSTANT_KEY: 'default',
   OPTION_KEY: 'info',
   MULTI_KEY: 'error',
+  AND: 'info',
+  OR: 'info',
 };
