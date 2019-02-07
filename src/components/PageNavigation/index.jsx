@@ -27,6 +27,11 @@ import Button from '../Button';
     flexDirection: 'column',
     textAlign: 'right',
   },
+  link: {
+    '&:hover': {
+      textDecoration: 'none !important',
+    },
+  },
 }))
 /**
  * Page navigation for documentation
@@ -43,7 +48,7 @@ export default class PageNavigation extends Component {
     const { classes, variant, to, children, ...props } = this.props;
 
     return (
-      <Link to={to}>
+      <Link className={classes.link} to={to}>
         <Button variant="outlined" className={classes.button} {...props}>
           <Fragment>
             {variant === 'prev' && (
