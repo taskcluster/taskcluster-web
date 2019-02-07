@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { oneOf, object, string } from 'prop-types';
 import { upperCase } from 'change-case';
@@ -22,6 +23,7 @@ import SchemaTable from '../../../components/SchemaTable';
 
 const primaryTypographyProps = { variant: 'body1' };
 
+@withRouter
 @withStyles(
   theme => ({
     headline: {
@@ -99,7 +101,7 @@ export default class Entry extends Component {
   };
 
   state = {
-    expanded: false,
+    expanded: this.props.entry.name === window.location.hash.slice(1),
   };
 
   getSignatureFromEntry(entry) {
@@ -420,17 +422,28 @@ export default class Entry extends Component {
   };
 
   handlePanelChange = () => {
+    const { entry, history } = this.props;
+    const { expanded } = this.state;
+
+    if (window.location.hash === `#${entry.name}` || expanded) {
+      history.push(history.location.pathname);
+    } else {
+      history.push(`#${entry.name}`);
+    }
+
     this.setState({
-      expanded: !this.state.expanded,
+      expanded: !expanded,
     });
   };
 
   render() {
     const { classes, type } = this.props;
+    const { expanded } = this.state;
     const isEntryExchange = type === 'topic-exchange';
 
     return (
       <ExpansionPanel
+        defaultExpanded={expanded}
         onChange={this.handlePanelChange}
         CollapseProps={{ unmountOnExit: true }}>
         <ExpansionPanelSummary
