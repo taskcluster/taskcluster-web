@@ -60,6 +60,7 @@ const createTheme = isDarkTheme => {
     LIGHT: 300,
     REGULAR: 400,
     MEDIUM: 500,
+    DARK: 600,
   };
 
   return {
@@ -121,6 +122,7 @@ const createTheme = isDarkTheme => {
       fontWeightLight: FONT_WEIGHTS.LIGHT,
       fontWeightRegular: FONT_WEIGHTS.REGULAR,
       fontWeightMedium: FONT_WEIGHTS.MEDIUM,
+      fontWeightDark: FONT_WEIGHTS.DARK,
     },
     spacing: {
       unit: SPACING.UNIT,
@@ -136,10 +138,6 @@ const createTheme = isDarkTheme => {
         backgroundColor: isDarkTheme
           ? THEME.TEN_PERCENT_WHITE
           : THEME.TEN_PERCENT_BLACK,
-        border: `1px solid ${
-          isDarkTheme ? THEME.TEN_PERCENT_WHITE : THEME.TEN_PERCENT_BLACK
-        }`,
-        borderRadius: 2,
         paddingLeft: 4,
         paddingRight: 4,
       },
@@ -233,10 +231,9 @@ const createTheme = isDarkTheme => {
         },
         '& code': {
           display: 'inline-block',
-          lineHeight: 1.6,
+          lineHeight: 1.4,
           fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
           color: textPrimary,
-          fontSize: 14,
           '&[class*="language-"]': {
             textShadow: 'none',
           },
@@ -245,31 +242,30 @@ const createTheme = isDarkTheme => {
           color: THEME.PRIMARY_TEXT_DARK,
         },
         '& p code, & ul code, & pre code': {
-          fontSize: 14,
-          lineHeight: 1.6,
+          lineHeight: 1.4,
         },
         '& h1': {
           ...TYPOGRAPHY.H3,
-          color: textSecondary,
+          color: textPrimary,
           margin: '0.7em 0',
         },
         '& h2': {
           ...TYPOGRAPHY.H4,
-          color: textSecondary,
+          color: textPrimary,
           margin: '1em 0 0.7em',
         },
         '& h3': {
           ...TYPOGRAPHY.H5,
-          color: textSecondary,
+          color: textPrimary,
           margin: '1em 0 0.7em',
         },
         '& h4': {
           ...TYPOGRAPHY.H6,
-          color: textSecondary,
+          color: textPrimary,
           margin: '1em 0 0.7em',
         },
         '& p, & ul, & ol': {
-          lineHeight: 1.6,
+          lineHeight: 1.4,
         },
         '& h1, & h2, & h3, & h4': {
           '& code': {
@@ -289,7 +285,7 @@ const createTheme = isDarkTheme => {
             padding: `0 ${SPACING.UNIT}px`,
             color: textHint,
             '&:hover': {
-              color: textSecondary,
+              color: textPrimary,
             },
             '& svg': {
               width: '0.55em',
@@ -306,35 +302,30 @@ const createTheme = isDarkTheme => {
           borderSpacing: 0,
           overflow: 'hidden',
           '& .prop-name': {
-            fontSize: 13,
             fontFamily: 'Consolas, "Liberation Mono", Menlo, monospace',
           },
           '& .required': {
             color: isDarkTheme ? '#9bc89b' : '#006500',
           },
           '& .prop-type': {
-            fontSize: 13,
             fontFamily: 'Consolas, "Liberation Mono", Menlo, monospace',
             color: isDarkTheme ? '#dbb0d0' : '#932981',
           },
           '& .prop-default': {
-            fontSize: 13,
             fontFamily: 'Consolas, "Liberation Mono", Menlo, monospace',
             borderBottom: `1px dotted ${textHint}`,
           },
         },
         '& thead': {
-          fontSize: 14,
           fontWeight: FONT_WEIGHTS.MEDIUM,
-          color: textSecondary,
+          color: textPrimary,
         },
         '& tbody': {
-          fontSize: 14,
           lineHeight: 1.5,
           color: textPrimary,
         },
         '& td': {
-          borderBottom: `1px solid ${THEME.DIVIDER}`,
+          border: `1px solid ${THEME.DIVIDER}`,
           padding: `${SPACING.UNIT}px ${SPACING.DOUBLE}px ${SPACING.UNIT}px ${
             SPACING.UNIT
           }px`,
@@ -347,12 +338,11 @@ const createTheme = isDarkTheme => {
           paddingRight: SPACING.TRIPLE,
         },
         '& td code': {
-          fontSize: 13,
-          lineHeight: 1.6,
+          lineHeight: 1.4,
         },
         '& th': {
           whiteSpace: 'pre',
-          borderBottom: `1px solid ${THEME.DIVIDER}`,
+          border: `1px solid ${THEME.DIVIDER}`,
           fontWeight: FONT_WEIGHTS.MEDIUM,
           padding: `0 ${SPACING.DOUBLE}px 0 ${SPACING.UNIT}px`,
           textAlign: 'left',
@@ -367,7 +357,7 @@ const createTheme = isDarkTheme => {
           height: 64,
         },
         '& strong': {
-          fontWeight: FONT_WEIGHTS.MEDIUM,
+          fontWeight: FONT_WEIGHTS.DARK,
         },
         '& blockquote': {
           borderLeft: `5px solid ${textHint}`,
