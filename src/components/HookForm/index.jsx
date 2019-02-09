@@ -681,9 +681,7 @@ export default class HookForm extends Component {
             requiresAuth
             classes={{ root: classes.successIcon }}
             variant="round"
-            disabled={
-              !this.validHook() || actionLoading || this.isHookValuesSaved()
-            }
+            disabled={!this.validHook() || this.isHookValuesSaved()}
             onClick={this.handleCreateHook}>
             <ContentSaveIcon />
           </Button>
@@ -700,9 +698,7 @@ export default class HookForm extends Component {
               requiresAuth
               classes={{ root: classes.successIcon }}
               variant="round"
-              disabled={
-                !this.validHook() || actionLoading || this.isHookValuesSaved()
-              }
+              disabled={!this.validHook() || this.isHookValuesSaved()}
               onClick={this.handleUpdateHook}>
               <ContentSaveIcon />
             </Button>
