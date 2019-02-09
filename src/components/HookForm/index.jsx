@@ -359,6 +359,14 @@ export default class HookForm extends Component {
     );
   };
 
+  isHookValuesSaved = () => {
+    const { hook, previousHook } = this.state;
+
+    if (equals(hook, previousHook)) return true;
+
+    return false;
+  };
+
   handleHookGroupIdChange = e =>
     this.setState({
       hook: assocPath(['hookGroupId'], e.target.value, this.state.hook),
@@ -673,7 +681,9 @@ export default class HookForm extends Component {
             requiresAuth
             classes={{ root: classes.successIcon }}
             variant="round"
-            disabled={!this.validHook() || actionLoading}
+            disabled={
+              !this.validHook() || actionLoading || this.isHookValuesSaved()
+            }
             onClick={this.handleCreateHook}>
             <ContentSaveIcon />
           </Button>
@@ -690,7 +700,9 @@ export default class HookForm extends Component {
               requiresAuth
               classes={{ root: classes.successIcon }}
               variant="round"
-              disabled={!this.validHook() || actionLoading}
+              disabled={
+                !this.validHook() || actionLoading || this.isHookValuesSaved()
+              }
               onClick={this.handleUpdateHook}>
               <ContentSaveIcon />
             </Button>
