@@ -1,0 +1,1182 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "authBaseUrl": {
+      "type": "string"
+    },
+    "credentials": {
+      "additionalProperties": false,
+      "description": "The set of credentials that should be used by the worker\nwhen authenticating against taskcluster endpoints. This needs scopes\nfor claiming tasks for the given workerType.",
+      "properties": {
+        "accessToken": {
+          "description": "The security-sensitive access token for the client.",
+          "pattern": "^[a-zA-Z0-9_-]{22,66}$",
+          "title": "AccessToken",
+          "type": "string"
+        },
+        "authorizedScopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "certificate": {
+          "description": "The certificate for the client, if using temporary credentials.",
+          "title": "Certificate",
+          "type": "string"
+        },
+        "clientId": {
+          "description": "ClientId for credentials",
+          "pattern": "^[A-Za-z0-9!@/:.+|_-]+$",
+          "title": "ClientId",
+          "type": "string"
+        }
+      },
+      "required": [
+        "clientId",
+        "accessToken"
+      ],
+      "title": "TaskCluster Credentials",
+      "type": "object"
+    },
+    "engine": {
+      "description": "Selected worker engine to use, notice that the\nconfiguration for this engine **must** be present under the\n`engines.\u003cengine\u003e` configuration key.",
+      "enum": [
+        "script",
+        "docker",
+        "mock",
+        "native",
+        "qemu"
+      ],
+      "title": "Worker Engine",
+      "type": "string"
+    },
+    "engines": {
+      "additionalProperties": false,
+      "description": "Mapping from engine name to engine configuration.\nEven-though the worker will only use one engine at any given time,\nthe configuration file can hold configuration for all engines.\nHence, you need only update the `engine` key to change which engine\nshould be used.",
+      "properties": {
+        "docker": {
+          "additionalProperties": false,
+          "properties": {
+            "dockerSocket": {
+              "description": "Path to the docker socket hosting the remote docker API.\n\nIf not given the default value `unix:///var/run/docker.sock` will be used.",
+              "title": "Docker Socket",
+              "type": "string"
+            },
+            "privileged": {
+              "description": "Allow task containers to run in privileged mode.\n\nThis option can take one of the 3 values:\n * `always`, run the task container in privileged mode regardless of\n   what scopes the task in question has.\n * `allow`, the task container to run in privileged mode, if\n   `task.payload.privileged == true`, and the task has the scope\n\t `worker:privileged:\u003cprovisionerId\u003e/\u003cworkerType\u003e`.\n * `never`, run task containers in privileged mode.\n\nIf in doubt use `never` and enable privileged mode when needed.",
+              "enum": [
+                "always",
+                "allow",
+                "never"
+              ],
+              "title": "Privileged Mode",
+              "type": "string"
+            }
+          },
+          "required": [
+            "privileged"
+          ],
+          "type": "object"
+        },
+        "mock": {
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "native": {
+          "additionalProperties": false,
+          "description": "Configuration for the native engine, this engines creates\na system user-account per task, and deletes user-account when task\nis completed.",
+          "properties": {
+            "createUser": {
+              "description": "Tells if a system user should be created to run a command.\n\nWhen set to `true`, a new user is created on-the-fly to run each task.\nIt runs the command from within the user`s home directory.\nIf `false`, the command runs without changing userid, hence, tasks\nwill run with the same user as the worker does.",
+              "title": "Create User per Task",
+              "type": "boolean"
+            },
+            "groups": {
+              "description": "List of system user-groups that the temporary\ntask-users should be be granted membership of.",
+              "items": {
+                "description": "Name of a user-group that task-users should be assigned",
+                "pattern": "^[a-zA-Z0-9_.-]+$",
+                "title": "Group Name",
+                "type": "string"
+              },
+              "title": "Group Memberships",
+              "type": "array"
+            }
+          },
+          "required": [
+            "createUser"
+          ],
+          "title": "Native Engine Config",
+          "type": "object"
+        },
+        "qemu": {
+          "additionalProperties": false,
+          "properties": {
+            "limits": {
+              "additionalProperties": false,
+              "description": "Limitations and default values for the virtual machine\nconfiguration. Tasks with machine images that does not satisfy\nthese limitations will be resolved `malformed-payload`.",
+              "properties": {
+                "defaultThreads": {
+                  "description": "Number of CPU threads to assign, if assigning default values for\n`threads`, `cores` and `sockets` based on `maxCPUs`.\n\nThis should generally default to 2, if the host features hyperthreading,\notherwise 1 is likely ideal.",
+                  "maximum": 255,
+                  "minimum": 1,
+                  "title": "Default CPU Threads",
+                  "type": "integer"
+                },
+                "maxCPUs": {
+                  "description": "Maximum number of CPUs a virtual machine can use.\n\nThis is the product of `threads`, `cores` and `sockets` as specified\nin the machine definition `machine.json`. If the virtual machine image\ndoes not specify CPU requires it will be given\n`maxCPUs / defaultThreads` number of cores in a single socket.",
+                  "maximum": 255,
+                  "minimum": 1,
+                  "title": "Max CPUs",
+                  "type": "integer"
+                },
+                "maxMemory": {
+                  "description": "Maximum allowed virtual machine memory in MiB. This is\nalso the default memory if the machine image does not\nspecify memory requirements. If the machine specifies a\nmemory higher than this, the task will fail to run.",
+                  "maximum": 1048576,
+                  "minimum": 0,
+                  "title": "Max Memory",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "maxMemory",
+                "maxCPUs",
+                "defaultThreads"
+              ],
+              "title": "Machine Limits",
+              "type": "object"
+            },
+            "machine": {
+              "additionalProperties": false,
+              "description": "Hardware definition for a virtual machine",
+              "properties": {
+                "chipset": {
+                  "enum": [
+                    "pc-i440fx-2.8"
+                  ],
+                  "title": "Chipset",
+                  "type": "string"
+                },
+                "cores": {
+                  "description": "CPU cores per socket, leave undefined to get maximum available",
+                  "maximum": 255,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "cpu": {
+                  "description": "CPU to be exposed to the virtual machine.\n\nThe number of virtual CPUs inside the virtual machine will be\n`threads * cores * sockets` as configured below.",
+                  "enum": [
+                    "host"
+                  ],
+                  "title": "CPU",
+                  "type": "string"
+                },
+                "flags": {
+                  "items": {
+                    "enum": null,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "graphics": {
+                  "enum": [
+                    "VGA",
+                    "vmware-svga",
+                    "qxl-vga",
+                    "virtio-vga"
+                  ],
+                  "type": "string"
+                },
+                "keyboard": {
+                  "enum": [
+                    "usb-kbd",
+                    "PS/2"
+                  ],
+                  "type": "string"
+                },
+                "keyboardLayout": {
+                  "enum": [
+                    "ar",
+                    "da",
+                    "de",
+                    "de-ch",
+                    "en-gb",
+                    "en-us",
+                    "es",
+                    "et",
+                    "fi",
+                    "fo",
+                    "fr",
+                    "fr-be",
+                    "fr-ca",
+                    "fr-ch",
+                    "hr",
+                    "hu",
+                    "is",
+                    "it",
+                    "ja",
+                    "lt",
+                    "lv",
+                    "mk",
+                    "nl",
+                    "nl-be",
+                    "no",
+                    "pl",
+                    "pt",
+                    "pt-br",
+                    "ru",
+                    "sl",
+                    "sv",
+                    "th",
+                    "tr"
+                  ],
+                  "type": "string"
+                },
+                "mac": {
+                  "description": "Local unicast MAC Address",
+                  "pattern": "^[0-9a-f][26ae](:[0-9a-f]{2}){5}$",
+                  "title": "MAC Address",
+                  "type": "string"
+                },
+                "memory": {
+                  "description": "Memory in MiB, defaults to maximum available, if not specified.",
+                  "maximum": 1048576,
+                  "minimum": 1,
+                  "title": "Memory",
+                  "type": "integer"
+                },
+                "mouse": {
+                  "enum": [
+                    "usb-mouse",
+                    "PS/2"
+                  ],
+                  "type": "string"
+                },
+                "network": {
+                  "enum": [
+                    "rtl8139",
+                    "e1000"
+                  ],
+                  "title": "Network Interface Controller",
+                  "type": "string"
+                },
+                "sockets": {
+                  "description": "CPU sockets in machine, leave undefined to get maximum available",
+                  "maximum": 255,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "sound": {
+                  "enum": [
+                    "none",
+                    "AC97",
+                    "ES1370",
+                    "hda-duplex/intel-hda",
+                    "hda-micro/intel-hda",
+                    "hda-output/intel-hda",
+                    "hda-duplex/ich9-intel-hda",
+                    "hda-micro/ich9-intel-hda",
+                    "hda-output/ich9-intel-hda"
+                  ],
+                  "type": "string"
+                },
+                "storage": {
+                  "description": "Block device to use for attaching storage",
+                  "enum": [
+                    "virtio-blk-pci"
+                  ],
+                  "title": "Storage Device",
+                  "type": "string"
+                },
+                "tablet": {
+                  "enum": [
+                    "usb-tablet",
+                    "none"
+                  ],
+                  "type": "string"
+                },
+                "threads": {
+                  "description": "Threads per CPU core, leave undefined to get maximum available",
+                  "maximum": 255,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "usb": {
+                  "enum": [
+                    "piix3-usb-uhci",
+                    "piix4-usb-uhci",
+                    "nec-usb-xhci"
+                  ],
+                  "title": "Host Controller Interface",
+                  "type": "string"
+                },
+                "uuid": {
+                  "description": "System UUID for the virtual machine",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                  "title": "System UUID",
+                  "type": "string"
+                },
+                "version": {
+                  "enum": [
+                    1
+                  ],
+                  "title": "Format Version",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "version"
+              ],
+              "title": "Machine Configuration",
+              "type": "object"
+            },
+            "network": {
+              "additionalProperties": false,
+              "properties": {
+                "hostRecords": {
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "A and AAAA records to insert in the DNS server advertized to the\nvirtual machine.",
+                    "properties": {
+                      "ipv4": {
+                        "type": "string"
+                      },
+                      "ipv6": {
+                        "type": "string"
+                      },
+                      "names": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "names"
+                    ],
+                    "title": "Host Record",
+                    "type": "object"
+                  },
+                  "title": "Host Records",
+                  "type": "array"
+                },
+                "srvRecords": {
+                  "items": {
+                    "additionalProperties": false,
+                    "description": "SRV record to be inserted in the DNS server advertized to the\nvirtual machine. This can be useful for auto-discovery of resources\nlocated in VPN connections exposed to the VM.\n\nFor details on properties please refer to\n[RFC 2782](https://tools.ietf.org/html/rfc2782).",
+                    "properties": {
+                      "domain": {
+                        "type": "string"
+                      },
+                      "port": {
+                        "maximum": 65535,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "priority": {
+                        "maximum": 65535,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "protocol": {
+                        "type": "string"
+                      },
+                      "service": {
+                        "type": "string"
+                      },
+                      "target": {
+                        "type": "string"
+                      },
+                      "weight": {
+                        "maximum": 65535,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "service",
+                      "protocol",
+                      "target",
+                      "port"
+                    ],
+                    "title": "SRV Record",
+                    "type": "object"
+                  },
+                  "title": "SRV Records",
+                  "type": "array"
+                },
+                "subnets": {
+                  "description": "Number of subnets to creates.\nThis determines the maximum number of concurrent VMs the worker can run.\n\nEach subnet defines a set chains and rules in `iptables`, and thus,\nincurs some kernel overhead. It is recommended to create more subnets\nthan needed, but to avoid creating the maximum unless required.",
+                  "maximum": 100,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "vpnConnections": {
+                  "description": "VPN Connections to be setup by the worker and exposed to the virtual\nmachines, such that connections can be opened from the virtual machine\nto the routes exposed.\n\nNote: servers on the VPN will not be able to open incoming connections\nto the virtual machines, as the VMs will sit behind NAT.",
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "certificate": {
+                        "description": "Client certificate as PEM encoded string.\n\nThis is the `--cert` argument for openvpn.",
+                        "title": "Certificate",
+                        "type": "string"
+                      },
+                      "certificateAuthority": {
+                        "description": "Certificate authority chain as one or more PEM encoded certificates.\n\nThis is the `--ca` argument for openvpn.",
+                        "title": "Certificate Authority",
+                        "type": "string"
+                      },
+                      "cipher": {
+                        "enum": [
+                          "AES-128-CBC",
+                          "AES-128-CFB",
+                          "AES-128-CFB1",
+                          "AES-128-CFB8",
+                          "AES-128-GCM",
+                          "AES-128-OFB",
+                          "AES-192-CBC",
+                          "AES-192-CFB",
+                          "AES-192-CFB1",
+                          "AES-192-CFB8",
+                          "AES-192-GCM",
+                          "AES-192-OFB",
+                          "AES-256-CBC",
+                          "AES-256-CFB",
+                          "AES-256-CFB1",
+                          "AES-256-CFB8",
+                          "AES-256-GCM",
+                          "AES-256-OFB",
+                          "CAMELLIA-128-CBC",
+                          "CAMELLIA-128-CFB",
+                          "CAMELLIA-128-CFB1",
+                          "CAMELLIA-128-CFB8",
+                          "CAMELLIA-128-OFB",
+                          "CAMELLIA-192-CBC",
+                          "CAMELLIA-192-CFB",
+                          "CAMELLIA-192-CFB1",
+                          "CAMELLIA-192-CFB8",
+                          "CAMELLIA-192-OFB",
+                          "CAMELLIA-256-CBC",
+                          "CAMELLIA-256-CFB",
+                          "CAMELLIA-256-CFB1",
+                          "CAMELLIA-256-CFB8",
+                          "CAMELLIA-256-OFB",
+                          "SEED-CBC",
+                          "SEED-CFB",
+                          "SEED-OFB"
+                        ],
+                        "title": "Encryption Cipher",
+                        "type": "string"
+                      },
+                      "compression": {
+                        "description": "Compression algorithm to employ, if not given openvpn defaults to\nadaptive mode.",
+                        "enum": [
+                          "lzo",
+                          "lz4",
+                          "none"
+                        ],
+                        "title": "Compression",
+                        "type": "string"
+                      },
+                      "key": {
+                        "description": "Private key matching the certificate as PEM encoded string.\n\nThis is the `--key` argument for openvpn.",
+                        "title": "Key",
+                        "type": "string"
+                      },
+                      "keyDirection": {
+                        "description": "Key direction for TLS, this is either 0 or 1, opposite of what the\nserver is using.\n\nThis is the `--key-direction` argument for openvpn.",
+                        "maximum": 1,
+                        "minimum": 0,
+                        "title": "Key Direction",
+                        "type": "integer"
+                      },
+                      "password": {
+                        "type": "string"
+                      },
+                      "port": {
+                        "maximum": 65535,
+                        "minimum": 0,
+                        "title": "Remote Port",
+                        "type": "integer"
+                      },
+                      "protocol": {
+                        "enum": [
+                          "udp",
+                          "tcp-client"
+                        ],
+                        "title": "Protocol",
+                        "type": "string"
+                      },
+                      "remote": {
+                        "description": "Remote host running the VPN server.\n\nThis is the `--remote` argument for openvpn.",
+                        "title": "Remote Host",
+                        "type": "string"
+                      },
+                      "remoteExtendedKeyUsage": {
+                        "description": "Require that server certificate is signed with the explicit\n**extended key usage** given here in _oid_ notation.\n\nThis is the `--remote-cert-eku` argument for openvpn.",
+                        "title": "Require Extended Key Usage",
+                        "type": "string"
+                      },
+                      "renegotiationDelay": {
+                        "description": "Time to renegotiation of data channel.\n\nThis is the `--reneg-sec` argument for openvpn.",
+                        "pattern": "^\\s*(?:\\s*(\\d+)\\s*d(?:ays?)?)?(?:\\s*(\\d+)\\s*h(?:ours?|r)?)?(?:\\s*(\\d+)\\s*m(?:in(?:utes?)?)?)?\\s*$",
+                        "title": "Renegotiation Delay",
+                        "type": [
+                          "integer",
+                          "string"
+                        ]
+                      },
+                      "routes": {
+                        "items": {
+                          "description": "Route to be exposed, this must be an IPv4 address.\n\nThis is the `--route` argument for openvpn.",
+                          "pattern": "^\\d+(\\.\\d+){3}$",
+                          "title": "Route",
+                          "type": "string"
+                        },
+                        "title": "Routes",
+                        "type": "array",
+                        "uniqueItems": true
+                      },
+                      "tls": {
+                        "title": "Enable TLS",
+                        "type": "boolean"
+                      },
+                      "tlsKey": {
+                        "description": "TLS key as PEM encoded string.\n\nThis is the `--tls-auth` argument for openvpn.",
+                        "title": "TLS Key",
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "x509Name": {
+                        "description": "Expected x509 name of remote server.\n\nThis is the first openvpn argument for `--verify-x509-name`.",
+                        "title": "x509 Name",
+                        "type": "string"
+                      },
+                      "x509NameType": {
+                        "description": "Type of the name given in `x509Name`.\n\nThis is the second openvpn argument for `--verify-x509-name`.",
+                        "enum": [
+                          "name",
+                          "name-prefix",
+                          "subject"
+                        ],
+                        "title": "x509 Name Type",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "remote",
+                      "cipher",
+                      "protocol",
+                      "routes"
+                    ],
+                    "type": "object"
+                  },
+                  "title": "VPN Connections",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "subnets"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "network",
+            "limits"
+          ],
+          "type": "object"
+        },
+        "script": {
+          "additionalProperties": false,
+          "description": "Configuration properties for the 'scriptengine'.",
+          "properties": {
+            "command": {
+              "description": "Script and arguments to execute. This script will be fed\na JSON string that matches the schema configured over `stdin`.\n\nOutput from the script over `stdout` will be uploaded as task log.\nOutput from the script over `stderr` will be prefixed \"[worker:error]\"\nand merged with task log.\n\nThe script will be executed with a temporary folder as\n_working directory_, this folder can be used for temporary storage and\nwill be cleared between tasks.\n\nFiles and folders stored in `./artifacts/` relative to the\n_working directory_ will be uploaded as artifacts from\nthe script. Hence, to make a public tar-ball artifact you create\n`./artifact/public/my-build.tar.gz` which will be uploaded as an\nartifact named `public/my-build.tar.gz`.\n\nExit codes from the script will be intepreted as follows:\n * `0`, task was executed successfully,\n * `1`, task was executed but failed,\n * `2`, task payload was not permitted, errors should be printed to stderr,\n * `3`, script had a non-fatal error, task is resolved exception\n * `4`, script had a fatal error, task is resolved exception, and\n   the worker crashes.",
+              "items": {
+                "type": "string"
+              },
+              "title": "Command to Execute",
+              "type": "array"
+            },
+            "schema": {
+              "additionalProperties": false,
+              "description": "JSON schema for `task.payload`. A JSON string matching this\nschema will be piped to the script command over stdin.",
+              "properties": {
+                "properties": {
+                  "type": "object"
+                },
+                "required": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "type": {
+                  "enum": [
+                    "object"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "properties",
+                "required"
+              ],
+              "title": "Payload Schema",
+              "type": "object"
+            }
+          },
+          "required": [
+            "command",
+            "schema"
+          ],
+          "title": "Script Engine Configuration",
+          "type": "object"
+        }
+      },
+      "title": "Engine Configuration",
+      "type": "object"
+    },
+    "minimumDiskSpace": {
+      "description": "The minimum amount of disk space in bytes to have available\nbefore starting on the next task. Garbage collector will do a\nbest-effort attempt at releasing resources to satisfy this limit.",
+      "minimum": 0,
+      "title": "Minimum Disk Space",
+      "type": "integer"
+    },
+    "minimumMemory": {
+      "description": "The minimum amount of memory in bytes to have available\nbefore starting on the next task. Garbage collector will do a\nbest-effort attempt at releasing resources to satisfy this limit.",
+      "minimum": 0,
+      "title": "Minimum Memory",
+      "type": "integer"
+    },
+    "monitor": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "panicOnError": {
+              "description": "Use a mock implementation of the monitor that panics on errors.",
+              "title": "Panic On Error",
+              "type": "boolean"
+            },
+            "type": {
+              "enum": [
+                "mock"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "panicOnError"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "logLevel": {
+              "enum": [
+                "debug",
+                "info",
+                "warning",
+                "error",
+                "fatal",
+                "panic"
+              ],
+              "type": "string"
+            },
+            "project": {
+              "description": "Project name to be used in sentry and statsum",
+              "pattern": "^[a-zA-Z0-9_-]{1,22}$",
+              "title": "Sentry/Statsum Project Name",
+              "type": "string"
+            },
+            "syslog": {
+              "description": "Name to use for process in syslog, leave as empty string to disable syslog forwarding.",
+              "title": "Syslog Name",
+              "type": "string"
+            },
+            "tags": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Tags that should be applied to all logs/sentry entries from this worker",
+              "title": "Tags",
+              "type": "object"
+            }
+          },
+          "required": [
+            "logLevel"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "plugins": {
+      "additionalProperties": false,
+      "description": "Mapping from plugin name to plugin configuration.\nA plugin is enabled if it has an entry in this mapping, and\nisn`t explicitly listed as `disabled`. Even plugins that\ndon`t require configuration must have an entry, in these\ncases, empty object will suffice.",
+      "properties": {
+        "artifacts": {
+          "additionalProperties": false,
+          "description": "Configuration for artifact plugin. This is mostly COT (chain-of-trust)\nconfiguration, such as private key.",
+          "properties": {
+            "privateKey": {
+              "description": "GPG armoured private key (unencrypted) for signing chain-of-trust\ncertificates.\n\nIf not given, chain-of-trust signing will be disabled.",
+              "title": "COT Private Key",
+              "type": "string"
+            }
+          },
+          "title": "Artifact Configuration",
+          "type": "object"
+        },
+        "cache": {
+          "additionalProperties": false,
+          "description": "Configuration for the cache plugin that manages sandbox caches.",
+          "properties": {
+            "maxPurgeCacheDelay": {
+              "description": "The cache plugin will call the taskcluster-purge-cache service to fetch\n_purge-cache requests_, these are request that caches should be purged.\n\nThe cache plugin will pull the taskcluster-purge-cache service before\nevery task to ensure that caches requested to be purged are not reused.\nHowever, if less than `maxPurgeCacheDelay` time have passed since the\nprevious request to taskcluster-purge-cache then the request is skipped.\n\nThis defaults to 3 minutes, which is reasonable in most cases.",
+              "pattern": "^\\s*(?:\\s*(\\d+)\\s*d(?:ays?)?)?(?:\\s*(\\d+)\\s*h(?:ours?|r)?)?(?:\\s*(\\d+)\\s*m(?:in(?:utes?)?)?)?\\s*$",
+              "title": "Maximum Cache Purge Delay",
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "purgeCacheBaseUrl": {
+              "description": "This is the baseUrl for the taskcluster-purge-cache service, which tells\nwhat caches should be purged.\n\nThis defaults to the production value from taskcluster-client libraries.\nYou do not need to set this in production.",
+              "format": "uri",
+              "title": "BaseUrl for purge-cache service",
+              "type": "string"
+            }
+          },
+          "title": "Cache Plugin",
+          "type": "object"
+        },
+        "disabled": {
+          "description": "List of disabled plugins. If a plugin is not listed as\ndisabled here, even if its configuration key is present",
+          "items": {
+            "enum": [
+              "maxruntime",
+              "success",
+              "env",
+              "livelog",
+              "logprefix",
+              "tcproxy",
+              "watchdog",
+              "artifacts",
+              "reboot",
+              "relengapi",
+              "tasklog",
+              "interactive",
+              "cache"
+            ],
+            "type": "string"
+          },
+          "title": "Disabled Plugins",
+          "type": "array"
+        },
+        "env": {
+          "additionalProperties": false,
+          "properties": {
+            "extra": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "The `extra` property holds a mapping from variable name to value.\n\nThese _extra_ environment variables will be injected into all tasks,\nthough they can be overwritten on per-task basis using the\n`task.payload.env` property.\n\nNotice that these overwrite built-in environment variables\n`TASK_ID` and `RUN_ID` which is also supplied by this plugin.",
+              "title": "Extra Environment Variables",
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "interactive": {
+          "additionalProperties": false,
+          "description": "Configuration for the `interactive` plugin that allows user\nto configure tasks that expose an interactive shell or noVNC sessions.",
+          "properties": {
+            "alwaysEnabled": {
+              "description": "If set the interactive plugin will be abled for all tasks.",
+              "title": "Always Enabled",
+              "type": "boolean"
+            },
+            "artifactPrefix": {
+              "description": "Prefix that the `sockets.json`, `display.html` and `shell.html`\nshould be created under. Defaults to\n`private/interactive/`.",
+              "maxLength": 255,
+              "pattern": "^[\\x20-.0-\\x7e][\\x20-\\x7e]*/$",
+              "title": "Artifact Prefix",
+              "type": "string"
+            },
+            "disableDisplay": {
+              "description": "If set the interactive display will be disabled.",
+              "title": "Disable Display",
+              "type": "boolean"
+            },
+            "disableShell": {
+              "description": "If set the interactive shell will be disabled.",
+              "title": "Disable Shell",
+              "type": "boolean"
+            },
+            "displayToolUrl": {
+              "description": "URL to a tool that can take display socket, list\ndisplays and render noVNC session. The URL will be given the\nquerystring options: `v=1`, `socketUrl`, `displaysUrl`, `taskId` and\n`runId`.",
+              "format": "uri",
+              "title": "Display Tool URL",
+              "type": "string"
+            },
+            "forbidCustomArtifactPrefix": {
+              "description": "Prevent tasks from specifying a custom `artifactPrefix`, by default\ntasks are allowed to overwrite the global setting.",
+              "title": "Forbid Custom ArtifactPrefix",
+              "type": "boolean"
+            },
+            "shellToolUrl": {
+              "description": "URL to a tool that can take shell socket URL and display\nan interactive shell session. The URL will be given the querystring\noptions: `v=2`, `socketUrl`, `taskId`, `runId`.",
+              "format": "uri",
+              "title": "Shell Tool URL",
+              "type": "string"
+            }
+          },
+          "title": "Interactive Plugin",
+          "type": "object"
+        },
+        "livelog": {
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "logprefix": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Set of key-value pairs to be printed at the top of all tasks logs.\n\nNote. values given here can overwrite built-in key-value pairs.",
+          "title": "Log Prefix",
+          "type": "object"
+        },
+        "maxruntime": {
+          "additionalProperties": false,
+          "description": "The maximum runtime plugin kills tasks that have a runtime exceeding the\n`maxRunTime` specified. This means it kills the sandbox and any interactive\nshells and display. Once killed the task will be resolved as failed.\n\nThis plugin only limits the time between execution start and end. That\ndoes not include artifact upload, download of images, etc. To guard\nagainst worker deadlocks use the `watchdog` plugin.\n\nA `maxRunTime` limit is given in the plugin configuration, and the\n`perTaskLimit` option can be used to allow or require tasks to specify a\nshorter `maxRunTime`.",
+          "properties": {
+            "maxRunTime": {
+              "description": "Maximum execution time before a task is killed, does not include\nartifact upload or image download time, etc.",
+              "pattern": "^\\s*(?:\\s*(\\d+)\\s*d(?:ays?)?)?(?:\\s*(\\d+)\\s*h(?:ours?|r)?)?(?:\\s*(\\d+)\\s*m(?:in(?:utes?)?)?)?\\s*$",
+              "title": "Maximum Task Run-Time",
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "perTaskLimit": {
+              "description": "This plugin can `forbid`, `allow` or `require` tasks to specify\n`task.payload.maxRunTime`, which if present must be less than\n`maxRunTime` as configured at plugin level.",
+              "enum": [
+                "require",
+                "allow",
+                "forbid"
+              ],
+              "title": "Per Task Limits",
+              "type": "string"
+            }
+          },
+          "required": [
+            "maxRunTime",
+            "perTaskLimit"
+          ],
+          "title": "`maxRunTime` Plugin",
+          "type": "object"
+        },
+        "reboot": {
+          "additionalProperties": false,
+          "description": "The `reboot` plugin can be configured to stop the worker gracefully, or\nto allow tasks to stop the worker gracefully.\n\nThe `reboot` plugin assumes the worker is deployed in an environment where\nhost machine reboots or resets if the worker exits. Hence, stopping\ngracefully is equivalent to rebooting the worker.\n\nIf this behaviour is not the case, the `reboot` plugin also allow\nconfiguration of an optional command to be executed when the worker is\nterminating due to a graceful shutdown initiated by the `reboot` plugin.",
+          "properties": {
+            "allowTaskReboots": {
+              "description": "Allow tasks to specify a `task.payload.reboot` that specifies if the\nworker should _reboot_ after the task finishes.\n\nTasks can specify `task.payload.reboot` as `\"always\"`, `\"on-failure\"`\nand `\"on-exception\"`, the property is always optional.",
+              "title": "Allow Task Reboots",
+              "type": "boolean"
+            },
+            "maxLifeCycle": {
+              "description": "Maximum amount of time before gracefully shutting down the worker.\n\nGiven as integer in seconds or as string on the form:\n`1 day 2 hours 3 minutes`. Leave the value as zero or empty string to\ndisable worker life-cycle limitation.",
+              "pattern": "^\\s*(?:\\s*(\\d+)\\s*d(?:ays?)?)?(?:\\s*(\\d+)\\s*h(?:ours?|r)?)?(?:\\s*(\\d+)\\s*m(?:in(?:utes?)?)?)?\\s*$",
+              "title": "Max Worker Life-Cycle",
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "rebootCommand": {
+              "description": "Command to run when the worker is stopping, if the reboot plugin\ncaused the worker to stop.\n\nIt is recommended that the worker is launched by a start-up script\nthat reboots/resets the system and lunches the worker again, when the\nworker exits. This is a fairly robust behavior on most deployment\nscenarios.\n\nHowever, there may be cases where it`s desirable to change behavior\ndepending on whether or not it is the `reboot` plugin that stops the\nworker. In these cases this _optional_ command can be useful.\n\nThe command is executed when the worker is stopping, if the `reboot`\nplugin initiated the worker shutdown. The command will be executed\nafter all tasks have finished as part of the clean-up process, hence,\none can specify `[\"sudo\", \"reboot\"]` and expect a graceful reboot.",
+              "items": {
+                "type": "string"
+              },
+              "title": "Reboot Command",
+              "type": "array"
+            },
+            "taskLimit": {
+              "description": "Maximum number of tasks to process before gracefully shutting down the\nworker.\n\nDefaults to zero implying no limitation. This is mainly useful as\n`taskLimit: 1` to reboot between each task. Or if running tests and\nyou want to stop the worker after one task.",
+              "minimum": 0,
+              "title": "Task Limit",
+              "type": "integer"
+            }
+          },
+          "title": "Reboot Plugin",
+          "type": "object"
+        },
+        "relengapi": {
+          "additionalProperties": false,
+          "description": "The relengapi proxy provide access to the\n[Releng API](https://wiki.mozilla.org/ReleaseEngineering/Applications/RelengAPI).",
+          "properties": {
+            "domain": {
+              "description": "The releng API base domain. Default: mozilla-releng.net.",
+              "title": "Releng API base domain",
+              "type": "string"
+            },
+            "token": {
+              "description": "The issue token to use. This token is used to retrieve a temporary token\nthat is used to make requests to the endpoint.",
+              "title": "Releng API token",
+              "type": "string"
+            }
+          },
+          "title": "Releng API proxy Plugin",
+          "type": "object"
+        },
+        "success": {
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "tasklog": {
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "tcproxy": {
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "watchdog": {
+          "additionalProperties": false,
+          "description": "The watchdog plugin resets a timer whenever the worker is reported as\nidle or processes a step in a task. This ensure that the task-processing\nloop remains alive. If the timeout is exceeded, the watchdog will report\nto sentry and shutdown the worker immediately.\n\nThis plugin is mainly useful to avoid stale workers cut in some livelock.\nNote: This plugin won`t cause a timeout between `Started()` and\n`Stopped()`, as this would limit task run time, for this purpose use the\n`maxruntime` plugin.",
+          "properties": {
+            "timeout": {
+              "description": "Timeout after which to kill the worker, timeout is reset whenever a\ntask progresses, worker is reported idle or task is between\n`Started()` and `Stopped()`.\n\nDefaults to 45 minutes, if not\nspecified (or zero). This is a sound value, lower than 30 minutes is\nnot recommended as plugins will be reported as stalled, if a hook takes\nlonger than 30 minutes, and such error reports contains more context.\n\nThis property is specified in seconds as integer or as string on the\nform `1 day 2 hours 3 minutes`.",
+              "pattern": "^\\s*(?:\\s*(\\d+)\\s*d(?:ays?)?)?(?:\\s*(\\d+)\\s*h(?:ours?|r)?)?(?:\\s*(\\d+)\\s*m(?:in(?:utes?)?)?)?\\s*$",
+              "title": "Watchdog Timeout",
+              "type": [
+                "integer",
+                "string"
+              ]
+            }
+          },
+          "title": "Watchdog Plugin",
+          "type": "object"
+        }
+      },
+      "title": "Plugin Configuration",
+      "type": "object"
+    },
+    "queueBaseUrl": {
+      "type": "string"
+    },
+    "temporaryFolder": {
+      "description": "Path to folder that can be used for temporary files and\nfolders, if folder doesn`t exist it will be created, otherwise it\nwill be overwritten.",
+      "title": "Temporary Folder",
+      "type": "string"
+    },
+    "webHookServer": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "provider": {
+              "enum": [
+                "localhost"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "provider"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "baseUrl": {
+              "format": "uri",
+              "type": "string"
+            },
+            "provider": {
+              "enum": [
+                "localtunnel"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "provider"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "expiration": {
+              "description": "Used to limit the time period for which the DNS server will return\nan IP for the given worker hostname.\n\nThis should be larger than the maximum task runtime. If not set it`ll\ndefault to 1 day, which is sane for most use-cases.",
+              "pattern": "^\\s*(?:\\s*(\\d+)\\s*d(?:ays?)?)?(?:\\s*(\\d+)\\s*h(?:ours?|r)?)?(?:\\s*(\\d+)\\s*m(?:in(?:utes?)?)?)?\\s*$",
+              "title": "URL Expiration",
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "exposedPort": {
+              "description": "Port webhookserver should listen on. If not supplied, it uses the\n`serverPort` value.",
+              "maximum": 65535,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "networkInterface": {
+              "description": "Network device webhookserver should listen on. If not supplied, it\nbinds to the interface from `serverIp` address",
+              "type": "string"
+            },
+            "provider": {
+              "enum": [
+                "stateless-dns"
+              ],
+              "type": "string"
+            },
+            "serverIp": {
+              "type": "string"
+            },
+            "serverPort": {
+              "maximum": 65535,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "statelessDNSDomain": {
+              "type": "string"
+            },
+            "statelessDNSSecret": {
+              "type": "string"
+            },
+            "tlsCertificate": {
+              "type": "string"
+            },
+            "tlsKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "provider",
+            "serverIp",
+            "serverPort",
+            "statelessDNSSecret",
+            "statelessDNSDomain"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "provider": {
+              "enum": [
+                "webhooktunnel"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "provider"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "worker": {
+      "additionalProperties": false,
+      "description": "Configuration for the worker",
+      "properties": {
+        "concurrency": {
+          "description": "The number of tasks that this worker supports running in parallel.",
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Concurrency",
+          "type": "integer"
+        },
+        "enableSuperseding": {
+          "description": "If superseding is enabled, tasks can specify a URL that returns a list\nof taskIds that supersedes the given task.\n\nFor details see [superseding documentation](https://docs.taskcluster.net/reference/platform/taskcluster-queue/docs/superseding).",
+          "title": "Enable Superseding",
+          "type": "boolean"
+        },
+        "minimumReclaimDelay": {
+          "description": "Minimum number of seconds to wait before reclaiming a task.\nit is important that this is some reasonable non-zero minimum to avoid\noverloading servers if there is some error.",
+          "maximum": 600,
+          "minimum": 0,
+          "title": "Minimum Reclaim Delay",
+          "type": "integer"
+        },
+        "pollingInterval": {
+          "description": "The amount of time to wait between task polling\niterations in seconds.",
+          "maximum": 600,
+          "minimum": 0,
+          "title": "Task Polling Interval",
+          "type": "integer"
+        },
+        "provisionerId": {
+          "description": "ProvisionerId for workerType that tasks should be claimed\nfrom. Note, a `workerType` is only unique given the `provisionerId`.",
+          "pattern": "^[a-zA-Z0-9_-]{1,22}$",
+          "title": "ProvisionerId",
+          "type": "string"
+        },
+        "reclaimOffset": {
+          "description": "The number of seconds prior to task claim expiration the\nclaim should be reclamed.",
+          "maximum": 600,
+          "minimum": 0,
+          "title": "Reclaim Offset",
+          "type": "integer"
+        },
+        "workerGroup": {
+          "description": "Group of workers this machine belongs to. This is any identifier such\nthat workerGroup and workerId uniquely identifies this machine.",
+          "pattern": "^[a-zA-Z0-9_-]{1,22}$",
+          "title": "WorkerGroup",
+          "type": "string"
+        },
+        "workerId": {
+          "description": "Identifier for this machine. This is any identifier such\nthat workerGroup and workerId uniquely identifies this machine.",
+          "pattern": "^[a-zA-Z0-9_-]{1,22}$",
+          "title": "WorkerId",
+          "type": "string"
+        },
+        "workerType": {
+          "description": "WorkerType to claim tasks for, combined with `provisionerId` this\nidentifies the pool of workers the machine belongs to.",
+          "pattern": "^[a-zA-Z0-9_-]{1,22}$",
+          "title": "WorkerType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provisionerId",
+        "workerType",
+        "workerGroup",
+        "workerId",
+        "pollingInterval",
+        "reclaimOffset",
+        "minimumReclaimDelay",
+        "concurrency"
+      ],
+      "title": "Worker Config",
+      "type": "object"
+    }
+  },
+  "required": [
+    "engine",
+    "engines",
+    "plugins",
+    "temporaryFolder",
+    "minimumDiskSpace",
+    "minimumMemory",
+    "monitor",
+    "credentials",
+    "worker"
+  ],
+  "type": "object"
+}

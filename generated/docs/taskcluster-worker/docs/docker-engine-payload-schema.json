@@ -1,0 +1,322 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "artifacts": {
+      "description": "Artifacts to be published",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "expires": {
+            "format": "date-time",
+            "title": "Expiration Date",
+            "type": "string"
+          },
+          "name": {
+            "description": "This will be the leading path to directories and the full name\nfor files that are uploaded to s3. It must not begin or end\nwith `/` and must only contain printable ascii characters\notherwise.",
+            "pattern": "^([\\x20-\\x2e\\x30-\\x7e][\\x20-\\x7e]*)[\\x20-\\x2e\\x30-\\x7e]$",
+            "title": "Artifact Name",
+            "type": "string"
+          },
+          "path": {
+            "description": "File system path of the artifact",
+            "pattern": "^.*[^/]$",
+            "title": "Artifact Path",
+            "type": "string"
+          },
+          "type": {
+            "description": "Artifacts can be either an individual `file` or a `directory`\ncontaining potentially multiple files with recursively included\nsubdirectories.",
+            "enum": [
+              "file",
+              "directory"
+            ],
+            "title": "Upload type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "path",
+          "name"
+        ],
+        "type": "object"
+      },
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "caches": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "mountPoint": {
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[\\x20-\\x7e]{1,255}$",
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": false,
+            "description": "Options for docker volumes at this time no options are supported.",
+            "title": "Docker Volume Options",
+            "type": "object"
+          },
+          "preload": {
+            "oneOf": [
+              {
+                "description": "URL to fetch resource from, this must be `http://` or `https://`.",
+                "format": "uri",
+                "title": "URL",
+                "type": "string"
+              },
+              {
+                "additionalProperties": false,
+                "description": "Object referencing an artifact by name from a specific `taskId` and optional `runId`.",
+                "properties": {
+                  "artifact": {
+                    "description": "Name of artifact to fetch.",
+                    "maxLength": 1024,
+                    "title": "Artifact",
+                    "type": "string"
+                  },
+                  "runId": {
+                    "description": "`runId` to fetch artifact from, defaults to latest `runId` if omitted",
+                    "maximum": 50,
+                    "minimum": 0,
+                    "title": "RunId",
+                    "type": "integer"
+                  },
+                  "taskId": {
+                    "description": "`taskId` of task to fetch artifact from",
+                    "pattern": "^[A-Za-z0-9_-]{8}[Q-T][A-Za-z0-9_-][CGKOSWaeimquy26-][A-Za-z0-9_-]{10}[AQgw]$",
+                    "title": "TaskId",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "taskId",
+                  "artifact"
+                ],
+                "title": "Artifact Reference",
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "description": "Object referencing a given artifact by name from a task indexed under the\ngiven `namespace`.",
+                "properties": {
+                  "artifact": {
+                    "description": "Name of artifact to fetch.",
+                    "maxLength": 1024,
+                    "title": "Artifact",
+                    "type": "string"
+                  },
+                  "namespace": {
+                    "description": "Index namespace under which to find the `taskId` to fetch the artifact from",
+                    "maxLength": 1024,
+                    "pattern": "^[a-zA-Z0-9_!~*'()%-]+$",
+                    "title": "Namespace",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "namespace",
+                  "artifact"
+                ],
+                "title": "Index Reference",
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "description": "Fetch resource from a URL and validate against given hash.\n\nHash must be specified in hexadecimal notation, you may specify none or all\nof `md5`, `sha1`, `sha256`, or `sha512`, all specified hashes will be\nvalidated. If no hash is specified, no validation will be done.",
+                "properties": {
+                  "md5": {
+                    "pattern": "^[0-9a-fA-F]{32}$",
+                    "title": "MD5 as hex",
+                    "type": "string"
+                  },
+                  "sha1": {
+                    "pattern": "^[0-9a-fA-F]{40}$",
+                    "title": "SHA1 as hex",
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "^[0-9a-fA-F]{64}$",
+                    "title": "SHA256 as hex",
+                    "type": "string"
+                  },
+                  "sha512": {
+                    "pattern": "^[0-9a-fA-F]{128}$",
+                    "title": "SHA512 as hex",
+                    "type": "string"
+                  },
+                  "url": {
+                    "description": "URL to fetch resource from, this must be `http://` or `https://`.",
+                    "format": "uri",
+                    "title": "URL",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url"
+                ],
+                "title": "Fetch from URL with Hash",
+                "type": "object"
+              }
+            ]
+          }
+        },
+        "required": [
+          "mountPoint",
+          "options"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "command": {
+      "description": "Command to run inside the container.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Command",
+      "type": "array"
+    },
+    "disableTaskclusterProxy": {
+      "description": "The taskcluster proxy forwards requests to the proxy `tcproxy`\nwhile attaching a request signature covering `task.scopes`. The proxy\nis enabled by default, this option can be used to disable it per-task.\n\nPlease refer to engine specific documentation for how to access the\nproxy, often it is something like: `http://\u003chostname\u003e/\u003cproxy\u003e/\u003c...\u003e`,\nhence, forwarding to the queue would be\n`http://\u003chostname\u003e/tcproxy/queue.taskcluster.net/...`.",
+      "title": "Disable Proxy",
+      "type": "boolean"
+    },
+    "enableRelengAPIProxy": {
+      "description": "The relengapi proxy forwards requests to the proxy `relengapi`. The proxy\nis disabled by default, this option can be used to enable it per-task.\n\nPlease refer to engine specific documentation for how to access the\nproxy, often it is something like: `http://\u003chostname\u003e/\u003cproxy\u003e/\u003c...\u003e`,\nhence, forwarding to the queue would be\n`http://\u003chostname\u003e/relengapi/\u003crequest\u003e/...`.",
+      "title": "Enable Proxy",
+      "type": "boolean"
+    },
+    "env": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Mapping from environment variables to values",
+      "title": "Environment Variables",
+      "type": "object"
+    },
+    "image": {
+      "oneOf": [
+        {
+          "title": "Pull Image from Registry",
+          "type": "string"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Fetch resource from a URL and validate against given hash.\n\nHash must be specified in hexadecimal notation, you may specify none or all\nof `md5`, `sha1`, `sha256`, or `sha512`, all specified hashes will be\nvalidated. If no hash is specified, no validation will be done.",
+          "properties": {
+            "md5": {
+              "pattern": "^[0-9a-fA-F]{32}$",
+              "title": "MD5 as hex",
+              "type": "string"
+            },
+            "sha1": {
+              "pattern": "^[0-9a-fA-F]{40}$",
+              "title": "SHA1 as hex",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-fA-F]{64}$",
+              "title": "SHA256 as hex",
+              "type": "string"
+            },
+            "sha512": {
+              "pattern": "^[0-9a-fA-F]{128}$",
+              "title": "SHA512 as hex",
+              "type": "string"
+            },
+            "url": {
+              "description": "URL to fetch resource from, this must be `http://` or `https://`.",
+              "format": "uri",
+              "title": "URL",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "title": "Fetch from URL with Hash",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Object referencing a given artifact by name from a task indexed under the\ngiven `namespace`.",
+          "properties": {
+            "artifact": {
+              "description": "Name of artifact to fetch.",
+              "maxLength": 1024,
+              "title": "Artifact",
+              "type": "string"
+            },
+            "namespace": {
+              "description": "Index namespace under which to find the `taskId` to fetch the artifact from",
+              "maxLength": 1024,
+              "pattern": "^[a-zA-Z0-9_!~*'()%-]+$",
+              "title": "Namespace",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "artifact"
+          ],
+          "title": "Index Reference",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Object referencing an artifact by name from a specific `taskId` and optional `runId`.",
+          "properties": {
+            "artifact": {
+              "description": "Name of artifact to fetch.",
+              "maxLength": 1024,
+              "title": "Artifact",
+              "type": "string"
+            },
+            "runId": {
+              "description": "`runId` to fetch artifact from, defaults to latest `runId` if omitted",
+              "maximum": 50,
+              "minimum": 0,
+              "title": "RunId",
+              "type": "integer"
+            },
+            "taskId": {
+              "description": "`taskId` of task to fetch artifact from",
+              "pattern": "^[A-Za-z0-9_-]{8}[Q-T][A-Za-z0-9_-][CGKOSWaeimquy26-][A-Za-z0-9_-]{10}[AQgw]$",
+              "title": "TaskId",
+              "type": "string"
+            }
+          },
+          "required": [
+            "taskId",
+            "artifact"
+          ],
+          "title": "Artifact Reference",
+          "type": "object"
+        }
+      ]
+    },
+    "maxRunTime": {
+      "description": "The maximum task run-time before the task is **killed** and resolved\nas _failed_. Specified as an integer in seconds, or as string on\nthe form: `1 day 2 hours 3 minutes`.\n\nThis is measured as the execution time and does not include time\nthe worker spends downloading images or upload artifacts.\n\nFor this worker-type the `maxRunTime` may not exceed:\n`4h0m0s`.",
+      "pattern": "^\\s*(?:\\s*(\\d+)\\s*d(?:ays?)?)?(?:\\s*(\\d+)\\s*h(?:ours?|r)?)?(?:\\s*(\\d+)\\s*m(?:in(?:utes?)?)?)?\\s*$",
+      "title": "Maximum Task Run-Time",
+      "type": [
+        "integer",
+        "string"
+      ]
+    },
+    "privileged": {
+      "description": "Run the task docker container in privileged mode.\n\nSetting this option requires that `task.scopes` contains the scope\n`worker:privileged:\u003cprovisionerId\u003e/\u003cworkerType\u003e`.",
+      "title": "Privileged",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "image",
+    "command"
+  ],
+  "type": "object"
+}
