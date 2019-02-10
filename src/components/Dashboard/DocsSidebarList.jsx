@@ -134,16 +134,18 @@ export default class DocsSidebarList extends Component {
 
           return (
             <Fragment key={node.name}>
+              {idx === 1 && <span>|</span>}
               <Link
                 className={classNames(classes.inlineLink, classes.hover)}
                 to={href}>
                 <Typography
-                  className={classNames({ [classes.linkActive]: isLinkActive })}
+                  className={classNames({
+                    [classes.linkActive]: isLinkActive,
+                  })}
                   component="span">
                   {removeExtension(node.name)}
                 </Typography>
               </Link>
-              {idx === 0 && <span>|</span>}
             </Fragment>
           );
         })}

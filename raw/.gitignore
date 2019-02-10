@@ -1,7 +1,0 @@
-# This file is needed so that `yarn build` runs successfully
-# without complaining about not being able to resolve the raw directory
-
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore

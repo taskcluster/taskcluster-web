@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { dropLast } from 'ramda';
 import { string, object, oneOf } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from 'react-schema-viewer/lib/SchemaTable';
+import path from 'path';
 import { THEME } from '../../utils/constants';
+import importDocFile from '../../utils/importDocFile';
 
+@withRouter
 @withStyles(
   theme => {
     const borderColor =
@@ -78,15 +83,25 @@ export default class SchemaTable extends Component {
   };
 
   async componentDidMount() {
-    const { schema } = this.props;
+    const {
+      schema,
+      match: { params },
+    } = this.props;
 
     if (!this.state.schema && schema) {
-      const result =
-        typeof schema === 'string'
-          ? await (await fetch(schema)).json()
-          : schema;
+      if (typeof schema !== 'string') {
+        return this.setState({ schema });
+      }
 
-      this.setState({ schema: result });
+      if (schema.startsWith('https')) {
+        return this.setState({ schema: await (await fetch(schema)).json() });
+      }
+
+      const pathDir = dropLast(1, params.path.split('/')).join('/');
+
+      this.setState({
+        schema: await importDocFile(path.join(pathDir, schema)).loader,
+      });
     }
   }
 

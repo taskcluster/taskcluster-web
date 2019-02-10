@@ -5,13 +5,13 @@ const { join } = require('path');
 const removeExtension = require('../utils/removeExtension');
 
 const FILES_TO_IGNORE = ['.gitignore'];
-const rawPath = join(__dirname, '..', '..', 'raw');
+const generatedDocsPath = join(__dirname, '..', '..', 'generated', 'docs');
 const projectMetadata = {};
 
 function getProjectMetadata(projectName) {
   if (!projectMetadata[projectName]) {
     projectMetadata[projectName] = JSON.parse(
-      fs.readFileSync(join(rawPath, projectName, 'metadata.json'))
+      fs.readFileSync(join(generatedDocsPath, projectName, 'metadata.json'))
     );
   }
 
@@ -43,38 +43,43 @@ function sortChildren(children) {
   children.sort(sort);
 }
 
-const referenceDocs = fs.readdirSync(rawPath).reduce((acc, projectName) => {
-  if (FILES_TO_IGNORE.includes(projectName)) {
-    return acc;
-  }
+const referenceDocs = fs
+  .readdirSync(generatedDocsPath)
+  .reduce((acc, projectName) => {
+    if (FILES_TO_IGNORE.includes(projectName)) {
+      return acc;
+    }
 
-  // Dig inside the micro-service markdown files
-  // We use md.parseDirSync instead of readDirectory in order
-  // to collect the front matter of the markdown file
-  const mdFiles = md.parseDirSync(join(rawPath, projectName), {
-    dirnames: true,
-  });
-  const referenceFiles = readDirectory.sync(join(rawPath, projectName), {
-    filter: 'references/*.json',
-    transform: content => ({
-      content: JSON.parse(content),
-      data: { inline: true },
-    }),
-  });
-  const metadata = getProjectMetadata(projectName);
-  const allFiles = { ...mdFiles, ...referenceFiles };
+    // Dig inside the micro-service markdown files
+    // We use md.parseDirSync instead of readDirectory in order
+    // to collect the front matter of the markdown file
+    const mdFiles = md.parseDirSync(join(generatedDocsPath, projectName), {
+      dirnames: true,
+    });
+    const referenceFiles = readDirectory.sync(
+      join(generatedDocsPath, projectName),
+      {
+        filter: 'references/*.json',
+        transform: content => ({
+          content: JSON.parse(content),
+          data: { inline: true },
+        }),
+      }
+    );
+    const metadata = getProjectMetadata(projectName);
+    const allFiles = { ...mdFiles, ...referenceFiles };
 
-  // Rename key
-  Object.keys(allFiles).forEach(oldKey => {
-    const path = `reference/${metadata.tier}/${projectName}/${oldKey}`;
+    // Rename key
+    Object.keys(allFiles).forEach(oldKey => {
+      const path = `reference/${metadata.tier}/${projectName}/${oldKey}`;
 
-    delete Object.assign(allFiles, {
-      [removeExtension(path)]: Object.assign(allFiles[oldKey]),
-    })[oldKey];
-  });
+      delete Object.assign(allFiles, {
+        [removeExtension(path)]: Object.assign(allFiles[oldKey]),
+      })[oldKey];
+    });
 
-  return Object.assign(acc, allFiles);
-}, {});
+    return Object.assign(acc, allFiles);
+  }, {});
 // raw + static docs
 const files = Object.assign(
   md.parseDirSync('./src/docs', { dirnames: true }),

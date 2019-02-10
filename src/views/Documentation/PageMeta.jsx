@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { join } from 'path';
 import { func } from 'prop-types';
 import classNames from 'classnames';
-import { isEmpty } from 'ramda';
 import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import AnchorOrLink from '../../components/Markdown/AnchorOrLink';
@@ -77,8 +76,8 @@ export default class PageMeta extends Component {
 
   render() {
     const { classes, pageInfo } = this.props;
-    const hasPreviousPage = pageInfo.prev && !isEmpty(pageInfo.prev);
-    const hasNextPage = pageInfo.next && !isEmpty(pageInfo.next);
+    const hasPreviousPage = pageInfo.prev && pageInfo.prev.path;
+    const hasNextPage = pageInfo.next && pageInfo.next.path;
 
     return (
       <Fragment>
