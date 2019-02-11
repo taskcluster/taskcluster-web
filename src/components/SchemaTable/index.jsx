@@ -20,6 +20,12 @@ import importDocFile from '../../utils/importDocFile';
       bootstrapTable: {
         fontSize: 16,
         overflowX: 'auto',
+        '& pre': {
+          background:
+            theme.palette.type === 'dark'
+              ? `${THEME.TEN_PERCENT_WHITE} !important`
+              : `${THEME.TEN_PERCENT_BLACK} !important`,
+        },
         /* eslint-disable no-dupe-keys */
         // Copied from https://github.com/twbs/bootstrap/blob/f7e8445f72875a49a909dc0af8e4cf43f19f535e/dist/css/bootstrap.css#L1515-L1536
         '& .table': {
