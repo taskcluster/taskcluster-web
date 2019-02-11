@@ -16,7 +16,6 @@ import removeExtension from './removeExtension';
  */
 export default path => {
   // Handle the getting started page
-  const isJsonFile = path.endsWith('.json');
   const doc = path ? removeExtension(path) : 'index';
   // docPath is used for docs outside /src/docs (generated docs)
   // e.g., reference/platform/queue/docs/superseding ->
@@ -27,13 +26,10 @@ export default path => {
     .join('/');
   // The webpack/browser way of reading a local directory
   const localDocs = require.context('../docs', true, /.*(.md|.json)$/);
-  const generatedDocsKeys = require
-    .context('../../generated/docs', true, /.*(.md|.json)$/)
-    .keys();
   const localDocsMatches = localDocs.keys().filter(key => key.includes(doc));
 
   if (!localDocsMatches.length) {
-    if (isJsonFile) {
+    if (path.endsWith('.json')) {
       return {
         path: `/generated/docs/${docPath}.json`,
         loader: import(/* webpackChunkName: 'Documentation.JSON' */ `../../generated/docs/${docPath}.json`),
@@ -55,6 +51,9 @@ export default path => {
     () =>
       import(/* webpackChunkName: 'Documentation.page' */ `../docs/${doc}/index.md`)
   );
+  const generatedDocsKeys = require
+    .context('../../generated/docs', true, /.*(.md|.json)$/)
+    .keys();
 
   return {
     path: generatedDocsKeys.includes(`${docPath}.md`)
