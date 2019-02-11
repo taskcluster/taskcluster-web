@@ -233,11 +233,12 @@ export default class Documentation extends Component {
   async load() {
     try {
       const { params } = this.props.match;
+      const pathname = params.path || 'index';
       const isJsonFile =
-        params.path.startsWith('reference') &&
-        (params.path.endsWith('api') || params.path.endsWith('events'));
+        pathname.startsWith('reference') &&
+        (pathname.endsWith('api') || pathname.endsWith('events'));
       const { loader, path } = importDocFile(
-        `${this.props.match.params.path}.${isJsonFile ? 'json' : 'md'}`
+        `${pathname}.${isJsonFile ? 'json' : 'md'}`
       );
       const { default: Page } = await loader;
 
