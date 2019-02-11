@@ -62,11 +62,12 @@ export default class Reference extends Component {
               <Typography component="h2" variant="h5">
                 Functions
               </Typography>
-              <Typography gutterBottom>
+              <Typography>
                 For more information on invoking the API methods described here,
                 see <Link to="/docs/manual/apis">Using the APIs</Link> in the
                 manual.
               </Typography>
+              <br />
               {functionEntries.map(entry => (
                 <Entry
                   key={`${entry.name}-${entry.query}`}
