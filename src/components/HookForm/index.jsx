@@ -6,10 +6,6 @@ import { equals, assocPath } from 'ramda';
 import cloneDeep from 'lodash.clonedeep';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';
 import Code from '@mozilla-frontend-infra/components/Code';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -39,6 +35,7 @@ import DialogAction from '../DialogAction';
 import DateDistance from '../DateDistance';
 import { hook } from '../../utils/prop-types';
 import removeKeys from '../../utils/removeKeys';
+import ToggleView from '../ToggleView';
 
 const initialHook = {
   metadata: {
@@ -187,8 +184,6 @@ export default class HookForm extends Component {
     triggerSchemaValidJson: true,
     validation: {},
   };
-
-  expandsionSummary = React.createRef();
 
   static getDerivedStateFromProps(props, state) {
     if (
@@ -446,7 +441,6 @@ export default class HookForm extends Component {
       validation,
     } = this.state;
 
-    /* eslint-disable-next-line no-underscore-dangle */
     return (
       <Fragment>
         <List>
@@ -573,21 +567,15 @@ export default class HookForm extends Component {
                     </TableCell>
                     <TableCell className={classes.errorTableCell}>
                       {(hookFire.result === 'ERROR' && (
-                        <ExpansionPanel>
-                          <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}>
-                            <Typography className={classes.heading}>
-                              Show/Hide
-                            </Typography>
-                          </ExpansionPanelSummary>
-                          <ExpansionPanelDetails>
+                        <ToggleView
+                          panel={
                             <ErrorPanel
                               className={classes.errorPanel}
                               error={hookFire.error}
                               onClose={null}
                             />
-                          </ExpansionPanelDetails>
-                        </ExpansionPanel>
+                          }
+                        />
                       )) || <Typography>n/a</Typography>}
                     </TableCell>
                   </TableRow>
