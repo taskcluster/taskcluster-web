@@ -588,7 +588,7 @@ export default class HookForm extends Component {
                             />
                           </ExpansionPanelDetails>
                         </ExpansionPanel>
-                      )) || <Typography>N/A</Typography>}
+                      )) || <Typography>n/a</Typography>}
                     </TableCell>
                   </TableRow>
                 )}
