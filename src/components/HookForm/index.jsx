@@ -453,10 +453,10 @@ export default class HookForm extends Component {
         const lastFiresLength = hookLastFires.length;
 
         for (let i = 0; i < lastFiresLength; i++) {
-          const { taskId, result, error } = hookLastFires[i];
+          const { taskId, error } = hookLastFires[i];
 
           if (taskId === name) {
-            body = result === 'ERROR' && error;
+            body = error;
             break;
           }
         }
@@ -620,13 +620,16 @@ export default class HookForm extends Component {
                       <DateDistance from={hookFire.taskCreateTime} />
                     </TableCell>
                     <TableCell className={classes.errorTableCell}>
-                      <Button
-                        className={classes.infoButton}
-                        size="small"
-                        name={hookFire.taskId}
-                        onClick={this.handleDrawerOpen}>
-                        <InformationVariantIcon size={iconSize} />
-                      </Button>
+                      {(hookFire.result === 'ERROR' && (
+                        <Button
+                          className={classes.infoButton}
+                          size="small"
+                          name={hookFire.taskId}
+                          onClick={this.handleDrawerOpen}>
+                          <InformationVariantIcon size={iconSize} />
+                          ))
+                        </Button>
+                      )) || <Typography>n/a</Typography>}
                     </TableCell>
                   </TableRow>
                 )}
@@ -860,14 +863,14 @@ export default class HookForm extends Component {
                 <ListItemText
                   primary="Description"
                   secondary={
-                    (drawerData &&
-                      drawerData.body && (
-                        <ErrorPanel
-                          className={classes.errorPanel}
-                          error={drawerData && drawerData.body}
-                          onClose={null}
-                        />
-                      )) || <Typography>n/a</Typography>
+                    drawerData &&
+                    drawerData.body && (
+                      <ErrorPanel
+                        className={classes.errorPanel}
+                        error={drawerData && drawerData.body}
+                        onClose={null}
+                      />
+                    )
                   }
                 />
               </ListItem>
