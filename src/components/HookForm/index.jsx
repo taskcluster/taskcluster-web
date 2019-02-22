@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { string, bool, func, oneOfType, object, array } from 'prop-types';
@@ -6,6 +7,8 @@ import { equals, assocPath } from 'ramda';
 import cloneDeep from 'lodash.clonedeep';
 import CodeEditor from '@mozilla-frontend-infra/components/CodeEditor';
 import Code from '@mozilla-frontend-infra/components/Code';
+import Drawer from '@material-ui/core/Drawer';
+import memoize from 'fast-memoize';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -19,6 +22,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import InformationVariantIcon from 'mdi-react/InformationVariantIcon';
 import Typography from '@material-ui/core/Typography';
 import FlashIcon from 'mdi-react/FlashIcon';
 import PlusIcon from 'mdi-react/PlusIcon';
@@ -35,7 +39,6 @@ import DialogAction from '../DialogAction';
 import DateDistance from '../DateDistance';
 import { hook } from '../../utils/prop-types';
 import removeKeys from '../../utils/removeKeys';
-import ToggleView from '../ToggleView';
 
 const initialHook = {
   metadata: {
@@ -129,6 +132,19 @@ const initialHook = {
     maxWidth: '75ch',
     overflowY: 'scroll',
   },
+  infoButton: {
+    marginLeft: -theme.spacing.double,
+    marginRight: theme.spacing.unit,
+  },
+  headline: {
+    paddingLeft: theme.spacing.triple,
+    paddingRight: theme.spacing.triple,
+  },
+  metadataContainer: {
+    paddingTop: theme.spacing.double,
+    paddingBottom: theme.spacing.double,
+    width: 400,
+  },
 }))
 /** A form to view/edit/create a hook */
 export default class HookForm extends Component {
@@ -183,6 +199,8 @@ export default class HookForm extends Component {
     taskValidJson: true,
     triggerSchemaValidJson: true,
     validation: {},
+    drawerOpen: false,
+    drawerData: null,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -420,6 +438,39 @@ export default class HookForm extends Component {
       ),
     });
 
+  handleDrawerClose = () => {
+    this.setState({
+      drawerOpen: false,
+      drawerData: null,
+    });
+  };
+
+  handleDrawerOpen = ({ target: { name } }) =>
+    memoize(
+      name => {
+        const { hookLastFires } = this.state;
+        let body;
+        const lastFiresLength = hookLastFires.length;
+
+        for (let i = 0; i < lastFiresLength; i++) {
+          const { taskId, result, error } = hookLastFires[i];
+
+          if (taskId === name) {
+            body = result === 'ERROR' && error;
+            break;
+          }
+        }
+
+        this.setState({
+          drawerOpen: true,
+          drawerData: { headline: name, body },
+        });
+      },
+      {
+        serializer: name => name,
+      }
+    )(name);
+
   render() {
     const {
       actionLoading,
@@ -439,7 +490,10 @@ export default class HookForm extends Component {
       hook,
       hookLastFires,
       validation,
+      drawerOpen,
+      drawerData,
     } = this.state;
+    const iconSize = 16;
 
     return (
       <Fragment>
@@ -566,17 +620,13 @@ export default class HookForm extends Component {
                       <DateDistance from={hookFire.taskCreateTime} />
                     </TableCell>
                     <TableCell className={classes.errorTableCell}>
-                      {(hookFire.result === 'ERROR' && (
-                        <ToggleView
-                          panel={
-                            <ErrorPanel
-                              className={classes.errorPanel}
-                              error={hookFire.error}
-                              onClose={null}
-                            />
-                          }
-                        />
-                      )) || <Typography>n/a</Typography>}
+                      <Button
+                        className={classes.infoButton}
+                        size="small"
+                        name={hookFire.taskId}
+                        onClick={this.handleDrawerOpen}>
+                        <InformationVariantIcon size={iconSize} />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 )}
@@ -797,6 +847,33 @@ export default class HookForm extends Component {
             }
           />
         )}
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={this.handleDrawerClose}>
+          <div className={classes.metadataContainer}>
+            <Typography variant="h5" className={classes.headline}>
+              {drawerData && drawerData.headline}
+            </Typography>
+            <List>
+              <ListItem>
+                <ListItemText
+                  primary="Description"
+                  secondary={
+                    (drawerData &&
+                      drawerData.body && (
+                        <ErrorPanel
+                          className={classes.errorPanel}
+                          error={drawerData && drawerData.body}
+                          onClose={null}
+                        />
+                      )) || <Typography>n/a</Typography>
+                  }
+                />
+              </ListItem>
+            </List>
+          </div>
+        </Drawer>
       </Fragment>
     );
   }
