@@ -30,6 +30,7 @@ import DeleteIcon from 'mdi-react/DeleteIcon';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 import { docs } from 'taskcluster-lib-urls';
 import Label from '@mozilla-frontend-infra/components/Label';
+import LinkIcon from 'mdi-react/LinkIcon';
 import ErrorPanel from '../ErrorPanel';
 import DataTable from '../DataTable';
 import Button from '../Button';
@@ -37,6 +38,7 @@ import SpeedDial from '../SpeedDial';
 import SpeedDialAction from '../SpeedDialAction';
 import DialogAction from '../DialogAction';
 import DateDistance from '../DateDistance';
+import TableCellListItem from '../TableCellListItem';
 import { hook } from '../../utils/prop-types';
 import removeKeys from '../../utils/removeKeys';
 
@@ -602,11 +604,22 @@ export default class HookForm extends Component {
                 renderRow={hookFire => (
                   <TableRow key={hookFire.taskId}>
                     <TableCell>
-                      {(hookFire.result === 'SUCCESS' && (
-                        <Link to={`/tasks/${hookFire.taskId}`}>
-                          <Typography>{hookFire.taskId}</Typography>
-                        </Link>
-                      )) || <Typography>{hookFire.taskId}</Typography>}
+                      <TableCellListItem
+                        button
+                        component={Link}
+                        to={
+                          (hookFire.result === 'SUCCESS' &&
+                            `/tasks/${hookFire.taskId}`) ||
+                          '#'
+                        }>
+                        <ListItemText
+                          disableTypography
+                          primary={<Typography>{hookFire.taskId}</Typography>}
+                        />
+                        {hookFire.result === 'SUCCESS' && (
+                          <LinkIcon size={iconSize} />
+                        )}
+                      </TableCellListItem>
                     </TableCell>
                     <TableCell>
                       <Typography>{hookFire.firedBy}</Typography>
