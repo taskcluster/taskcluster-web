@@ -604,22 +604,18 @@ export default class HookForm extends Component {
                 renderRow={hookFire => (
                   <TableRow key={hookFire.taskId}>
                     <TableCell>
-                      <TableCellListItem
-                        button
-                        component={Link}
-                        to={
-                          (hookFire.result === 'SUCCESS' &&
-                            `/tasks/${hookFire.taskId}`) ||
-                          '#'
-                        }>
-                        <ListItemText
-                          disableTypography
-                          primary={<Typography>{hookFire.taskId}</Typography>}
-                        />
-                        {hookFire.result === 'SUCCESS' && (
+                      {(hookFire.result === 'SUCCESS' && (
+                        <TableCellListItem
+                          button
+                          component={Link}
+                          to={`/tasks/${hookFire.taskId}`}>
+                          <ListItemText
+                            disableTypography
+                            primary={<Typography>{hookFire.taskId}</Typography>}
+                          />
                           <LinkIcon size={iconSize} />
-                        )}
-                      </TableCellListItem>
+                        </TableCellListItem>
+                      )) || <Typography>{hookFire.taskId}</Typography>}
                     </TableCell>
                     <TableCell>
                       <Typography>{hookFire.firedBy}</Typography>
@@ -640,7 +636,6 @@ export default class HookForm extends Component {
                           name={hookFire.taskId}
                           onClick={this.handleDrawerOpen}>
                           <InformationVariantIcon size={iconSize} />
-                          ))
                         </Button>
                       )) || <Typography>n/a</Typography>}
                     </TableCell>
