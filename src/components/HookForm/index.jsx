@@ -591,15 +591,19 @@ export default class HookForm extends Component {
           <ListItem className={classes.displayBlock}>
             <ListItemText
               primary={
-                <Typography variant="subtitle1">
-                  Last Hook Fire Attempts
-                </Typography>
+                <Typography variant="subtitle1">Last Fired Results</Typography>
               }
             />
             {hookLastFires && (
               <DataTable
                 items={hookLastFires}
-                headers={['Task ID', 'FiredBy', 'Result', 'Attempted', 'Error']}
+                headers={[
+                  'Task ID',
+                  'Fired By',
+                  'Result',
+                  'Attempted',
+                  'Error',
+                ]}
                 isPaginate
                 renderRow={hookFire => (
                   <TableRow key={hookFire.taskId}>

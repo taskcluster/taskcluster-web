@@ -9,14 +9,25 @@ import {
   object,
   bool,
 } from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import TableFooter from '@material-ui/core/TableFooter';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 
+@withStyles(() => ({
+  noDisplay: {
+    display: 'none',
+  },
+  tablePaginationRoot: {
+    position: 'relative',
+    left: '207%',
+  },
+}))
 /**
  * A table to display a set of data elements.
  */
@@ -33,7 +44,6 @@ export default class DataTable extends Component {
 
   state = {
     page: 0,
-    rowsPerPage: 10,
   };
 
   static propTypes = {
@@ -92,12 +102,9 @@ export default class DataTable extends Component {
     this.setState({ page });
   };
 
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
-
   render() {
     const {
+      classes,
       items,
       columnsSize,
       renderRow,
@@ -108,7 +115,8 @@ export default class DataTable extends Component {
       isPaginate,
     } = this.props;
     const colSpan = columnsSize || (headers && headers.length) || 0;
-    const { page, rowsPerPage } = this.state;
+    const { page } = this.state;
+    const rowsPerPage = 5;
 
     return (
       <Table>
@@ -143,21 +151,29 @@ export default class DataTable extends Component {
           )}
         </TableBody>
         {isPaginate && (
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={items.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-              'aria-label': 'Previous Page',
-            }}
-            nextIconButtonProps={{
-              'aria-label': 'Next Page',
-            }}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          />
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                classes={{
+                  root: classes.tablePaginationRoot,
+                  spacer: classes.noDisplay,
+                  caption: classes.noDisplay,
+                }}
+                component="div"
+                count={items.length}
+                rowsPerPage={rowsPerPage}
+                rowsPerPageOptions={[rowsPerPage]}
+                page={page}
+                backIconButtonProps={{
+                  'aria-label': 'Previous Page',
+                }}
+                nextIconButtonProps={{
+                  'aria-label': 'Next Page',
+                }}
+                onChangePage={this.handleChangePage}
+              />
+            </TableRow>
+          </TableFooter>
         )}
       </Table>
     );
