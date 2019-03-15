@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
   arrayOf,
   func,
@@ -12,7 +12,6 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableFooter from '@material-ui/core/TableFooter';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
@@ -21,11 +20,13 @@ import TablePagination from '@material-ui/core/TablePagination';
 
 @withStyles(() => ({
   noDisplay: {
-    display: 'none',
+    visibility: 'hidden',
   },
-  tablePaginationRoot: {
-    position: 'relative',
-    left: '207%',
+  table: {
+    minWidth: 1020,
+  },
+  tableWrapper: {
+    overflowX: 'auto',
   },
 }))
 /**
@@ -119,63 +120,62 @@ export default class DataTable extends Component {
     const rowsPerPage = 5;
 
     return (
-      <Table>
-        {headers && (
-          <TableHead>
-            <TableRow>
-              {headers.map(header => (
-                <TableCell key={`table-header-${header}`}>
-                  <TableSortLabel
-                    id={header}
-                    active={header === sortByHeader}
-                    direction={sortDirection || 'desc'}
-                    onClick={this.handleHeaderClick}>
-                    {header}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-        )}
-        <TableBody>
-          {items.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={colSpan}>
-                <em>{noItemsMessage}</em>
-              </TableCell>
-            </TableRow>
-          ) : (
-            items
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(renderRow)
-          )}
-        </TableBody>
+      <Fragment>
+        <div className={classes.tableWrapper}>
+          <Table className={classes.table}>
+            {headers && (
+              <TableHead>
+                <TableRow>
+                  {headers.map(header => (
+                    <TableCell key={`table-header-${header}`}>
+                      <TableSortLabel
+                        id={header}
+                        active={header === sortByHeader}
+                        direction={sortDirection || 'desc'}
+                        onClick={this.handleHeaderClick}>
+                        {header}
+                      </TableSortLabel>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+            )}
+            <TableBody>
+              {items.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={colSpan}>
+                    <em>{noItemsMessage}</em>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                items
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(renderRow)
+              )}
+            </TableBody>
+          </Table>
+        </div>
         {isPaginate && (
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                classes={{
-                  root: classes.tablePaginationRoot,
-                  spacer: classes.noDisplay,
-                  caption: classes.noDisplay,
-                }}
-                component="div"
-                count={items.length}
-                rowsPerPage={rowsPerPage}
-                rowsPerPageOptions={[rowsPerPage]}
-                page={page}
-                backIconButtonProps={{
-                  'aria-label': 'Previous Page',
-                }}
-                nextIconButtonProps={{
-                  'aria-label': 'Next Page',
-                }}
-                onChangePage={this.handleChangePage}
-              />
-            </TableRow>
-          </TableFooter>
+          <TablePagination
+            classes={{
+              spacer: classes.noDisplay,
+              caption: classes.noDisplay,
+            }}
+            component="div"
+            count={items.length}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={[rowsPerPage]}
+            page={page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            onChangePage={this.handleChangePage}
+          />
         )}
-      </Table>
+      </Fragment>
     );
   }
 }

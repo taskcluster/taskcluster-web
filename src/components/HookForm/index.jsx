@@ -130,7 +130,7 @@ const initialHook = {
     whiteSpace: 'normal',
   },
   errorPanel: {
-    maxHeight: '300px',
+    maxHeight: 300,
     maxWidth: '75ch',
     overflowY: 'scroll',
   },
